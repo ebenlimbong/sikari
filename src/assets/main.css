@@ -1,0 +1,151 @@
+/* Import Material Icons */
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f5f7fa;
+  color: #2c3e50;
+}
+
+/* Material Icons styling untuk memastikan muncul */
+.material-icons {
+  font-family: 'Material Icons' !important;
+  font-weight: normal !important;
+  font-style: normal !important;
+  font-size: 24px !important;
+  display: inline-block !important;
+  line-height: 1 !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+  word-wrap: normal !important;
+  white-space: nowrap !important;
+  direction: ltr !important;
+  -webkit-font-smoothing: antialiased !important;
+  text-rendering: optimizeLegibility !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  font-feature-settings: 'liga' !important;
+}
+
+/* Tambahan untuk memastikan icon terlihat */
+.material-icons.md-18 { font-size: 18px !important; }
+.material-icons.md-24 { font-size: 24px !important; }
+.material-icons.md-36 { font-size: 36px !important; }
+.material-icons.md-48 { font-size: 48px !important; }
+
+/* Button Reset */
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* Link Reset */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Remove default list styles */
+ul, ol {
+  list-style: none;
+}
+
+/* Image defaults */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Form elements */
+input, textarea, select, button {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* Scrollbar Styling untuk seluruh aplikasi */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Utility Classes */
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+.mt-4 { margin-top: 2rem; }
+
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+.mb-4 { margin-bottom: 2rem; }
+
+.p-1 { padding: 0.5rem; }
+.p-2 { padding: 1rem; }
+.p-3 { padding: 1.5rem; }
+.p-4 { padding: 2rem; }
+
+/* Animation Classes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Responsive Helpers */
+@media (max-width: 768px) {
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .hide-desktop {
+    display: none !important;
+  }
+}
