@@ -1,5 +1,5 @@
 <template>
-  <div class="sktm-form-container">
+  <div class="sk-penghasilan-form-container">
     <!-- Page Header -->
     <div class="page-header">
       <div class="header-content">
@@ -7,8 +7,8 @@
           <span class="material-icons">arrow_back</span>
           <span>Kembali</span>
         </router-link>
-        <h1 class="page-title">Formulir Surat Keterangan Tidak Mampu</h1>
-        <p class="page-subtitle">Lengkapi data berikut untuk mengajukan Surat Keterangan Tidak Mampu</p>
+        <h1 class="page-title">Formulir Surat Keterangan Penghasilan</h1>
+        <p class="page-subtitle">Lengkapi data berikut untuk mengajukan Surat Keterangan Penghasilan</p>
       </div>
     </div>
 
@@ -16,16 +16,16 @@
     <div class="alert-info">
       <span class="material-icons">info</span>
       <div>
-        <strong>Perhatian:</strong> Pastikan semua data yang Anda masukkan sudah benar. 
-        Dokumen yang diunggah harus dalam format PDF, JPG, atau PNG dengan ukuran maksimal 2MB per file.
+        <strong>Perhatian:</strong> Pastikan data penghasilan yang Anda masukkan sudah benar dan sesuai. 
+        Dokumen pendukung seperti slip gaji atau bukti usaha wajib diunggah.
       </div>
     </div>
 
     <!-- Form -->
-    <form @submit.prevent="handleSubmit" class="sktm-form">
-      <!-- Section A: Data Diri -->
+    <form @submit.prevent="handleSubmit" class="sk-penghasilan-form">
+      <!-- Section A: Data Pemohon -->
       <div class="form-section">
-        <h2 class="section-title">A. Data Diri</h2>
+        <h2 class="section-title">A. Data Pemohon</h2>
         
         <div class="form-row">
           <div class="form-group">
@@ -35,85 +35,6 @@
               id="namaLengkap"
               v-model="formData.namaLengkap"
               placeholder="Masukkan nama lengkap"
-              required
-            />
-          </div>
-
-          <div class="form-group">
-            <label for="tempatLahir">Tempat Lahir <span class="required">*</span></label>
-            <input 
-              type="text" 
-              id="tempatLahir"
-              v-model="formData.tempatLahir"
-              placeholder="Masukkan tempat lahir"
-              required
-            />
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="tanggalLahir">Tanggal Lahir <span class="required">*</span></label>
-            <input 
-              type="date" 
-              id="tanggalLahir"
-              v-model="formData.tanggalLahir"
-              required
-            />
-          </div>
-
-          <div class="form-group">
-            <label for="jenisKelamin">Jenis Kelamin <span class="required">*</span></label>
-            <select 
-              id="jenisKelamin"
-              v-model="formData.jenisKelamin"
-              required
-            >
-              <option value="">Pilih jenis kelamin</option>
-              <option value="Laki-laki">Laki-laki</option>
-              <option value="Perempuan">Perempuan</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="agama">Agama <span class="required">*</span></label>
-            <select 
-              id="agama"
-              v-model="formData.agama"
-              required
-            >
-              <option value="">Pilih agama</option>
-              <option value="Islam">Islam</option>
-              <option value="Kristen">Kristen</option>
-              <option value="Katolik">Katolik</option>
-              <option value="Hindu">Hindu</option>
-              <option value="Buddha">Buddha</option>
-              <option value="Konghucu">Konghucu</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="kewarganegaraan">Kewarganegaraan <span class="required">*</span></label>
-            <input 
-              type="text" 
-              id="kewarganegaraan"
-              v-model="formData.kewarganegaraan"
-              placeholder="Contoh: Indonesia"
-              required
-            />
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="pekerjaan">Pekerjaan <span class="required">*</span></label>
-            <input 
-              type="text" 
-              id="pekerjaan"
-              v-model="formData.pekerjaan"
-              placeholder="Masukkan pekerjaan"
               required
             />
           </div>
@@ -133,9 +54,99 @@
 
         <div class="form-row">
           <div class="form-group">
+            <label for="tempatLahir">Tempat Lahir <span class="required">*</span></label>
+            <input 
+              type="text" 
+              id="tempatLahir"
+              v-model="formData.tempatLahir"
+              placeholder="Masukkan tempat lahir"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="tanggalLahir">Tanggal Lahir <span class="required">*</span></label>
+            <input 
+              type="date" 
+              id="tanggalLahir"
+              v-model="formData.tanggalLahir"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="jenisKelamin">Jenis Kelamin <span class="required">*</span></label>
+            <select 
+              id="jenisKelamin"
+              v-model="formData.jenisKelamin"
+              required
+            >
+              <option value="">Pilih jenis kelamin</option>
+              <option value="Laki-laki">Laki-laki</option>
+              <option value="Perempuan">Perempuan</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="agama">Agama <span class="required">*</span></label>
+            <select 
+              id="agama"
+              v-model="formData.agama"
+              required
+            >
+              <option value="">Pilih agama</option>
+              <option value="Islam">Islam</option>
+              <option value="Kristen">Kristen</option>
+              <option value="Katolik">Katolik</option>
+              <option value="Hindu">Hindu</option>
+              <option value="Buddha">Buddha</option>
+              <option value="Konghucu">Konghucu</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="statusPerkawinan">Status Perkawinan <span class="required">*</span></label>
+            <select 
+              id="statusPerkawinan"
+              v-model="formData.statusPerkawinan"
+              required
+            >
+              <option value="">Pilih status perkawinan</option>
+              <option value="Belum Kawin">Belum Kawin</option>
+              <option value="Kawin">Kawin</option>
+              <option value="Cerai Hidup">Cerai Hidup</option>
+              <option value="Cerai Mati">Cerai Mati</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="pendidikan">Pendidikan Terakhir <span class="required">*</span></label>
+            <select 
+              id="pendidikan"
+              v-model="formData.pendidikan"
+              required
+            >
+              <option value="">Pilih pendidikan</option>
+              <option value="SD">SD</option>
+              <option value="SMP">SMP</option>
+              <option value="SMA/SMK">SMA/SMK</option>
+              <option value="D3">D3</option>
+              <option value="S1">S1</option>
+              <option value="S2">S2</option>
+              <option value="S3">S3</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
             <label for="nomorPonsel">Nomor Ponsel <span class="required">*</span></label>
             <div class="phone-input">
-              <span class="phone-prefix">62</span>
+              <span class="phone-prefix">+62</span>
               <input 
                 type="tel" 
                 id="nomorPonsel"
@@ -147,32 +158,142 @@
           </div>
 
           <div class="form-group">
-            <label for="digunakan">Digunakan Untuk <span class="required">*</span></label>
+            <label for="kewarganegaraan">Kewarganegaraan <span class="required">*</span></label>
             <input 
               type="text" 
-              id="digunakan"
-              v-model="formData.digunakan"
-              placeholder="Contoh: Beasiswa, Bantuan Sosial"
+              id="kewarganegaraan"
+              v-model="formData.kewarganegaraan"
+              placeholder="Contoh: Indonesia"
               required
             />
           </div>
         </div>
 
         <div class="form-group full-width">
-          <label for="alamatKTP">Alamat KTP <span class="required">*</span></label>
+          <label for="alamatLengkap">Alamat Lengkap <span class="required">*</span></label>
           <textarea 
-            id="alamatKTP"
-            v-model="formData.alamatKTP"
+            id="alamatLengkap"
+            v-model="formData.alamatLengkap"
             rows="3"
-            placeholder="Masukkan alamat lengkap sesuai KTP"
+            placeholder="Masukkan alamat lengkap (Jalan, RT/RW, Desa, Kecamatan)"
             required
           ></textarea>
         </div>
       </div>
 
-      <!-- Section B: Lampiran Persyaratan -->
+      <!-- Section B: Data Pekerjaan & Penghasilan -->
       <div class="form-section">
-        <h2 class="section-title">B. Lampiran Persyaratan</h2>
+        <h2 class="section-title">B. Data Pekerjaan & Penghasilan</h2>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="pekerjaan">Pekerjaan/Jabatan <span class="required">*</span></label>
+            <input 
+              type="text" 
+              id="pekerjaan"
+              v-model="formData.pekerjaan"
+              placeholder="Contoh: Karyawan Swasta, Wiraswasta"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="bidangPekerjaan">Bidang Pekerjaan <span class="required">*</span></label>
+            <select 
+              id="bidangPekerjaan"
+              v-model="formData.bidangPekerjaan"
+              required
+            >
+              <option value="">Pilih bidang pekerjaan</option>
+              <option value="Pegawai Negeri">Pegawai Negeri</option>
+              <option value="Pegawai Swasta">Pegawai Swasta</option>
+              <option value="Wiraswasta">Wiraswasta</option>
+              <option value="Pedagang">Pedagang</option>
+              <option value="Petani">Petani</option>
+              <option value="Buruh">Buruh</option>
+              <option value="Freelancer">Freelancer</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="namaPerusahaan">Nama Perusahaan/Tempat Usaha</label>
+            <input 
+              type="text" 
+              id="namaPerusahaan"
+              v-model="formData.namaPerusahaan"
+              placeholder="Masukkan nama perusahaan (jika ada)"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="alamatPerusahaan">Alamat Perusahaan/Tempat Usaha</label>
+            <input 
+              type="text" 
+              id="alamatPerusahaan"
+              v-model="formData.alamatPerusahaan"
+              placeholder="Masukkan alamat perusahaan (jika ada)"
+            />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="penghasilanPerBulan">Penghasilan Per Bulan <span class="required">*</span></label>
+            <div class="currency-input">
+              <span class="currency-prefix">Rp</span>
+              <input 
+                type="text" 
+                id="penghasilanPerBulan"
+                v-model="formData.penghasilanPerBulan"
+                @input="formatCurrency"
+                placeholder="0"
+                required
+              />
+            </div>
+            <small class="file-hint">Masukkan penghasilan rata-rata per bulan</small>
+          </div>
+
+          <div class="form-group">
+            <label for="lamaBekerja">Lama Bekerja <span class="required">*</span></label>
+            <input 
+              type="text" 
+              id="lamaBekerja"
+              v-model="formData.lamaBekerja"
+              placeholder="Contoh: 3 Tahun 6 Bulan"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="form-group full-width">
+          <label for="sumberPenghasilan">Sumber Penghasilan <span class="required">*</span></label>
+          <textarea 
+            id="sumberPenghasilan"
+            v-model="formData.sumberPenghasilan"
+            rows="3"
+            placeholder="Jelaskan sumber penghasilan Anda (Gaji, Usaha, Investasi, dll)"
+            required
+          ></textarea>
+        </div>
+
+        <div class="form-group full-width">
+          <label for="tujuanPembuatan">Tujuan Pembuatan Surat <span class="required">*</span></label>
+          <input 
+            type="text" 
+            id="tujuanPembuatan"
+            v-model="formData.tujuanPembuatan"
+            placeholder="Contoh: Pengajuan KPR, Kredit Kendaraan, dll"
+            required
+          />
+        </div>
+      </div>
+
+      <!-- Section C: Lampiran Persyaratan -->
+      <div class="form-section">
+        <h2 class="section-title">C. Lampiran Persyaratan</h2>
         
         <div class="form-group">
           <label>Unggah KTP <span class="required">*</span></label>
@@ -187,7 +308,7 @@
             />
             <label for="uploadKTP" class="file-upload-label">
               <span class="material-icons">upload_file</span>
-              <span>{{ formData.files.ktp ? formData.files.ktp.name : 'Pilih berkas' }}</span>
+              <span>{{ formData.files.ktp ? formData.files.ktp.name : 'Pilih berkas KTP' }}</span>
             </label>
             <button 
               v-if="formData.files.ktp" 
@@ -202,7 +323,7 @@
         </div>
 
         <div class="form-group">
-          <label>Unggah KK <span class="required">*</span></label>
+          <label>Unggah Kartu Keluarga <span class="required">*</span></label>
           <div class="file-upload-wrapper">
             <input 
               type="file" 
@@ -214,7 +335,7 @@
             />
             <label for="uploadKK" class="file-upload-label">
               <span class="material-icons">upload_file</span>
-              <span>{{ formData.files.kk ? formData.files.kk.name : 'Pilih berkas' }}</span>
+              <span>{{ formData.files.kk ? formData.files.kk.name : 'Pilih berkas KK' }}</span>
             </label>
             <button 
               v-if="formData.files.kk" 
@@ -229,19 +350,45 @@
         </div>
 
         <div class="form-group">
-          <label>Unggah Pengantar RT <span class="required">*</span></label>
+          <label>Unggah Bukti Penghasilan <span class="required">*</span></label>
           <div class="file-upload-wrapper">
             <input 
               type="file" 
-              id="uploadRT"
-              @change="handleFileUpload($event, 'pengantarRT')"
+              id="uploadBuktiPenghasilan"
+              @change="handleFileUpload($event, 'buktiPenghasilan')"
               accept=".pdf,.jpg,.jpeg,.png"
               required
               hidden
             />
-            <label for="uploadRT" class="file-upload-label">
+            <label for="uploadBuktiPenghasilan" class="file-upload-label">
               <span class="material-icons">upload_file</span>
-              <span>{{ formData.files.pengantarRT ? formData.files.pengantarRT.name : 'Pilih berkas' }}</span>
+              <span>{{ formData.files.buktiPenghasilan ? formData.files.buktiPenghasilan.name : 'Pilih berkas bukti penghasilan' }}</span>
+            </label>
+            <button 
+              v-if="formData.files.buktiPenghasilan" 
+              type="button" 
+              @click="removeFile('buktiPenghasilan')" 
+              class="remove-file-btn"
+            >
+              <span class="material-icons">close</span>
+            </button>
+          </div>
+          <small class="file-hint">Format: PDF, JPG, PNG. Maksimal 2MB. (Slip Gaji, Laporan Keuangan, atau Surat Keterangan dari Perusahaan)</small>
+        </div>
+
+        <div class="form-group">
+          <label>Unggah Surat Pengantar RT/RW</label>
+          <div class="file-upload-wrapper">
+            <input 
+              type="file" 
+              id="uploadPengantarRT"
+              @change="handleFileUpload($event, 'pengantarRT')"
+              accept=".pdf,.jpg,.jpeg,.png"
+              hidden
+            />
+            <label for="uploadPengantarRT" class="file-upload-label">
+              <span class="material-icons">upload_file</span>
+              <span>{{ formData.files.pengantarRT ? formData.files.pengantarRT.name : 'Pilih berkas pengantar RT/RW (opsional)' }}</span>
             </label>
             <button 
               v-if="formData.files.pengantarRT" 
@@ -252,13 +399,13 @@
               <span class="material-icons">close</span>
             </button>
           </div>
-          <small class="file-hint">Format: PDF, JPG, PNG. Maksimal 2MB</small>
+          <small class="file-hint">Format: PDF, JPG, PNG. Maksimal 2MB (Opsional)</small>
         </div>
       </div>
 
-      <!-- Section C: Metode Pengambilan -->
+      <!-- Section D: Metode Pengambilan -->
       <div class="form-section">
-        <h2 class="section-title">C. Metode Pengambilan Surat</h2>
+        <h2 class="section-title">D. Metode Pengambilan Surat</h2>
         
         <div class="form-group">
           <label>Pilih Metode Pengambilan <span class="required">*</span></label>
@@ -335,46 +482,64 @@ const router = useRouter();
 const isSubmitting = ref(false);
 
 const formData = ref({
+  // Data Pemohon
   namaLengkap: '',
+  nik: '',
   tempatLahir: '',
   tanggalLahir: '',
   jenisKelamin: '',
   agama: '',
-  kewarganegaraan: 'Indonesia',
-  pekerjaan: '',
-  nik: '',
+  statusPerkawinan: '',
+  pendidikan: '',
   nomorPonsel: '',
-  digunakan: '',
-  alamatKTP: '',
+  kewarganegaraan: 'Indonesia',
+  alamatLengkap: '',
+  
+  // Data Pekerjaan & Penghasilan
+  pekerjaan: '',
+  bidangPekerjaan: '',
+  namaPerusahaan: '',
+  alamatPerusahaan: '',
+  penghasilanPerBulan: '',
+  lamaBekerja: '',
+  sumberPenghasilan: '',
+  tujuanPembuatan: '',
+  
+  // Files
   files: {
     ktp: null,
     kk: null,
+    buktiPenghasilan: null,
     pengantarRT: null
   },
+  
+  // Metode Pengambilan
   metodePengambilan: '',
   jadwalPengambilan: ''
 });
 
-// Min date for jadwal pengambilan (3 hari dari sekarang)
 const minDate = computed(() => {
   const date = new Date();
   date.setDate(date.getDate() + 3);
   return date.toISOString().split('T')[0];
 });
 
+const formatCurrency = (event) => {
+  let value = event.target.value.replace(/\D/g, '');
+  formData.value.penghasilanPerBulan = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+};
+
 const handleFileUpload = (event, fileType) => {
   const file = event.target.files[0];
   
   if (!file) return;
 
-  // Validasi ukuran file (max 2MB)
   if (file.size > 2 * 1024 * 1024) {
     alert('Ukuran file terlalu besar! Maksimal 2MB');
     event.target.value = '';
     return;
   }
 
-  // Validasi format file
   const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
   if (!allowedTypes.includes(file.type)) {
     alert('Format file tidak didukung! Gunakan PDF, JPG, atau PNG');
@@ -387,12 +552,18 @@ const handleFileUpload = (event, fileType) => {
 
 const removeFile = (fileType) => {
   formData.value.files[fileType] = null;
-  // Reset input file
-  const inputId = fileType === 'ktp' ? 'uploadKTP' : fileType === 'kk' ? 'uploadKK' : 'uploadRT';
-  document.getElementById(inputId).value = '';
+  const inputMap = {
+    ktp: 'uploadKTP',
+    kk: 'uploadKK',
+    buktiPenghasilan: 'uploadBuktiPenghasilan',
+    pengantarRT: 'uploadPengantarRT'
+  };
+  const inputId = inputMap[fileType];
+  if (inputId) {
+    document.getElementById(inputId).value = '';
+  }
 };
 
-// Generate unique ticket number
 const generateTicketNumber = () => {
   const date = new Date();
   const year = date.getFullYear();
@@ -402,19 +573,12 @@ const generateTicketNumber = () => {
   return `TIC-${year}${month}${day}-${random}`;
 };
 
-// Save to localStorage
 const savePengajuan = (pengajuanData) => {
   try {
-    // Get existing data
     const existingData = localStorage.getItem('pengajuanSurat');
     const pengajuanList = existingData ? JSON.parse(existingData) : [];
-    
-    // Add new pengajuan
-    pengajuanList.unshift(pengajuanData); // Add to beginning of array
-    
-    // Save back to localStorage
+    pengajuanList.unshift(pengajuanData);
     localStorage.setItem('pengajuanSurat', JSON.stringify(pengajuanList));
-    
     return true;
   } catch (error) {
     console.error('Error saving to localStorage:', error);
@@ -423,50 +587,43 @@ const savePengajuan = (pengajuanData) => {
 };
 
 const handleSubmit = async () => {
-  // Validasi NIK
   if (formData.value.nik.length !== 16) {
     alert('NIK harus 16 digit!');
     return;
   }
 
-  // Validasi file upload
-  if (!formData.value.files.ktp || !formData.value.files.kk || !formData.value.files.pengantarRT) {
-    alert('Semua dokumen harus diunggah!');
+  if (!formData.value.files.ktp || !formData.value.files.kk || !formData.value.files.buktiPenghasilan) {
+    alert('Dokumen KTP, KK, dan Bukti Penghasilan wajib diunggah!');
     return;
   }
 
   isSubmitting.value = true;
 
   try {
-    // Prepare data for saving
     const pengajuanData = {
       noTiket: generateTicketNumber(),
-      jenisSurat: 'Surat Keterangan Tidak Mampu',
+      jenisSurat: 'Surat Keterangan Penghasilan',
       tanggalPengajuan: new Date().toISOString(),
       status: 'Belum Dikerjakan',
       catatanAdmin: null,
       waktuSelesai: null,
       data: {
         ...formData.value,
-        // Convert File objects to just names (can't store File objects in localStorage)
         files: {
           ktp: formData.value.files.ktp ? { name: formData.value.files.ktp.name, size: formData.value.files.ktp.size } : null,
           kk: formData.value.files.kk ? { name: formData.value.files.kk.name, size: formData.value.files.kk.size } : null,
+          buktiPenghasilan: formData.value.files.buktiPenghasilan ? { name: formData.value.files.buktiPenghasilan.name, size: formData.value.files.buktiPenghasilan.size } : null,
           pengantarRT: formData.value.files.pengantarRT ? { name: formData.value.files.pengantarRT.name, size: formData.value.files.pengantarRT.size } : null
         }
       }
     };
 
-    console.log('📝 Data Pengajuan SKTM:', pengajuanData);
-
-    // Simulasi delay
     await new Promise(resolve => setTimeout(resolve, 1500));
 
-    // Save to localStorage
     const saved = savePengajuan(pengajuanData);
 
     if (saved) {
-      alert(`✅ Permohonan SKTM berhasil diajukan!\n\nNo. Tiket: ${pengajuanData.noTiket}\n\nSilakan tunggu konfirmasi dari admin.`);
+      alert(`✅ Permohonan Surat Keterangan Penghasilan berhasil diajukan!\n\nNo. Tiket: ${pengajuanData.noTiket}\n\nSilakan tunggu konfirmasi dari admin.`);
       router.push('/surat-saya');
     } else {
       throw new Error('Gagal menyimpan data');
@@ -490,7 +647,7 @@ const handleCancel = () => {
 <style scoped>
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 
-.sktm-form-container {
+.sk-penghasilan-form-container {
   max-width: 1000px;
   margin: 0 auto;
   animation: fadeIn 0.5s ease;
@@ -507,14 +664,13 @@ const handleCancel = () => {
   }
 }
 
-/* Page Header */
 .page-header {
-  background: linear-gradient(135deg, #006400, #228B22);
+  background: linear-gradient(135deg, #f39c12, #f1c40f);
   padding: 2rem;
   border-radius: 12px;
   color: white;
   margin-bottom: 2rem;
-  box-shadow: 0 4px 15px rgba(0, 100, 0, 0.2);
+  box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
 }
 
 .header-content {
@@ -555,10 +711,9 @@ const handleCancel = () => {
   opacity: 0.95;
 }
 
-/* Alert Info */
 .alert-info {
-  background: #e6f7ff;
-  border-left: 4px solid #1890ff;
+  background: #fff3cd;
+  border-left: 4px solid #f39c12;
   padding: 1.25rem;
   border-radius: 8px;
   margin-bottom: 2rem;
@@ -568,16 +723,15 @@ const handleCancel = () => {
 }
 
 .alert-info .material-icons {
-  color: #1890ff;
+  color: #f39c12;
   font-size: 24px;
 }
 
 .alert-info strong {
-  color: #0050b3;
+  color: #856404;
 }
 
-/* Form */
-.sktm-form {
+.sk-penghasilan-form {
   background: white;
   border-radius: 12px;
   padding: 2rem;
@@ -642,11 +796,12 @@ const handleCancel = () => {
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #006400;
-  box-shadow: 0 0 0 3px rgba(0, 100, 0, 0.1);
+  border-color: #f39c12;
+  box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.1);
 }
 
-.phone-input {
+.phone-input,
+.currency-input {
   display: flex;
   align-items: center;
   border: 2px solid #e0e0e0;
@@ -655,25 +810,27 @@ const handleCancel = () => {
   transition: all 0.3s ease;
 }
 
-.phone-input:focus-within {
-  border-color: #006400;
-  box-shadow: 0 0 0 3px rgba(0, 100, 0, 0.1);
+.phone-input:focus-within,
+.currency-input:focus-within {
+  border-color: #f39c12;
+  box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.1);
 }
 
-.phone-prefix {
+.phone-prefix,
+.currency-prefix {
   background: #f5f5f5;
   padding: 0.85rem 1rem;
   font-weight: 600;
   color: #666;
 }
 
-.phone-input input {
+.phone-input input,
+.currency-input input {
   border: none !important;
   flex: 1;
   box-shadow: none !important;
 }
 
-/* File Upload */
 .file-upload-wrapper {
   display: flex;
   gap: 0.75rem;
@@ -694,12 +851,12 @@ const handleCancel = () => {
 }
 
 .file-upload-label:hover {
-  border-color: #006400;
-  background: #f0f8f0;
+  border-color: #f39c12;
+  background: #fff3cd;
 }
 
 .file-upload-label .material-icons {
-  color: #006400;
+  color: #f39c12;
   font-size: 24px;
 }
 
@@ -728,7 +885,6 @@ const handleCancel = () => {
   margin-top: 0.5rem;
 }
 
-/* Radio Group */
 .radio-group {
   display: grid;
   gap: 1rem;
@@ -746,8 +902,8 @@ const handleCancel = () => {
 }
 
 .radio-option:hover {
-  border-color: #006400;
-  background: #f0f8f0;
+  border-color: #f39c12;
+  background: #fff3cd;
 }
 
 .radio-option input[type="radio"] {
@@ -757,11 +913,11 @@ const handleCancel = () => {
 }
 
 .radio-option input[type="radio"]:checked + .radio-content {
-  color: #006400;
+  color: #f39c12;
 }
 
 .radio-option input[type="radio"]:checked {
-  accent-color: #006400;
+  accent-color: #f39c12;
 }
 
 .radio-content {
@@ -773,7 +929,7 @@ const handleCancel = () => {
 
 .radio-content .material-icons {
   font-size: 32px;
-  color: #006400;
+  color: #f39c12;
 }
 
 .radio-content strong {
@@ -786,7 +942,6 @@ const handleCancel = () => {
   font-size: 0.85rem;
 }
 
-/* Form Actions */
 .form-actions {
   display: flex;
   gap: 1rem;
@@ -819,14 +974,14 @@ const handleCancel = () => {
 }
 
 .btn-submit {
-  background: linear-gradient(135deg, #006400, #228B22);
+  background: linear-gradient(135deg, #f39c12, #f1c40f);
   color: white;
 }
 
 .btn-submit:hover:not(:disabled) {
-  background: linear-gradient(135deg, #004d00, #1a7a1a);
+  background: linear-gradient(135deg, #e67e22, #f39c12);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 100, 0, 0.3);
+  box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
 }
 
 .btn-submit:disabled {
@@ -839,9 +994,8 @@ const handleCancel = () => {
   font-size: 20px;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
-  .sktm-form-container {
+  .sk-penghasilan-form-container {
     padding: 0;
   }
 
@@ -853,7 +1007,7 @@ const handleCancel = () => {
     font-size: 1.5rem;
   }
 
-  .sktm-form {
+  .sk-penghasilan-form {
     padding: 1.5rem;
   }
 

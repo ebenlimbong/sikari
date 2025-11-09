@@ -33,7 +33,14 @@ const handleCardClick = (surat) => {
   // Mapping surat ke route
   const suratRoutes = {
     'Surat Keterangan Tidak Mampu': '/ajukan-surat/sktm',
-    'Surat Keterangan Domisili': '/ajukan-surat/domisili'
+    'Surat Keterangan Domisili': '/ajukan-surat/domisili',
+    'Surat Keterangan Penghasilan': '/ajukan-surat/penghasilan',
+    'Surat Keterangan Usaha': '/ajukan-surat/usaha',
+    'Surat Keterangan Meninggal Dunia': '/ajukan-surat/meninggal',
+    'Surat Keterangan Kelahiran': '/ajukan-surat/kelahiran',
+    'Surat Pengantar Pindah': '/ajukan-surat/pindah',
+    'Surat Pengantar KK, KTP, dan Akta Lahir': '/ajukan-surat/pengantar-dokumen'
+
   };
 
   const route = suratRoutes[surat.title];
@@ -134,7 +141,7 @@ const jenisSurat = ref([
 }
 
 /* Page Header */
-.page-header {
+.page-header {  
   background: linear-gradient(135deg, #006400, #228B22);
   padding: 2rem 2.5rem;
   border-radius: 12px;

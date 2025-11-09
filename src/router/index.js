@@ -10,6 +10,7 @@ import ProfilView from '@/views/Warga/ProfilView.vue'
 import BantuanView from '@/views/Warga/BantuanView.vue'
 import AjjukanSurat from '@/views/Warga/AjjukanSurat.vue'
 
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -68,6 +69,48 @@ const router = createRouter({
       component: () => import('@/views/Warga/SKTMFormView.vue'),
       meta: { requiresAuth: true }
     },
+    {
+      path: '/ajukan-surat/domisili',
+      name: 'domisili-form',
+      component: () => import('@/views/Warga/SKDomisiliFormView.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/ajukan-surat/penghasilan',
+      name: 'penghasilan-form', 
+      component: () => import('@/views/Warga/SKPenghasilanFormView.vue'),
+      meta: {requiresAuth: true}
+    },
+    {
+      path: '/ajukan-surat/usaha',
+      name: 'usaha-form',
+      component: () => import('@/views/Warga/SKUsahaForm.vue'),
+      meta: {requiresAuth: true}
+    }, 
+    {
+      path: '/ajukan-surat/meninggal',
+      name: 'SKMeninggalDunia',
+      component: () => import('@/views/Warga/SKMeninggalDuniaFormView.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/ajukan-surat/kelahiran',
+      name: 'SKKelahiran',
+      component: () => import('@/views/Warga/SKKelahiranForm.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/ajukan-surat/pindah',
+      name: 'SKPengantarPindah',
+      component: () => import('@/views/Warga/SKPengantarPindahFormView.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/ajukan-surat/pengantar-dokumen',
+      name: 'SKPengantarKKKTPAkta',
+      component: () => import('@/views/Warga/SKPengantarKKKTPAktaFormView.vue'),
+      meta: { requiresAuth: true }
+    }
   ]
 })
 
