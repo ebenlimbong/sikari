@@ -30,19 +30,25 @@ import SuratCard from '@/components/ui/SuratCard.vue';
 const router = useRouter();
 
 const handleCardClick = (surat) => {
-  // Cek jika SKTM, redirect ke form
-  if (surat.title === 'Surat Keterangan Tidak Mampu (SKTM)') {
-    router.push('/ajukan-surat/sktm');
+  // Mapping surat ke route
+  const suratRoutes = {
+    'Surat Keterangan Tidak Mampu': '/ajukan-surat/sktm',
+    'Surat Keterangan Domisili': '/ajukan-surat/domisili'
+  };
+
+  const route = suratRoutes[surat.title];
+  
+  if (route) {
+    router.push(route);
   } else {
-    // Untuk surat lainnya, tampilkan notifikasi atau redirect ke form masing-masing
     alert(`Form untuk ${surat.title} sedang dalam pengembangan.`);
   }
 };
 
 const jenisSurat = ref([
-  // 1. Surat Keterangan Tidak Mampu (SKTM)
+  // 1. Surat Keterangan Tidak Mampu
   { 
-    title: 'Surat Keterangan Tidak Mampu (SKTM)', 
+    title: 'Surat Keterangan Tidak Mampu', 
     description: 'Surat untuk mengajukan bantuan sosial, beasiswa, dan program kesejahteraan.', 
     dokumen: 'Kartu Keluarga, KTP, Surat Pernyataan Tidak Mampu', 
     icon: 'sentiment_dissatisfied',
@@ -51,8 +57,8 @@ const jenisSurat = ref([
   // 2. Surat Keterangan Domisili
   { 
     title: 'Surat Keterangan Domisili', 
-    description: 'Surat resmi sebagai bukti tempat tinggal seseorang atau badan hukum di Desa Karang Sari.', 
-    dokumen: 'KTP, Kartu Keluarga, Bukti Kepemilikan Rumah/Sewa', 
+    description: 'Surat resmi sebagai bukti tempat tinggal seseorang atau badan hukum di wilayah desa.', 
+    dokumen: 'KTP, Kartu Keluarga, Bukti Kepemilikan/Sewa Rumah', 
     icon: 'location_on', 
     iconColor: '#3498db'
   },
