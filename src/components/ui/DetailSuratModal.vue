@@ -884,4 +884,6 @@ const downloadSurat = () => {
     justify-content: center;
   }
 }
+
+.ml-2 { margin-left: 0.5rem; }
 </style>

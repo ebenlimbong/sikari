@@ -110,43 +110,53 @@ const router = createRouter({
       name: 'SKPengantarKKKTPAkta',
       component: () => import('@/views/Warga/SKPengantarKKKTPAktaFormView.vue'),
       meta: { requiresAuth: true }
+    },
+    {
+      path: '/profil',
+      name: 'Profil',
+      component: () => import('@/views/Warga/ProfilView.vue'),
+      meta: { requiresAuth: true }
     }
   ]
 })
 
-// --- LOGIKA NAVIGATION GUARD YANG DIPERBAIKI (Sesuai Permintaan) ---
+const authGuard = (to, from, next) => {
+  const token = localStorage.getItem('token');
+  if (to.meta.requiresAuth && !token) {
+    next('/login');
+  } else {
+    next();
+  }
+};
+
+// --- LOGIKA NAVIGATION GUARD YANG BENAR ---
 router.beforeEach((to, from, next) => {
-  // Cek apakah ada token di localStorage (Simulasi Login)
-  const isAuthenticated = localStorage.getItem('user_token'); 
+  const token = localStorage.getItem('token'); // ← SESUAI DENGAN LoginView.vue
   
-  // 1. Jika rute membutuhkan otentikasi (requiresAuth: true, seperti Dashboard)
+  // Rute yang butuh login (dashboard, surat-saya, dll)
   if (to.meta.requiresAuth) {
-    if (isAuthenticated) {
-      // User sudah login, izinkan akses
-      next();
+    if (token) {
+      next(); // izinkan
     } else {
-      // User belum login, REDIRECT KE HOME ('/') sesuai permintaan
-      console.log('⚠️ Akses ditolak: Dialihkan ke halaman Home.');
-      next({ name: 'home' }); 
+      console.log('⚠️ Akses ditolak: redirect ke /');
+      next('/'); // atau next({ name: 'login' }) jika ingin ke login
     }
-  } 
-  
-  // 2. Jika rute hanya untuk tamu (requiresGuest: true, seperti Login/Register)
+  }
+  // Rute tamu (login/register): arahkan ke dashboard jika sudah login
   else if (to.meta.requiresGuest) {
-    if (isAuthenticated) {
-      // User sudah login, arahkan ke Dashboard
-      console.log('✅ Sudah login, dialihkan ke dashboard');
-      next({ name: 'dashboard' }); 
+    if (token) {
+      next({ name: 'dashboard' });
     } else {
-      // User belum login, izinkan akses login/register
       next();
     }
   }
-  
-  // 3. Rute publik lainnya
+  // Rute publik
   else {
     next();
   }
 });
 
+
+
 export default router
+router.beforeEach(authGuard);

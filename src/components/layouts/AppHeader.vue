@@ -13,14 +13,48 @@
     </nav>
 
     <div class="auth-buttons">
-      <router-link to="/login" class="btn btn-masuk">Masuk</router-link>
-      <router-link to="/register" class="btn btn-daftar">Daftar</router-link>
+      <!-- Jika belum login -->
+      <template v-if="!isLoggedIn">
+        <router-link to="/login" class="btn btn-masuk">Masuk</router-link>
+        <router-link to="/register" class="btn btn-daftar">Daftar</router-link>
+      </template>
+
+      <!-- Jika sudah login -->
+      <template v-else>
+        <div class="user-menu">
+          <span class="user-name">
+            <span class="material-icons">person</span>
+            {{ username }}
+          </span>
+          <button @click="handleLogout" class="btn btn-logout">
+            <span class="material-icons">logout</span>
+            Keluar
+          </button>
+        </div>
+      </template>
     </div>
   </header>
 </template>
 
 <script setup>
-// Script minimal
+import { ref, computed } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+const user = ref(JSON.parse(localStorage.getItem('user') || 'null'));
+
+const isLoggedIn = computed(() => !!user.value);
+const username = computed(() => user.value?.username || 'Warga');
+
+const handleLogout = () => {
+  if (confirm('Yakin ingin keluar?')) {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('pengajuanSurat'); // hapus data lama
+    user.value = null;
+    router.push('/');
+  }
+};
 </script>
 
 <style scoped>
@@ -28,39 +62,88 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 5%; 
-  background-color: #006400; 
-  color: white;
+  padding: 1rem 2rem;
+  background: white;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
+
 .logo-link {
   font-size: 1.5rem;
-  font-weight: bold;
+  font-weight: 700;
+  color: #006400;
   text-decoration: none;
-  color: inherit;
 }
-.main-nav .nav-item {
-  margin: 0 1rem;
+
+.main-nav {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-item {
+  color: #555;
   text-decoration: none;
-  color: inherit;
-  transition: opacity 0.2s;
+  font-weight: 500;
+  transition: color 0.3s;
 }
-.main-nav .nav-item:hover {
-    opacity: 0.8;
+
+.nav-item:hover {
+  color: #006400;
 }
+
+.auth-buttons {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
 .btn {
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
+  padding: 0.5rem 1.25rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
   text-decoration: none;
-  margin-left: 0.5rem;
-  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+  transition: all 0.3s;
 }
+
 .btn-masuk {
-  background: none;
-  border: 1px solid white;
+  background: #f5f5f5;
+  color: #666;
+}
+.btn-masuk:hover {
+  background: #e0e0e0;
+}
+
+.btn-daftar {
+  background: #006400;
   color: white;
 }
-.btn-daftar {
-  background-color: #ff9900; 
+.btn-daftar:hover {
+  background: #004d00;
+}
+
+.btn-logout {
+  background: #e74c3c;
   color: white;
+}
+.btn-logout:hover {
+  background: #c0392b;
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-name {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #333;
+  font-weight: 600;
 }
 </style>

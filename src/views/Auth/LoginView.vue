@@ -67,31 +67,27 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import api from '@/api';
 
 const router = useRouter();
-
 const formData = ref({
   username: '',
   password: '',
   rememberMe: false
 });
-
 const isLoading = ref(false);
 const errorMessage = ref('');
 const successMessage = ref('');
 
 const handleLogin = async () => {
-  // Reset messages
   errorMessage.value = '';
   successMessage.value = '';
 
-  // Validasi form
   if (!formData.value.username || !formData.value.password) {
     errorMessage.value = 'Username dan password harus diisi!';
     return;
   }
 
-  // Validasi panjang password
   if (formData.value.password.length < 6) {
     errorMessage.value = 'Password minimal 6 karakter!';
     return;
@@ -100,40 +96,22 @@ const handleLogin = async () => {
   isLoading.value = true;
 
   try {
-    // SIMULASI LOGIN (Ganti dengan API call yang sebenarnya)
-    console.log('🔐 Proses Login:', formData.value);
+    const response = await api.post('/auth/login', {
+      username: formData.value.username,
+      password: formData.value.password
+    });
 
-    // Simulasi delay API
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // Simpan token & user ke localStorage
+    localStorage.setItem('token', response.data.token);
+    localStorage.setItem('user', JSON.stringify(response.data.user));
 
-    // DEMO: Login berhasil jika username dan password tidak kosong
-    // GANTI INI dengan API call yang sebenarnya nanti
-    const loginSuccess = formData.value.username && formData.value.password;
+    successMessage.value = 'Login berhasil! Mengalihkan...';
 
-    if (loginSuccess) {
-      // Simpan token (simulasi)
-      const fakeToken = 'fake-jwt-token-' + Date.now();
-      localStorage.setItem('user_token', fakeToken);
-      
-      // Simpan data user (opsional)
-      const userData = {
-        username: formData.value.username,
-        loginTime: new Date().toISOString()
-      };
-      localStorage.setItem('user_data', JSON.stringify(userData));
-
-      successMessage.value = 'Login berhasil! Mengalihkan...';
-      
-      // Redirect ke dashboard setelah delay
-      setTimeout(() => {
-        router.push({ name: 'dashboard' });
-      }, 500);
-    } else {
-      errorMessage.value = 'Username atau password salah!';
-    }
+    setTimeout(() => {
+      router.push('/dashboard');
+    }, 500);
   } catch (error) {
-    console.error('❌ Login Error:', error);
-    errorMessage.value = 'Terjadi kesalahan. Silakan coba lagi.';
+    errorMessage.value = error.response?.data?.error || 'Login gagal. Periksa username dan password.';
   } finally {
     isLoading.value = false;
   }

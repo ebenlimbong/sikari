@@ -1,12 +1,28 @@
 <template>
   <div class="dashboard-container">
+    <!-- ✅ Loading Overlay -->
+    <div v-if="isLoading" class="loading-overlay">
+      <div class="spinner"></div>
+      <p>Memuat data...</p>
+    </div>
+
+    <!-- ✅ Error Message -->
+    <div v-if="error && !isLoading" class="error-message">
+      <span class="material-icons">error</span>
+      <p>{{ error }}</p>
+      <button @click="loadSuratData" class="btn-retry">
+        <span class="material-icons">refresh</span>
+        Coba Lagi
+      </button>
+    </div>
+
     <!-- Welcome Header -->
     <div class="welcome-header">
       <h1 class="dashboard-title">Dashboard</h1>
       <p class="dashboard-subtitle">Kelola pengajuan surat Anda dengan mudah dan cepat</p>
     </div>
 
-    <!-- Statistics Cards - 4 Kartu -->
+    <!-- Statistics Cards -->
     <div class="stats-wrapper">
       <h2 class="section-title">Statistik Pengajuan Surat</h2>
       <div class="stats-grid">
@@ -91,8 +107,8 @@
       </div>
     </div>
 
-    <!-- Recent Activity (Opsional - Pengajuan Terbaru) -->
-    <div class="recent-activity" v-if="recentSurat.length > 0">
+    <!-- Recent Activity -->
+    <div class="recent-activity" v-if="recentSurat.length > 0 && !isLoading">
       <h2 class="section-title">Pengajuan Terbaru</h2>
       <div class="activity-list">
         <div 
@@ -123,8 +139,8 @@
       </router-link>
     </div>
 
-    <!-- Empty State (jika belum ada pengajuan) -->
-    <div class="empty-dashboard" v-else>
+    <!-- Empty State -->
+    <div class="empty-dashboard" v-else-if="!isLoading">
       <div class="empty-illustration">
         <span class="material-icons">inbox</span>
       </div>
@@ -139,93 +155,106 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onActivated } from 'vue';
 import { useRouter } from 'vue-router';
+import api from '@/api';
 
 const router = useRouter();
 const suratList = ref([]);
+const isLoading = ref(false);
+const error = ref(null);
 
-// Load data from localStorage
-const loadSuratData = () => {
-  const savedData = localStorage.getItem('pengajuanSurat');
-  if (savedData) {
-    suratList.value = JSON.parse(savedData);
+// ✅ FIX: Proper async handling dengan loading state
+const loadSuratData = async () => {
+  isLoading.value = true;
+  error.value = null;
+  
+  try {
+    console.log('🔄 Fetching surat data...');
+    
+    const response = await api.get('/surat/me');
+    
+    // ✅ FIX: Handle berbagai response structure
+    if (response.data) {
+      suratList.value = response.data.suratList || response.data.data || response.data || [];
+    } else {
+      suratList.value = [];
+    }
+    
+    console.log('✅ Data loaded:', suratList.value.length, 'items');
+    
+  } catch (err) {
+    console.error('❌ Error loading surat:', err);
+    error.value = err.response?.data?.message || 'Gagal memuat data';
+    suratList.value = [];
+  } finally {
+    isLoading.value = false;
   }
 };
 
 // Statistics
 const totalPengajuan = computed(() => suratList.value.length);
-
 const belumDikerjakan = computed(() => 
   suratList.value.filter(s => s.status === 'Belum Dikerjakan').length
 );
-
 const sedangDiproses = computed(() => 
   suratList.value.filter(s => s.status === 'Sedang Diproses').length
 );
-
 const selesai = computed(() => 
   suratList.value.filter(s => s.status === 'Selesai').length
 );
 
 // Percentages
-const percentageBelumDikerjakan = computed(() => {
-  if (totalPengajuan.value === 0) return 0;
-  return Math.round((belumDikerjakan.value / totalPengajuan.value) * 100);
-});
+const percentageBelumDikerjakan = computed(() => 
+  totalPengajuan.value ? Math.round((belumDikerjakan.value / totalPengajuan.value) * 100) : 0
+);
+const percentageSedangDiproses = computed(() => 
+  totalPengajuan.value ? Math.round((sedangDiproses.value / totalPengajuan.value) * 100) : 0
+);
+const percentageSelesai = computed(() => 
+  totalPengajuan.value ? Math.round((selesai.value / totalPengajuan.value) * 100) : 0
+);
 
-const percentageSedangDiproses = computed(() => {
-  if (totalPengajuan.value === 0) return 0;
-  return Math.round((sedangDiproses.value / totalPengajuan.value) * 100);
-});
-
-const percentageSelesai = computed(() => {
-  if (totalPengajuan.value === 0) return 0;
-  return Math.round((selesai.value / totalPengajuan.value) * 100);
-});
-
-// Recent 5 surat
-const recentSurat = computed(() => {
-  return suratList.value.slice(0, 5);
-});
+// Recent 5 surat (terbaru di atas)
+const recentSurat = computed(() => suratList.value.slice(0, 5));
 
 // Methods
-const goToAjukanSurat = () => {
-  router.push('/ajukan-surat');
-};
-
-const goToSuratSaya = () => {
-  router.push('/surat-saya');
-};
+const goToAjukanSurat = () => router.push('/ajukan-surat');
+const goToSuratSaya = () => router.push('/surat-saya');
 
 const formatDate = (dateString) => {
   if (!dateString) return '-';
-  const date = new Date(dateString);
-  return date.toLocaleDateString('id-ID', { 
-    day: '2-digit', 
-    month: 'short', 
-    year: 'numeric'
-  });
+  try {
+    return new Date(dateString).toLocaleDateString('id-ID', {
+      day: '2-digit', 
+      month: 'short', 
+      year: 'numeric'
+    });
+  } catch {
+    return '-';
+  }
 };
 
 const getStatusClass = (status) => {
-  const statusMap = {
+  const map = {
     'Belum Dikerjakan': 'status-pending',
     'Sedang Diproses': 'status-processing',
     'Selesai': 'status-done',
     'Ditolak': 'status-rejected'
   };
-  return statusMap[status] || 'status-pending';
+  return map[status] || 'status-pending';
 };
 
-// Lifecycle
+// ✅ FIX: onMounted untuk initial load
 onMounted(() => {
+  console.log('📍 Dashboard mounted');
   loadSuratData();
-  
-  // Auto refresh data every 5 seconds (optional)
-  // setInterval(() => {
-  //   loadSuratData();
-  // }, 5000);
+});
+
+// ✅ FIX: onActivated untuk refresh saat kembali ke halaman (keep-alive)
+onActivated(() => {
+  console.log('📍 Dashboard activated (kembali ke halaman)');
+  loadSuratData();
 });
 </script>
 
@@ -700,5 +729,82 @@ onMounted(() => {
   .empty-dashboard {
     padding: 3rem 1.5rem;
   }
+}
+
+/* ✅ Tambahkan style untuk loading & error */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #006400;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-overlay p {
+  margin-top: 1rem;
+  color: #666;
+  font-weight: 600;
+}
+
+.error-message {
+  background: #fee;
+  border: 2px solid #e74c3c;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.error-message .material-icons {
+  font-size: 48px;
+  color: #e74c3c;
+}
+
+.error-message p {
+  color: #e74c3c;
+  font-weight: 600;
+  margin: 0;
+}
+
+.btn-retry {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-retry:hover {
+  background: #c0392b;
+  transform: translateY(-2px);
 }
 </style>

@@ -1,12 +1,19 @@
 <template>
   <div class="surat-saya-container">
+
+        <!-- ✅ Loading Overlay -->
+    <div v-if="isLoading" class="loading-overlay">
+      <div class="spinner"></div>
+      <p>Memuat data...</p>
+    </div>
+
     <!-- Page Header -->
     <div class="page-header">
       <div class="header-content">
         <h1 class="page-title">Daftar Pengajuan Surat</h1>
         <p class="page-subtitle">Pantau status pengajuan surat Anda di sini</p>
       </div>
-      <button @click="refreshData" class="btn-refresh">
+      <button @click="reftemplatereshData" class="btn-refresh">
         <span class="material-icons">refresh</span>
         Refresh
       </button>
@@ -155,7 +162,8 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onActivated } from 'vue';
+import api from '@/api';
 import DetailSuratModal from '@/components/ui/DetailSuratModal.vue';
 
 const suratList = ref([]);
@@ -164,13 +172,36 @@ const isModalOpen = ref(false);
 const selectedSurat = ref(null);
 const currentPage = ref(1);
 const itemsPerPage = 10;
+const isLoading = ref(false);
+const error = ref(null);
 
-// Load data from localStorage
-const loadSuratData = () => {
-  const savedData = localStorage.getItem('pengajuanSurat');
-  if (savedData) {
-    suratList.value = JSON.parse(savedData);
+// ✅ FIX: Proper async handling
+const loadSuratData = async () => {
+  isLoading.value = true;
+  error.value = null;
+
+  try {
+    console.log('🔄 Fetching surat data...');
+    
+    const response = await api.get('/surat/me');
+    
+    // ✅ Handle berbagai response structure
+    if (response.data) {
+      suratList.value = response.data.suratList || response.data.data || response.data || [];
+    } else {
+      suratList.value = [];
+    }
+    
+    console.log('✅ Data loaded:', suratList.value.length, 'items');
+    
+  } catch (err) {
+    console.error('❌ Error loading surat:', err);
+    error.value = err.response?.data?.message || 'Gagal memuat data';
+    suratList.value = [];
+  } finally {
+    isLoading.value = false;
   }
+  
 };
 
 // Statistics
@@ -185,14 +216,13 @@ const selesai = computed(() =>
   suratList.value.filter(s => s.status === 'Selesai').length
 );
 
-// Filtered and Paginated Data
+// Filter & Pagination
 const filteredSurat = computed(() => {
   if (!searchQuery.value) return suratList.value;
-  
   const query = searchQuery.value.toLowerCase();
-  return suratList.value.filter(surat => 
-    surat.jenisSurat.toLowerCase().includes(query) ||
-    surat.noTiket.toLowerCase().includes(query)
+  return suratList.value.filter(s => 
+    s.jenisSurat?.toLowerCase().includes(query) ||
+    s.noTiket?.toLowerCase().includes(query)
   );
 });
 
@@ -202,31 +232,33 @@ const totalPages = computed(() =>
 
 const paginatedSurat = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage;
-  const end = start + itemsPerPage;
-  return filteredSurat.value.slice(start, end);
+  return filteredSurat.value.slice(start, start + itemsPerPage);
 });
 
 // Methods
 const formatDate = (dateString) => {
   if (!dateString) return '-';
-  const date = new Date(dateString);
-  return date.toLocaleDateString('id-ID', { 
-    day: '2-digit', 
-    month: 'short', 
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  });
+  try {
+    return new Date(dateString).toLocaleDateString('id-ID', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  } catch {
+    return '-';
+  }
 };
 
 const getStatusClass = (status) => {
-  const statusMap = {
+  const map = {
     'Belum Dikerjakan': 'status-pending',
     'Sedang Diproses': 'status-processing',
     'Selesai': 'status-done',
     'Ditolak': 'status-rejected'
   };
-  return statusMap[status] || 'status-pending';
+  return map[status] || 'status-pending';
 };
 
 const openDetail = (surat) => {
@@ -239,9 +271,9 @@ const closeModal = () => {
   selectedSurat.value = null;
 };
 
-const refreshData = () => {
-  loadSuratData();
+const refreshData = async () => {
   currentPage.value = 1;
+  await loadSuratData();
 };
 
 const prevPage = () => {
@@ -252,7 +284,14 @@ const nextPage = () => {
   if (currentPage.value < totalPages.value) currentPage.value++;
 };
 
+// ✅ Lifecycle hooks
 onMounted(() => {
+  console.log('📍 Surat Saya mounted');
+  loadSuratData();
+});
+
+onActivated(() => {
+  console.log('📍 Surat Saya activated');
   loadSuratData();
 });
 </script>
@@ -674,5 +713,81 @@ onMounted(() => {
   .stats-cards {
     grid-template-columns: 1fr;
   }
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #006400;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-overlay p {
+  margin-top: 1rem;
+  color: #666;
+  font-weight: 600;
+}
+
+.error-message {
+  background: #fee;
+  border: 2px solid #e74c3c;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.error-message .material-icons {
+  font-size: 48px;
+  color: #e74c3c;
+}
+
+.error-message p {
+  color: #e74c3c;
+  font-weight: 600;
+  margin: 0;
+}
+
+.btn-retry {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-retry:hover {
+  background: #c0392b;
+  transform: translateY(-2px);
 }
 </style>

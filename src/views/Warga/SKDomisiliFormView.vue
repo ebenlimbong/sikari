@@ -492,6 +492,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
+import api from '@/api';
 
 const router = useRouter();
 const isSubmitting = ref(false);
@@ -580,36 +581,6 @@ const removeFile = (fileType) => {
   }
 };
 
-// Generate unique ticket number
-const generateTicketNumber = () => {
-  const date = new Date();
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
-  return `TIC-${year}${month}${day}-${random}`;
-};
-
-// Save to localStorage
-const savePengajuan = (pengajuanData) => {
-  try {
-    // Get existing data
-    const existingData = localStorage.getItem('pengajuanSurat');
-    const pengajuanList = existingData ? JSON.parse(existingData) : [];
-    
-    // Add new pengajuan
-    pengajuanList.unshift(pengajuanData); // Add to beginning of array
-    
-    // Save back to localStorage
-    localStorage.setItem('pengajuanSurat', JSON.stringify(pengajuanList));
-    
-    return true;
-  } catch (error) {
-    console.error('Error saving to localStorage:', error);
-    return false;
-  }
-};
-
 const handleSubmit = async () => {
   // Validasi NIK
   if (formData.value.nik.length !== 16) {
@@ -626,17 +597,12 @@ const handleSubmit = async () => {
   isSubmitting.value = true;
 
   try {
-    // Prepare data for saving
-    const pengajuanData = {
-      noTiket: generateTicketNumber(),
+    // Siapkan data untuk dikirim ke backend
+    const payload = {
       jenisSurat: 'Surat Keterangan Domisili',
-      tanggalPengajuan: new Date().toISOString(),
-      status: 'Belum Dikerjakan',
-      catatanAdmin: null,
-      waktuSelesai: null,
-      data: {
+      data: { // <-- KEY UTAMA: 'data'
         ...formData.value,
-        // Convert File objects to just names (can't store File objects in localStorage)
+        // Simpan metadata file (name & size), bukan objek File
         files: {
           ktp: formData.value.files.ktp ? { name: formData.value.files.ktp.name, size: formData.value.files.ktp.size } : null,
           kk: formData.value.files.kk ? { name: formData.value.files.kk.name, size: formData.value.files.kk.size } : null,
@@ -646,24 +612,16 @@ const handleSubmit = async () => {
       }
     };
 
-    console.log('📝 Data Pengajuan Surat Keterangan Domisili:', pengajuanData);
+    // Kirim ke backend
+    const response = await api.post('/surat', payload);
 
-    // Simulasi delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
-
-    // Save to localStorage
-    const saved = savePengajuan(pengajuanData);
-
-    if (saved) {
-      alert(`✅ Permohonan Surat Keterangan Domisili berhasil diajukan!\n\nNo. Tiket: ${pengajuanData.noTiket}\n\nSilakan tunggu konfirmasi dari admin.`);
-      router.push('/surat-saya');
-    } else {
-      throw new Error('Gagal menyimpan data');
-    }
+    alert(`✅ Permohonan berhasil!\n\nNo. Tiket: ${response.data.surat.noTiket}\n\nSilakan cek riwayat di menu "Surat Saya".`);
+    router.push('/surat-saya');
 
   } catch (error) {
-    console.error('❌ Error:', error);
-    alert('Terjadi kesalahan. Silakan coba lagi.');
+    console.error('❌ Gagal mengajukan surat:', error.response?.data || error.message);
+    const msg = error.response?.data?.error || 'Gagal mengajukan surat. Silakan coba lagi.';
+    alert(`❌ ${msg}`);
   } finally {
     isSubmitting.value = false;
   }
@@ -674,7 +632,6 @@ const handleCancel = () => {
     router.push('/ajukan-surat');
   }
 };
-
 </script>
 
 <style scoped>

@@ -7,6 +7,7 @@
       <h2>Daftar Akun</h2>
       <p class="subtitle">Buat akun baru untuk mengakses sistem</p>
 
+      <!-- Alert Info -->
       <div class="alert-info">
         <span class="material-icons">info</span>
         <p>
@@ -14,8 +15,10 @@
           Anda memerlukan kode registrasi yang diberikan oleh sekretariat desa. Silahkan hubungi sekretariat desa jika Anda belum memilikinya.
         </p>
       </div>
-      
+
+      <!-- Form -->
       <form @submit.prevent="handleRegistration">
+        <!-- Nama Depan & Belakang -->
         <div class="form-row">
           <BaseInput 
             label="Nama Depan" 
@@ -32,13 +35,62 @@
             required
           />
         </div>
-        <BaseInput label="Username" type="text" v-model="formData.username" placeholder="Masukkan username Anda" required />
-        <BaseInput label="Nomor Telepon" type="tel" v-model="formData.phoneNumber" placeholder="Contoh: 08123456789" required />
-        <BaseInput label="NIK (Nomor Induk Kependudukan)" type="text" v-model="formData.nik" placeholder="Masukkan NIK Anda" required />
-        <BaseInput label="Kode Registrasi" type="text" v-model="formData.registrationCode" placeholder="Masukkan kode registrasi dari desa" required />
-        <BaseInput label="Password" type="password" v-model="formData.password" placeholder="Buat password yang kuat" required />
-        <BaseInput label="Konfirmasi Password" type="password" v-model="formData.password_confirmation" placeholder="Ulangi password Anda" required />
-        
+
+        <!-- Username -->
+        <BaseInput 
+          label="Username" 
+          type="text" 
+          v-model="formData.username" 
+          placeholder="Masukkan username Anda"
+          required 
+        />
+
+        <!-- Nomor Telepon -->
+        <BaseInput 
+          label="Nomor Telepon" 
+          type="tel" 
+          v-model="formData.phoneNumber" 
+          placeholder="Contoh: 08123456789"
+          required 
+        />
+
+        <!-- NIK -->
+        <BaseInput 
+          label="NIK (Nomor Induk Kependudukan)" 
+          type="text" 
+          v-model="formData.nik" 
+          placeholder="Masukkan NIK Anda"
+          required 
+        />
+
+        <!-- Kode Registrasi -->
+        <BaseInput 
+          label="Kode Registrasi" 
+          type="text" 
+          v-model="formData.registrationCode" 
+          placeholder="Masukkan kode registrasi dari desa"
+          required 
+        />
+
+        <!-- Password -->
+        <BaseInput 
+          label="Password" 
+          type="password" 
+          v-model="formData.password" 
+          placeholder="Buat password yang kuat"
+          required 
+        />
+
+        <!-- Konfirmasi Password -->
+        <BaseInput 
+          label="Konfirmasi Password" 
+          type="password" 
+          v-model="formData.password_confirmation" 
+          placeholder="Ulangi password Anda"
+          required 
+        />
+
+        <!-- Agreement Checkbox -->
         <div class="checkbox-agreement">
           <label class="checkbox-container">
             <input type="checkbox" v-model="formData.agreedToTerms" required>
@@ -47,9 +99,13 @@
           </label>
         </div>
 
-        <button type="submit" class="btn-submit">Daftar Akun</button>
+        <!-- Submit Button -->
+        <button type="submit" class="btn-submit" :disabled="isLoading">
+          {{ isLoading ? 'Memproses...' : 'Daftar Akun' }}
+        </button>
       </form>
 
+      <!-- Login Promo -->
       <p class="login-promo">
         Sudah punya akun? <router-link to="/login">Masuk di sini</router-link>
       </p>
@@ -59,8 +115,11 @@
 
 <script setup>
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import BaseInput from '@/components/global/BaseInput.vue'; 
+import api from '@/api';
 
+const router = useRouter();
 const formData = ref({
   firstName: '', 
   lastName: '', 
@@ -72,14 +131,42 @@ const formData = ref({
   password_confirmation: '', 
   agreedToTerms: false,
 });
+const isLoading = ref(false);
 
-const handleRegistration = () => {
-  console.log('Data Registrasi:', formData.value);
+const handleRegistration = async () => {
+  if (!formData.value.agreedToTerms) {
+    alert('Harap setuju dengan Syarat dan Ketentuan.');
+    return;
+  }
+
+  if (formData.value.password !== formData.value.password_confirmation) {
+    alert('Password dan konfirmasi password tidak cocok.');
+    return;
+  }
+
+  isLoading.value = true;
+  try {
+    const response = await api.post('/auth/register', {
+      firstName: formData.value.firstName,
+      lastName: formData.value.lastName,
+      username: formData.value.username,
+      phoneNumber: formData.value.phoneNumber,
+      nik: formData.value.nik,
+      registrationCode: formData.value.registrationCode,
+      password: formData.value.password
+    });
+
+    alert('Registrasi berhasil! Silakan login.');
+    router.push('/login');
+  } catch (error) {
+    alert(error.response?.data?.error || 'Registrasi gagal. Periksa data Anda.');
+  } finally {
+    isLoading.value = false;
+  }
 };
 </script>
 
 <style scoped>
-/* Wrapper untuk full page dengan background hijau */
 .register-page {
   min-height: 100vh;
   background: linear-gradient(135deg, #006400 0%, #228B22 100%);
