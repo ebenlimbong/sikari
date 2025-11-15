@@ -17,13 +17,23 @@ model User {
   password      String
   role          String   @default("WARGA")
   createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt  // ✅ Tambahkan ini
+  tempatLahir      String?
+  tanggalLahir     DateTime?
+  jenisKelamin     String?
+  agama            String?
+  pekerjaan        String?
+  statusPerkawinan String?
+  pendidikan       String?
+  alamatLengkap    String?
+  
   surat         Surat[]
 }
 
 model Surat {
-  id              String   @id @default(uuid())
+  id              String   @id @default(uuid())  // ✅ Tetap UUID
   userId          Int
-  user            User     @relation(fields: [userId], references: [id])
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   jenisSurat      String
   noTiket         String   @unique
   data            Json
@@ -31,4 +41,10 @@ model Surat {
   catatanAdmin    String?
   waktuSelesai    DateTime?
   createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt  // ✅ Tambahkan ini
+
+  // ✅ Index untuk percepat query — ini solusi utama loading 5-10 detik!
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([userId, status])
+  @@index([noTiket])
 }

@@ -27,8 +27,8 @@
         <div class="form-row">
           <div class="form-group">
             <label for="namaLengkap">Nama Lengkap <span class="required">*</span></label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               id="namaLengkap"
               v-model="formData.namaLengkap"
               placeholder="Nama pemohon (bisa orang tua/wali)"
@@ -37,8 +37,8 @@
           </div>
           <div class="form-group">
             <label for="nik">NIK <span class="required">*</span></label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               id="nik"
               v-model="formData.nik"
               placeholder="16 digit NIK"
@@ -50,8 +50,8 @@
         <div class="form-row">
           <div class="form-group">
             <label for="tempatLahir">Tempat Lahir <span class="required">*</span></label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               id="tempatLahir"
               v-model="formData.tempatLahir"
               placeholder="Tempat lahir pemohon"
@@ -60,8 +60,8 @@
           </div>
           <div class="form-group">
             <label for="tanggalLahir">Tanggal Lahir <span class="required">*</span></label>
-            <input 
-              type="date" 
+            <input
+              type="date"
               id="tanggalLahir"
               v-model="formData.tanggalLahir"
               required
@@ -71,7 +71,7 @@
         <div class="form-row">
           <div class="form-group">
             <label for="jenisKelamin">Jenis Kelamin <span class="required">*</span></label>
-            <select 
+            <select
               id="jenisKelamin"
               v-model="formData.jenisKelamin"
               required
@@ -83,7 +83,7 @@
           </div>
           <div class="form-group">
             <label for="agama">Agama <span class="required">*</span></label>
-            <select 
+            <select
               id="agama"
               v-model="formData.agama"
               required
@@ -101,7 +101,7 @@
         <div class="form-row">
           <div class="form-group">
             <label for="statusPerkawinan">Status Perkawinan <span class="required">*</span></label>
-            <select 
+            <select
               id="statusPerkawinan"
               v-model="formData.statusPerkawinan"
               required
@@ -115,8 +115,8 @@
           </div>
           <div class="form-group">
             <label for="pekerjaan">Pekerjaan <span class="required">*</span></label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               id="pekerjaan"
               v-model="formData.pekerjaan"
               placeholder="Pekerjaan pemohon"
@@ -127,8 +127,8 @@
         <div class="form-row">
           <div class="form-group">
             <label for="kewarganegaraan">Kewarganegaraan <span class="required">*</span></label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               id="kewarganegaraan"
               v-model="formData.kewarganegaraan"
               placeholder="Contoh: Indonesia"
@@ -139,8 +139,8 @@
             <label for="nomorPonsel">Nomor Ponsel <span class="required">*</span></label>
             <div class="phone-input">
               <span class="phone-prefix">+62</span>
-              <input 
-                type="tel" 
+              <input
+                type="tel"
                 id="nomorPonsel"
                 v-model="formData.nomorPonsel"
                 placeholder="8123456789"
@@ -151,7 +151,7 @@
         </div>
         <div class="form-group full-width">
           <label for="alamatKTP">Alamat KTP Pemohon <span class="required">*</span></label>
-          <textarea 
+          <textarea
             id="alamatKTP"
             v-model="formData.alamatKTP"
             rows="2"
@@ -168,8 +168,8 @@
           <label>Pilih Jenis Dokumen <span class="required">*</span></label>
           <div class="checkbox-group">
             <label class="checkbox-option">
-              <input 
-                type="checkbox" 
+              <input
+                type="checkbox"
                 v-model="formData.jenisDokumen.kk"
                 @change="resetData('kk')"
               />
@@ -182,8 +182,8 @@
               </div>
             </label>
             <label class="checkbox-option">
-              <input 
-                type="checkbox" 
+              <input
+                type="checkbox"
                 v-model="formData.jenisDokumen.ktp"
                 @change="resetData('ktp')"
               />
@@ -196,8 +196,8 @@
               </div>
             </label>
             <label class="checkbox-option">
-              <input 
-                type="checkbox" 
+              <input
+                type="checkbox"
                 v-model="formData.jenisDokumen.aktaKelahiran"
                 @change="resetData('aktaKelahiran')"
               />
@@ -218,7 +218,7 @@
           <h3 class="sub-title">Data Tambahan untuk KK</h3>
           <div class="form-group">
             <label for="alasanKK">Alasan Pengajuan KK <span class="required">*</span></label>
-            <select 
+            <select
               id="alasanKK"
               v-model="formData.dataTambahan.kk.alasan"
               required
@@ -233,8 +233,8 @@
           </div>
           <div class="form-group full-width" v-if="formData.dataTambahan.kk.alasan === 'Penambahan Anggota'">
             <label for="namaAnggotaBaru">Nama Anggota Keluarga Baru <span class="required">*</span></label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               id="namaAnggotaBaru"
               v-model="formData.dataTambahan.kk.namaAnggotaBaru"
               placeholder="Contoh: Budi Santoso"
@@ -243,8 +243,8 @@
           </div>
           <div class="form-group full-width" v-if="formData.dataTambahan.kk.alasan === 'Perubahan Data'">
             <label for="dataDiubah">Data yang Diubah <span class="required">*</span></label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               id="dataDiubah"
               v-model="formData.dataTambahan.kk.dataDiubah"
               placeholder="Contoh: Nama, Status Perkawinan, Alamat"
@@ -258,7 +258,7 @@
           <h3 class="sub-title">Data Tambahan untuk KTP</h3>
           <div class="form-group">
             <label for="alasanKTP">Alasan Pengajuan KTP <span class="required">*</span></label>
-            <select 
+            <select
               id="alasanKTP"
               v-model="formData.dataTambahan.ktp.alasan"
               required
@@ -273,8 +273,8 @@
           </div>
           <div class="form-group" v-if="formData.dataTambahan.ktp.alasan === 'Pembuatan Baru (17+ Tahun)'">
             <label for="tanggalLahirKTP">Tanggal Lahir Pemohon KTP <span class="required">*</span></label>
-            <input 
-              type="date" 
+            <input
+              type="date"
               id="tanggalLahirKTP"
               v-model="formData.dataTambahan.ktp.tanggalLahir"
               :max="today"
@@ -283,8 +283,8 @@
           </div>
           <div class="form-group full-width" v-if="formData.dataTambahan.ktp.alasan === 'Perubahan Data'">
             <label for="dataDiubahKTP">Data yang Diubah <span class="required">*</span></label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               id="dataDiubahKTP"
               v-model="formData.dataTambahan.ktp.dataDiubah"
               placeholder="Contoh: Nama, Alamat, Status Perkawinan"
@@ -298,8 +298,8 @@
           <h3 class="sub-title">Data Tambahan untuk Akta Kelahiran</h3>
           <div class="form-group">
             <label for="namaAnak">Nama Anak <span class="required">*</span></label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               id="namaAnak"
               v-model="formData.dataTambahan.aktaKelahiran.namaAnak"
               placeholder="Nama lengkap anak"
@@ -309,7 +309,7 @@
           <div class="form-row">
             <div class="form-group">
               <label for="jenisKelaminAnak">Jenis Kelamin Anak <span class="required">*</span></label>
-              <select 
+              <select
                 id="jenisKelaminAnak"
                 v-model="formData.dataTambahan.aktaKelahiran.jenisKelamin"
                 required
@@ -321,8 +321,8 @@
             </div>
             <div class="form-group">
               <label for="tanggalLahirAnak">Tanggal Lahir Anak <span class="required">*</span></label>
-              <input 
-                type="date" 
+              <input
+                type="date"
                 id="tanggalLahirAnak"
                 v-model="formData.dataTambahan.aktaKelahiran.tanggalLahir"
                 :max="today"
@@ -332,8 +332,8 @@
           </div>
           <div class="form-group full-width">
             <label for="tempatLahirAnak">Tempat Lahir Anak <span class="required">*</span></label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               id="tempatLahirAnak"
               v-model="formData.dataTambahan.aktaKelahiran.tempatLahir"
               placeholder="Contoh: RSU Kabupaten, Rumah Bidan, Rumah"
@@ -343,8 +343,8 @@
           <div class="form-row">
             <div class="form-group">
               <label for="namaAyah">Nama Ayah <span class="required">*</span></label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 id="namaAyah"
                 v-model="formData.dataTambahan.aktaKelahiran.namaAyah"
                 placeholder="Nama lengkap ayah"
@@ -353,8 +353,8 @@
             </div>
             <div class="form-group">
               <label for="nikAyah">NIK Ayah <span class="required">*</span></label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 id="nikAyah"
                 v-model="formData.dataTambahan.aktaKelahiran.nikAyah"
                 placeholder="16 digit NIK ayah"
@@ -366,8 +366,8 @@
           <div class="form-row">
             <div class="form-group">
               <label for="namaIbu">Nama Ibu <span class="required">*</span></label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 id="namaIbu"
                 v-model="formData.dataTambahan.aktaKelahiran.namaIbu"
                 placeholder="Nama lengkap ibu"
@@ -376,8 +376,8 @@
             </div>
             <div class="form-group">
               <label for="nikIbu">NIK Ibu <span class="required">*</span></label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 id="nikIbu"
                 v-model="formData.dataTambahan.aktaKelahiran.nikIbu"
                 placeholder="16 digit NIK ibu"
@@ -395,8 +395,8 @@
         <div class="form-group">
           <label>Unggah KTP Pemohon <span class="required">*</span></label>
           <div class="file-upload-wrapper">
-            <input 
-              type="file" 
+            <input
+              type="file"
               id="uploadKT PPemohon"
               @change="handleFileUpload($event, 'ktpPemohon')"
               accept=".pdf,.jpg,.jpeg,.png"
@@ -407,10 +407,10 @@
               <span class="material-icons">upload_file</span>
               <span>{{ formData.files.ktpPemohon ? formData.files.ktpPemohon.name : 'Pilih berkas KTP Pemohon' }}</span>
             </label>
-            <button 
-              v-if="formData.files.ktpPemohon" 
-              type="button" 
-              @click="removeFile('ktpPemohon')" 
+            <button
+              v-if="formData.files.ktpPemohon"
+              type="button"
+              @click="removeFile('ktpPemohon')"
               class="remove-file-btn"
             >
               <span class="material-icons">close</span>
@@ -421,8 +421,8 @@
         <div class="form-group">
           <label>Unggah Kartu Keluarga <span class="required">*</span></label>
           <div class="file-upload-wrapper">
-            <input 
-              type="file" 
+            <input
+              type="file"
               id="uploadKK"
               @change="handleFileUpload($event, 'kk')"
               accept=".pdf,.jpg,.jpeg,.png"
@@ -433,10 +433,10 @@
               <span class="material-icons">upload_file</span>
               <span>{{ formData.files.kk ? formData.files.kk.name : 'Pilih berkas KK' }}</span>
             </label>
-            <button 
-              v-if="formData.files.kk" 
-              type="button" 
-              @click="removeFile('kk')" 
+            <button
+              v-if="formData.files.kk"
+              type="button"
+              @click="removeFile('kk')"
               class="remove-file-btn"
             >
               <span class="material-icons">close</span>
@@ -447,8 +447,8 @@
         <div class="form-group">
           <label>Unggah Surat Pengantar RT/RW <span class="required">*</span></label>
           <div class="file-upload-wrapper">
-            <input 
-              type="file" 
+            <input
+              type="file"
               id="uploadPengantarRT"
               @change="handleFileUpload($event, 'pengantarRT')"
               accept=".pdf,.jpg,.jpeg,.png"
@@ -459,10 +459,10 @@
               <span class="material-icons">upload_file</span>
               <span>{{ formData.files.pengantarRT ? formData.files.pengantarRT.name : 'Pilih berkas Pengantar RT/RW' }}</span>
             </label>
-            <button 
-              v-if="formData.files.pengantarRT" 
-              type="button" 
-              @click="removeFile('pengantarRT')" 
+            <button
+              v-if="formData.files.pengantarRT"
+              type="button"
+              @click="removeFile('pengantarRT')"
               class="remove-file-btn"
             >
               <span class="material-icons">close</span>
@@ -473,8 +473,8 @@
         <div v-if="formData.jenisDokumen.aktaKelahiran" class="form-group">
           <label>Unggah Surat Keterangan Kelahiran dari Bidan/RS <span class="required">*</span></label>
           <div class="file-upload-wrapper">
-            <input 
-              type="file" 
+            <input
+              type="file"
               id="uploadSuratKelahiran"
               @change="handleFileUpload($event, 'suratKelahiran')"
               accept=".pdf,.jpg,.jpeg,.png"
@@ -485,10 +485,10 @@
               <span class="material-icons">upload_file</span>
               <span>{{ formData.files.suratKelahiran ? formData.files.suratKelahiran.name : 'Pilih berkas Surat Keterangan Kelahiran' }}</span>
             </label>
-            <button 
-              v-if="formData.files.suratKelahiran" 
-              type="button" 
-              @click="removeFile('suratKelahiran')" 
+            <button
+              v-if="formData.files.suratKelahiran"
+              type="button"
+              @click="removeFile('suratKelahiran')"
               class="remove-file-btn"
             >
               <span class="material-icons">close</span>
@@ -499,8 +499,8 @@
         <div v-if="formData.jenisDokumen.kk && formData.dataTambahan.kk.alasan === 'Penambahan Anggota'" class="form-group">
           <label>Unggah Surat Nikah/Akta Kelahiran Anggota Baru (Opsional)</label>
           <div class="file-upload-wrapper">
-            <input 
-              type="file" 
+            <input
+              type="file"
               id="uploadDokumenTambahan"
               @change="handleFileUpload($event, 'dokumenTambahan')"
               accept=".pdf,.jpg,.jpeg,.png"
@@ -510,10 +510,10 @@
               <span class="material-icons">upload_file</span>
               <span>{{ formData.files.dokumenTambahan ? formData.files.dokumenTambahan.name : 'Pilih berkas tambahan (opsional)' }}</span>
             </label>
-            <button 
-              v-if="formData.files.dokumenTambahan" 
-              type="button" 
-              @click="removeFile('dokumenTambahan')" 
+            <button
+              v-if="formData.files.dokumenTambahan"
+              type="button"
+              @click="removeFile('dokumenTambahan')"
               class="remove-file-btn"
             >
               <span class="material-icons">close</span>
@@ -530,9 +530,9 @@
           <label>Pilih Metode Pengambilan <span class="required">*</span></label>
           <div class="radio-group">
             <label class="radio-option">
-              <input 
-                type="radio" 
-                name="metodePengambilan" 
+              <input
+                type="radio"
+                name="metodePengambilan"
                 value="offline"
                 v-model="formData.metodePengambilan"
                 required
@@ -546,9 +546,9 @@
               </div>
             </label>
             <label class="radio-option">
-              <input 
-                type="radio" 
-                name="metodePengambilan" 
+              <input
+                type="radio"
+                name="metodePengambilan"
                 value="online"
                 v-model="formData.metodePengambilan"
                 required
@@ -565,8 +565,8 @@
         </div>
         <div v-if="formData.metodePengambilan === 'offline'" class="form-group">
           <label for="jadwalPengambilan">Jadwal Pengambilan</label>
-          <input 
-            type="date" 
+          <input
+            type="date"
             id="jadwalPengambilan"
             v-model="formData.jadwalPengambilan"
             :min="minDate"
@@ -592,8 +592,9 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue'; // ✅ Tambahkan onMounted
 import { useRouter } from 'vue-router';
+import api from '@/api';
 
 const router = useRouter();
 const isSubmitting = ref(false);
@@ -611,12 +612,14 @@ const formData = ref({
   kewarganegaraan: 'Indonesia',
   nomorPonsel: '',
   alamatKTP: '',
+
   // Jenis Dokumen
   jenisDokumen: {
     kk: false,
     ktp: false,
     aktaKelahiran: false
   },
+
   // Data Tambahan
   dataTambahan: {
     kk: {
@@ -640,6 +643,7 @@ const formData = ref({
       nikIbu: ''
     }
   },
+
   // Files
   files: {
     ktpPemohon: null,
@@ -648,20 +652,46 @@ const formData = ref({
     suratKelahiran: null,
     dokumenTambahan: null
   },
-  // Metode Pengambilan
+
+  // Pengambilan
   metodePengambilan: '',
   jadwalPengambilan: ''
 });
 
-// Computed
+// ✅ Tambahkan ini: Isi otomatis dari profil saat halaman dimuat
+onMounted(async () => {
+  try {
+    const response = await api.get('/auth/profile');
+    const user = response.data.user;
+
+    // Isi data diri dari profil — otomatis, tapi bisa diubah
+    formData.value.namaLengkap = `${user.firstName} ${user.lastName}`;
+    formData.value.nik = user.nik;
+    formData.value.tempatLahir = user.tempatLahir || '';
+    formData.value.tanggalLahir = user.tanggalLahir ? new Date(user.tanggalLahir).toISOString().split('T')[0] : '';
+    formData.value.jenisKelamin = user.jenisKelamin || '';
+    formData.value.agama = user.agama || '';
+    formData.value.statusPerkawinan = user.statusPerkawinan || '';
+    formData.value.pekerjaan = user.pekerjaan || '';
+    formData.value.kewarganegaraan = user.kewarganegaraan || 'Indonesia';
+    formData.value.nomorPonsel = user.phoneNumber.replace('+62', '').replace(/^0/, '');
+    formData.value.alamatKTP = user.alamatLengkap || '';
+  } catch (err) {
+    console.error('Gagal muat profil:', err);
+    // Biarkan user isi manual — tidak menghentikan proses
+  }
+});
+
+// COMPUTED
 const today = computed(() => new Date().toISOString().split('T')[0]);
+
 const minDate = computed(() => {
   const date = new Date();
   date.setDate(date.getDate() + 3);
   return date.toISOString().split('T')[0];
 });
 
-// Reset data tambahan saat toggle checkbox
+// RESET DATA TAMBAHAN
 const resetData = (type) => {
   if (type === 'kk') {
     formData.value.dataTambahan.kk = {
@@ -689,74 +719,58 @@ const resetData = (type) => {
   }
 };
 
-// File handling
+// FILE UPLOAD
 const handleFileUpload = (event, fileType) => {
   const file = event.target.files[0];
   if (!file) return;
+
   if (file.size > 2 * 1024 * 1024) {
-    alert('Ukuran file terlalu besar! Maksimal 2MB');
+    alert('Ukuran file terlalu besar! Maksimal 2MB.');
     event.target.value = '';
     return;
   }
+
   const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
   if (!allowedTypes.includes(file.type)) {
-    alert('Format file tidak didukung! Gunakan PDF, JPG, atau PNG');
+    alert('Format file tidak didukung! Gunakan PDF, JPG, atau PNG.');
     event.target.value = '';
     return;
   }
+
   formData.value.files[fileType] = file;
 };
 
+// REMOVE FILE
 const removeFile = (fileType) => {
   formData.value.files[fileType] = null;
+
   const inputMap = {
-    ktpPemohon: 'uploadKT PPemohon',
+    ktpPemohon: 'uploadKTPPemohon',
     kk: 'uploadKK',
     pengantarRT: 'uploadPengantarRT',
     suratKelahiran: 'uploadSuratKelahiran',
     dokumenTambahan: 'uploadDokumenTambahan'
   };
+
   const inputId = inputMap[fileType];
   if (inputId) document.getElementById(inputId).value = '';
 };
 
-// Generate ticket
-const generateTicketNumber = () => {
-  const date = new Date();
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, '0');
-  const d = String(date.getDate()).padStart(2, '0');
-  const r = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
-  return `TIC-${y}${m}${d}-${r}`;
-};
-
-// Save to localStorage
-const savePengajuan = (pengajuanData) => {
-  try {
-    const existing = localStorage.getItem('pengajuanSurat');
-    const list = existing ? JSON.parse(existing) : [];
-    list.unshift(pengajuanData);
-    localStorage.setItem('pengajuanSurat', JSON.stringify(list));
-    return true;
-  } catch (e) {
-    console.error('Save failed:', e);
-    return false;
-  }
-};
-
-// Submit
+// SUBMIT
 const handleSubmit = async () => {
+  // Validasi NIK
   if (formData.value.nik.length !== 16) {
     alert('NIK harus 16 digit!');
     return;
   }
-  // Cek minimal 1 dokumen dipilih
-  const dokumenDipilih = Object.values(formData.value.jenisDokumen).some(Boolean);
-  if (!dokumenDipilih) {
+
+  // Minimal 1 dokumen dipilih
+  if (!Object.values(formData.value.jenisDokumen).some(Boolean)) {
     alert('Pilih minimal 1 jenis dokumen yang akan diajukan.');
     return;
   }
-  // Validasi file wajib
+
+  // File wajib
   const requiredFiles = ['ktpPemohon', 'kk', 'pengantarRT'];
   for (const key of requiredFiles) {
     if (!formData.value.files[key]) {
@@ -765,57 +779,67 @@ const handleSubmit = async () => {
         kk: 'Kartu Keluarga',
         pengantarRT: 'Surat Pengantar RT/RW'
       };
-      alert(`Dokumen "${labels[key]}" wajib diunggah!`);
+      alert(`Dokumen "${labels[key]}" wajib diunggah.`);
       return;
     }
   }
-  // Validasi tambahan: surat kelahiran untuk akta
-  if (formData.value.jenisDokumen.aktaKelahiran && !formData.value.files.suratKelahiran) {
+
+  // Wajib surat kelahiran jika pilih akta
+  if (
+    formData.value.jenisDokumen.aktaKelahiran &&
+    !formData.value.files.suratKelahiran
+  ) {
     alert('Surat Keterangan Kelahiran wajib diunggah untuk pengajuan Akta Kelahiran.');
     return;
   }
 
   isSubmitting.value = true;
+
   try {
-    const pengajuan = {
-      noTiket: generateTicketNumber(),
+    const payload = {
       jenisSurat: 'Surat Pengantar KK, KTP, dan Akta Lahir',
-      tanggalPengajuan: new Date().toISOString(),
-      status: 'Belum Dikerjakan',
-      catatanAdmin: null,
-      waktuSelesai: null,
-      data: { // <-- INI ADALAH PERUBAHAN UTAMA
+      data: {
         ...formData.value,
         files: {
-          ktpPemohon: formData.value.files.ktpPemohon ? { name: formData.value.files.ktpPemohon.name, size: formData.value.files.ktpPemohon.size } : null,
-          kk: formData.value.files.kk ? { name: formData.value.files.kk.name, size: formData.value.files.kk.size } : null,
-          pengantarRT: formData.value.files.pengantarRT ? { name: formData.value.files.pengantarRT.name, size: formData.value.files.pengantarRT.size } : null,
-          suratKelahiran: formData.value.files.suratKelahiran ? { name: formData.value.files.suratKelahiran.name, size: formData.value.files.suratKelahiran.size } : null,
-          dokumenTambahan: formData.value.files.dokumenTambahan ? { name: formData.value.files.dokumenTambahan.name, size: formData.value.files.dokumenTambahan.size } : null
+          ktpPemohon: formData.value.files.ktpPemohon
+            ? { name: formData.value.files.ktpPemohon.name, size: formData.value.files.ktpPemohon.size }
+            : null,
+          kk: formData.value.files.kk
+            ? { name: formData.value.files.kk.name, size: formData.value.files.kk.size }
+            : null,
+          pengantarRT: formData.value.files.pengantarRT
+            ? { name: formData.value.files.pengantarRT.name, size: formData.value.files.pengantarRT.size }
+            : null,
+          suratKelahiran: formData.value.files.suratKelahiran
+            ? { name: formData.value.files.suratKelahiran.name, size: formData.value.files.suratKelahiran.size }
+            : null,
+          dokumenTambahan: formData.value.files.dokumenTambahan
+            ? { name: formData.value.files.dokumenTambahan.name, size: formData.value.files.dokumenTambahan.size }
+            : null
         }
       }
     };
 
-    console.log('📄 Data Pengajuan Surat Pengantar KK/KTP/Akta:', pengajuan);
+    const response = await api.post('/surat', payload);
 
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    alert(
+      `✅ Pengajuan berhasil!\n\n` +
+      `No. Tiket: ${response.data.surat.noTiket}\n\n` +
+      `Silakan cek halaman "Surat Saya".`
+    );
 
-    if (savePengajuan(pengajuan)) {
-      alert(`✅ Permohonan Surat Pengantar berhasil diajukan!\nNo. Tiket: ${pengajuan.noTiket}`);
-      router.push('/surat-saya');
-    } else {
-      throw new Error('Gagal menyimpan');
-    }
-  } catch (err) {
-    console.error('❌ Error:', err);
-    alert('Gagal mengajukan. Silakan coba lagi.');
+    router.push('/surat-saya');
+  } catch (error) {
+    console.error('❌ Error submit:', error);
+    alert('Gagal mengajukan surat. Silakan coba lagi.');
   } finally {
     isSubmitting.value = false;
   }
 };
 
+// CANCEL
 const handleCancel = () => {
-  if (confirm('Batalkan pengajuan? Data yang belum disimpan akan hilang.')) {
+  if (confirm('Batalkan pengajuan?')) {
     router.push('/ajukan-surat');
   }
 };

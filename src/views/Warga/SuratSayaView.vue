@@ -68,9 +68,9 @@
         <h2 class="section-title">Riwayat Pengajuan</h2>
         <div class="search-box">
           <span class="material-icons">search</span>
-          <input 
-            type="text" 
-            v-model="searchQuery" 
+          <input
+            type="text"
+            v-model="searchQuery"
             placeholder="Cari berdasarkan jenis surat atau no. tiket..."
           />
         </div>
@@ -94,7 +94,7 @@
           <tbody>
             <tr v-for="(surat, index) in paginatedSurat" :key="surat.noTiket">
               <td>{{ (currentPage - 1) * itemsPerPage + index + 1 }}</td>
-              <td>{{ formatDate(surat.tanggalPengajuan) }}</td>
+              <td>{{ formatDate(surat.createdAt) }}</td>
               <td><span class="tiket-badge">{{ surat.noTiket }}</span></td>
               <td>{{ surat.jenisSurat }}</td>
               <td>
@@ -130,20 +130,20 @@
 
       <!-- Pagination -->
       <div class="pagination" v-if="filteredSurat.length > itemsPerPage">
-        <button 
-          @click="prevPage" 
+        <button
+          @click="prevPage"
           :disabled="currentPage === 1"
           class="page-btn"
         >
           <span class="material-icons">chevron_left</span>
         </button>
-        
+
         <span class="page-info">
           Halaman {{ currentPage }} dari {{ totalPages }}
         </span>
-        
-        <button 
-          @click="nextPage" 
+
+        <button
+          @click="nextPage"
           :disabled="currentPage === totalPages"
           class="page-btn"
         >
@@ -153,19 +153,21 @@
     </div>
 
     <!-- Detail Modal -->
-    <DetailSuratModal 
-      :isOpen="isModalOpen" 
-      :surat="selectedSurat" 
-      @close="closeModal" 
+    <DetailSuratModal
+      :isOpen="isModalOpen"
+      :surat="selectedSurat"
+      @close="closeModal"
     />
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onActivated } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import api from '@/api';
 import DetailSuratModal from '@/components/ui/DetailSuratModal.vue';
 
+const router = useRouter();
 const suratList = ref([]);
 const searchQuery = ref('');
 const isModalOpen = ref(false);
@@ -175,58 +177,58 @@ const itemsPerPage = 10;
 const isLoading = ref(false);
 const error = ref(null);
 
-// ✅ FIX: Proper async handling
+// ✅ Ganti: Load data dari API dengan pagination
 const loadSuratData = async () => {
   isLoading.value = true;
   error.value = null;
 
   try {
-    console.log('🔄 Fetching surat data...');
-    
-    const response = await api.get('/surat/me');
-    
-    // ✅ Handle berbagai response structure
-    if (response.data) {
-      suratList.value = response.data.suratList || response.data.data || response.data || [];
-    } else {
-      suratList.value = [];
-    }
-    
-    console.log('✅ Data loaded:', suratList.value.length, 'items');
-    
+    const response = await api.get('/surat/me', {
+      params: {
+        page: currentPage.value,
+        limit: itemsPerPage
+      }
+    });
+
+    suratList.value = response.data.suratList || [];
+    // Simpan total untuk statistik
+    const total = response.data.pagination?.total || 0;
+    // Tidak perlu update currentPage karena sudah sesuai
+
   } catch (err) {
-    console.error('❌ Error loading surat:', err);
-    error.value = err.response?.data?.message || 'Gagal memuat data';
+    console.error('❌ Gagal memuat surat:', err);
+    error.value = err.response?.data?.error || 'Gagal memuat riwayat surat';
     suratList.value = [];
   } finally {
     isLoading.value = false;
   }
-  
 };
 
 // Statistics
-const totalPengajuan = computed(() => suratList.value.length);
-const belumDikerjakan = computed(() => 
+const totalPengajuan = computed(() => {
+  return suratList.value.length; // ❌ Jangan pakai .length untuk total — gunakan dari pagination
+});
+const belumDikerjakan = computed(() =>
   suratList.value.filter(s => s.status === 'Belum Dikerjakan').length
 );
-const sedangDiproses = computed(() => 
+const sedangDiproses = computed(() =>
   suratList.value.filter(s => s.status === 'Sedang Diproses').length
 );
-const selesai = computed(() => 
+const selesai = computed(() =>
   suratList.value.filter(s => s.status === 'Selesai').length
 );
 
-// Filter & Pagination
+// Filtered and Paginated Data
 const filteredSurat = computed(() => {
   if (!searchQuery.value) return suratList.value;
   const query = searchQuery.value.toLowerCase();
-  return suratList.value.filter(s => 
-    s.jenisSurat?.toLowerCase().includes(query) ||
-    s.noTiket?.toLowerCase().includes(query)
+  return suratList.value.filter(surat =>
+    surat.jenisSurat.toLowerCase().includes(query) ||
+    surat.noTiket.toLowerCase().includes(query)
   );
 });
 
-const totalPages = computed(() => 
+const totalPages = computed(() =>
   Math.ceil(filteredSurat.value.length / itemsPerPage)
 );
 
@@ -238,17 +240,10 @@ const paginatedSurat = computed(() => {
 // Methods
 const formatDate = (dateString) => {
   if (!dateString) return '-';
-  try {
-    return new Date(dateString).toLocaleDateString('id-ID', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  } catch {
-    return '-';
-  }
+  return new Date(dateString).toLocaleDateString('id-ID', {
+    day: '2-digit', month: 'short', year: 'numeric',
+    hour: '2-digit', minute: '2-digit'
+  });
 };
 
 const getStatusClass = (status) => {
@@ -261,9 +256,21 @@ const getStatusClass = (status) => {
   return map[status] || 'status-pending';
 };
 
-const openDetail = (surat) => {
-  selectedSurat.value = surat;
-  isModalOpen.value = true;
+const openDetail = async (surat) => {
+  try {
+    const response = await api.get(`/surat/${surat.id}`);
+    console.log('✅ Detail response:', response.data); // ✅ Untuk debug
+
+    if (!response.data?.surat) {
+      throw new Error('Respons tidak mengandung surat');
+    }
+
+    selectedSurat.value = response.data.surat;
+    isModalOpen.value = true;
+  } catch (err) {
+    console.error('❌ Gagal muat detail:', err);
+    alert('Gagal memuat detail surat. Silakan coba lagi.');
+  }
 };
 
 const closeModal = () => {
@@ -271,9 +278,9 @@ const closeModal = () => {
   selectedSurat.value = null;
 };
 
-const refreshData = async () => {
+const refreshData = () => {
   currentPage.value = 1;
-  await loadSuratData();
+  loadSuratData();
 };
 
 const prevPage = () => {
@@ -284,14 +291,7 @@ const nextPage = () => {
   if (currentPage.value < totalPages.value) currentPage.value++;
 };
 
-// ✅ Lifecycle hooks
 onMounted(() => {
-  console.log('📍 Surat Saya mounted');
-  loadSuratData();
-});
-
-onActivated(() => {
-  console.log('📍 Surat Saya activated');
   loadSuratData();
 });
 </script>

@@ -2,7 +2,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import HomeView from '@/views/HomeView.vue'
-import LoginView from '@/views/Auth/LoginView.vue' 
+import LoginView from '@/views/Auth/LoginView.vue'
 import RegisterView from '@/views/Auth/RegisterView.vue'
 import WargaDashboard from '@/views/Warga/WargaDashboard.vue'
 import SuratSayaView from '@/views/Warga/SuratSayaView.vue'
@@ -14,24 +14,24 @@ import AjjukanSurat from '@/views/Warga/AjjukanSurat.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    { 
-      path: '/', 
-      name: 'home', 
-      component: HomeView 
+    {
+      path: '/',
+      name: 'home',
+      component: HomeView
     },
-    { 
-      path: '/login', 
-      name: 'login', 
-      component: LoginView, 
-      meta: { requiresGuest: true } 
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginView,
+      meta: { requiresGuest: true }
     },
-    { 
-      path: '/register', 
-      name: 'register', 
-      component: RegisterView, 
-      meta: { requiresGuest: true } 
+    {
+      path: '/register',
+      name: 'register',
+      component: RegisterView,
+      meta: { requiresGuest: true }
     },
-    
+
     // --- RUTE DASHBOARD TERPROTEKSI ---
     {
       path: '/dashboard',
@@ -77,7 +77,7 @@ const router = createRouter({
     },
     {
       path: '/ajukan-surat/penghasilan',
-      name: 'penghasilan-form', 
+      name: 'penghasilan-form',
       component: () => import('@/views/Warga/SKPenghasilanFormView.vue'),
       meta: {requiresAuth: true}
     },
@@ -86,23 +86,11 @@ const router = createRouter({
       name: 'usaha-form',
       component: () => import('@/views/Warga/SKUsahaForm.vue'),
       meta: {requiresAuth: true}
-    }, 
-    {
-      path: '/ajukan-surat/meninggal',
-      name: 'SKMeninggalDunia',
-      component: () => import('@/views/Warga/SKMeninggalDuniaFormView.vue'),
-      meta: { requiresAuth: true }
     },
     {
       path: '/ajukan-surat/kelahiran',
       name: 'SKKelahiran',
       component: () => import('@/views/Warga/SKKelahiranForm.vue'),
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/ajukan-surat/pindah',
-      name: 'SKPengantarPindah',
-      component: () => import('@/views/Warga/SKPengantarPindahFormView.vue'),
       meta: { requiresAuth: true }
     },
     {
@@ -116,7 +104,13 @@ const router = createRouter({
       name: 'Profil',
       component: () => import('@/views/Warga/ProfilView.vue'),
       meta: { requiresAuth: true }
-    }
+    },
+    {
+      path: '/profil/edit',
+      name: 'profil-edit',
+      component: () => import('@/views/Warga/ProfilEditView.vue'),
+      meta: { requiresAuth: true }
+}
   ]
 })
 
@@ -132,7 +126,7 @@ const authGuard = (to, from, next) => {
 // --- LOGIKA NAVIGATION GUARD YANG BENAR ---
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token'); // ← SESUAI DENGAN LoginView.vue
-  
+
   // Rute yang butuh login (dashboard, surat-saya, dll)
   if (to.meta.requiresAuth) {
     if (token) {

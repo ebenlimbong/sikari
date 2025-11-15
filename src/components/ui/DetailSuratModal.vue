@@ -265,141 +265,53 @@
             </div>
           </div>
 
-          <!-- Meninggal  -->
-          <div class="info-section" v-if="surat.jenisSurat === 'Surat Keterangan Meninggal Dunia'">
-            <div class="info-header">
-              <span class="material-icons">mood_bad</span>
-              <h3>Data Almarhum</h3>
-            </div>
-            <div class="info-grid">
-              <div class="info-item">
-                <label>Nama Almarhum</label>
-                <p>{{ surat.data.namaAlmarhum }}</p>
-              </div>
-              <div class="info-item">
-                <label>NIK</label>
-                <p>{{ surat.data.nikAlmarhum }}</p>
-              </div>
-              <div class="info-item">
-                <label>Tanggal Lahir</label>
-                <p>{{ formatDate(surat.data.tanggalLahir) }}</p>
-              </div>
-              <div class="info-item">
-                <label>Tanggal Meninggal</label>
-                <p>{{ formatDate(surat.data.tanggalMeninggal) }} {{ surat.data.jamMeninggal }}</p>
-              </div>
-              <div class="info-item full-width">
-                <label>Tempat Meninggal</label>
-                <p>{{ surat.data.tempatMeninggal }}</p>
-              </div>
-              <div class="info-item full-width">
-                <label>Penyebab Kematian</label>
-                <p>{{ surat.data.penyebabKematian }}</p>
-              </div>
-              <div class="info-item">
-                <label>Pelapor</label>
-                <p>{{ surat.data.namaPelapor }} ({{ surat.data.hubungan }})</p>
-              </div>
-              <div class="info-item">
-                <label>Ahli Waris</label>
-                <p>{{ surat.data.namaAhliWaris }} ({{ surat.data.hubunganAhliWaris || '-' }})</p>
-              </div>
-            </div>
-          </div>
-
           <!-- Kelahiran  -->
-          <div class="info-section" v-if="surat.jenisSurat === 'Surat Keterangan Kelahiran'">
-            <div class="info-header">
-              <span class="material-icons">child_care</span>
-              <h3>Data Anak</h3>
-            </div>
-            <div class="info-grid">
-              <div class="info-item">
-                <label>Nama Anak</label>
-                <p>{{ surat.data.namaAnak || '(Belum diberi nama)' }}</p>
-              </div>
-              <div class="info-item">
-                <label>Jenis Kelamin</label>
-                <p>{{ surat.data.jenisKelaminAnak }}</p>
-              </div>
-              <div class="info-item">
-                <label>Tanggal & Jam Lahir</label>
-                <p>{{ formatDate(surat.data.tanggalLahir) }} {{ surat.data.jamLahir }}</p>
-              </div>
-              <div class="info-item">
-                <label>Tempat Lahir</label>
-                <p>{{ surat.data.tempatLahir }}</p>
-              </div>
-              <div class="info-item">
-                <label>Berat / Tinggi</label>
-                <p>{{ surat.data.beratBadan }} kg / {{ surat.data.tinggiBadan }} cm</p>
-              </div>
-              <div class="info-item full-width">
-                <label>Alamat Lahir</label>
-                <p>{{ surat.data.alamatLahir }}</p>
-              </div>
-              <div class="info-item full-width">
-                <label>Nama Ayah</label>
-                <p>{{ surat.data.namaAyah }}</p>
-              </div>
-              <div class="info-item full-width">
-                <label>Nama Ibu</label>
-                <p>{{ surat.data.namaIbu }}</p>
-              </div>
-            </div>
-          </div>
-
-            <!-- Pengantar Pindah -->
-            <div class="info-section" v-if="surat.jenisSurat === 'Surat Pengantar Pindah'">
+            <div class="info-section" v-if="surat.jenisSurat === 'Surat Keterangan Kelahiran'">
               <div class="info-header">
-                <span class="material-icons">home_work</span>
-                <h3>Data Pindah</h3>
+                <span class="material-icons">child_care</span>
+                <h3>Data Anak</h3>
               </div>
               <div class="info-grid">
-                <div class="info-item full-width">
-                  <label>Alamat Asal</label>
-                  <p>{{ surat.data.alamatAsal }}</p>  
-                </div>
-                <div class="info-item full-width">
-                  <label>Alamat Tujuan</label>
-                  <p>{{ surat.data.alamatTujuan }}</p>
+                <div class="info-item">
+                  <label>Nama Anak</label>
+                  <p>{{ surat.data.namaAnak || '(Belum diberi nama)' }}</p>
                 </div>
                 <div class="info-item">
-                  <label>Tujuan: Desa/Kelurahan</label>
-                  <p>{{ surat.data.desaTujuan }}</p>
+                  <label>Jenis Kelamin</label>
+                  <p>{{ surat.data.jenisKelaminAnak }}</p>
                 </div>
                 <div class="info-item">
-                  <label>Tujuan: Kecamatan</label>
-                  <p>{{ surat.data.kecamatanTujuan }}</p>
+                  <label>Tanggal & Jam Lahir</label>
+                  <p>
+                    {{ formatDate(surat.data.tanggalLahir) }}
+                    {{ surat.data.jamLahir ? `pukul ${surat.data.jamLahir}` : '' }}
+                  </p>
                 </div>
                 <div class="info-item">
-                  <label>Tujuan: Kabupaten/Kota</label>
-                  <p>{{ surat.data.kabupatenTujuan }}</p>
+                  <label>Tempat Lahir</label>
+                  <p>{{ surat.data.tempatLahir }}</p>
                 </div>
                 <div class="info-item">
-                  <label>Tujuan: Provinsi</label>
-                  <p>{{ surat.data.provinsiTujuan }}</p>
-                </div>
-                <div class="info-item">
-                  <label>Tanggal Rencana Pindah</label>
-                  <p>{{ formatDate(surat.data.tanggalPindah) }}</p>
-                </div>
-                <div class="info-item">
-                  <label>Alasan Pindah</label>
-                  <p>{{ surat.data.alasanPindah }} {{ surat.data.alasanLainnya ? `(${surat.data.alasanLainnya})` : '' }}</p>
+                  <label>Berat / Tinggi</label>
+                  <p>
+                    {{ surat.data.beratBadan }} kg /
+                    {{ surat.data.tinggiBadan }} cm
+                  </p>
                 </div>
                 <div class="info-item full-width">
-                  <label>Jumlah Anggota Keluarga</label>
-                  <p>{{ surat.data.jumlahAnggota }} orang</p>
+                  <label>Alamat Lahir</label>
+                  <p>{{ surat.data.alamatLahir }}</p>
                 </div>
                 <div class="info-item full-width">
-                  <label>Daftar Nama Anggota</label>
-                  <pre style="white-space: pre-wrap; margin: 0;">{{ surat.data.namaAnggota }}</pre>
+                  <label>Nama Ayah</label>
+                  <p>{{ surat.data.namaAyah }}</p>
+                </div>
+                <div class="info-item full-width">
+                  <label>Nama Ibu</label>
+                  <p>{{ surat.data.namaIbu }}</p>
                 </div>
               </div>
             </div>
-
-
 
             <!-- Pengantar KK/KTP/Akta -->
             <div class="info-section" v-if="surat.jenisSurat === 'Surat Pengantar KK, KTP, dan Akta Lahir'">
@@ -416,7 +328,7 @@
                     <span v-if="surat.data.jenisDokumen.aktaKelahiran" class="ml-2">✅ Akta Kelahiran</span>
                   </p>
                 </div>
-                
+
                 <!-- KK -->
                 <div v-if="surat.data.jenisDokumen.kk && surat.data.dataTambahan.kk.alasan" class="info-item full-width">
                   <label>KK: Alasan</label>
@@ -426,13 +338,13 @@
                   <label>KK: Nama Anggota Baru</label>
                   <p>{{ surat.data.dataTambahan.kk.namaAnggotaBaru }}</p>
                 </div>
-                
+
                 <!-- KTP -->
                 <div v-if="surat.data.jenisDokumen.ktp && surat.data.dataTambahan.ktp.alasan" class="info-item full-width">
                   <label>KTP: Alasan</label>
                   <p>{{ surat.data.dataTambahan.ktp.alasan }}</p>
                 </div>
-                
+
                 <!-- Akta -->
                 <div v-if="surat.data.jenisDokumen.aktaKelahiran" class="info-item full-width">
                   <label>Akta: Nama Anak</label>
@@ -462,7 +374,7 @@
                 </div>
               </div>
             </div>
-          
+
           <!-- Dokumen yang Diunggah -->
           <div class="info-section">
             <div class="info-header">
@@ -517,9 +429,9 @@ const closeModal = () => {
 const formatDate = (dateString) => {
   if (!dateString) return '-';
   const date = new Date(dateString);
-  return date.toLocaleDateString('id-ID', { 
-    day: '2-digit', 
-    month: 'long', 
+  return date.toLocaleDateString('id-ID', {
+    day: '2-digit',
+    month: 'long',
     year: 'numeric',
     hour: '2-digit',
     minute: '2-digit'

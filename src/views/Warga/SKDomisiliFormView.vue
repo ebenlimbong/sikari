@@ -16,7 +16,7 @@
     <div class="alert-info">
       <span class="material-icons">info</span>
       <div>
-        <strong>Perhatian:</strong> Pastikan semua data yang Anda masukkan sudah benar dan sesuai dengan dokumen asli. 
+        <strong>Perhatian:</strong> Pastikan semua data yang Anda masukkan sudah benar dan sesuai dengan dokumen asli.
         Dokumen yang diunggah harus dalam format PDF, JPG, atau PNG dengan ukuran maksimal 2MB per file.
       </div>
     </div>
@@ -26,12 +26,12 @@
       <!-- Section A: Data Pemohon -->
       <div class="form-section">
         <h2 class="section-title">A. Data Pemohon</h2>
-        
+
         <div class="form-row">
           <div class="form-group">
             <label for="namaLengkap">Nama Lengkap <span class="required">*</span></label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               id="namaLengkap"
               v-model="formData.namaLengkap"
               placeholder="Masukkan nama lengkap"
@@ -41,8 +41,8 @@
 
           <div class="form-group">
             <label for="nik">NIK <span class="required">*</span></label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               id="nik"
               v-model="formData.nik"
               placeholder="16 digit NIK"
@@ -55,8 +55,8 @@
         <div class="form-row">
           <div class="form-group">
             <label for="tempatLahir">Tempat Lahir <span class="required">*</span></label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               id="tempatLahir"
               v-model="formData.tempatLahir"
               placeholder="Masukkan tempat lahir"
@@ -66,8 +66,8 @@
 
           <div class="form-group">
             <label for="tanggalLahir">Tanggal Lahir <span class="required">*</span></label>
-            <input 
-              type="date" 
+            <input
+              type="date"
               id="tanggalLahir"
               v-model="formData.tanggalLahir"
               required
@@ -78,7 +78,7 @@
         <div class="form-row">
           <div class="form-group">
             <label for="jenisKelamin">Jenis Kelamin <span class="required">*</span></label>
-            <select 
+            <select
               id="jenisKelamin"
               v-model="formData.jenisKelamin"
               required
@@ -91,7 +91,7 @@
 
           <div class="form-group">
             <label for="agama">Agama <span class="required">*</span></label>
-            <select 
+            <select
               id="agama"
               v-model="formData.agama"
               required
@@ -110,7 +110,7 @@
         <div class="form-row">
           <div class="form-group">
             <label for="statusPerkawinan">Status Perkawinan <span class="required">*</span></label>
-            <select 
+            <select
               id="statusPerkawinan"
               v-model="formData.statusPerkawinan"
               required
@@ -125,8 +125,8 @@
 
           <div class="form-group">
             <label for="pekerjaan">Pekerjaan <span class="required">*</span></label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               id="pekerjaan"
               v-model="formData.pekerjaan"
               placeholder="Masukkan pekerjaan"
@@ -138,8 +138,8 @@
         <div class="form-row">
           <div class="form-group">
             <label for="kewarganegaraan">Kewarganegaraan <span class="required">*</span></label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               id="kewarganegaraan"
               v-model="formData.kewarganegaraan"
               placeholder="Contoh: Indonesia"
@@ -151,8 +151,8 @@
             <label for="nomorPonsel">Nomor Ponsel <span class="required">*</span></label>
             <div class="phone-input">
               <span class="phone-prefix">+62</span>
-              <input 
-                type="tel" 
+              <input
+                type="tel"
                 id="nomorPonsel"
                 v-model="formData.nomorPonsel"
                 placeholder="8123456789"
@@ -166,10 +166,10 @@
       <!-- Section B: Data Alamat Domisili -->
       <div class="form-section">
         <h2 class="section-title">B. Data Alamat Domisili</h2>
-        
+
         <div class="form-group full-width">
           <label for="alamatDomisili">Alamat Domisili Lengkap <span class="required">*</span></label>
-          <textarea 
+          <textarea
             id="alamatDomisili"
             v-model="formData.alamatDomisili"
             rows="3"
@@ -181,8 +181,8 @@
         <div class="form-row">
           <div class="form-group">
             <label for="rt">RT <span class="required">*</span></label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               id="rt"
               v-model="formData.rt"
               placeholder="Contoh: 001"
@@ -193,8 +193,8 @@
 
           <div class="form-group">
             <label for="rw">RW <span class="required">*</span></label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               id="rw"
               v-model="formData.rw"
               placeholder="Contoh: 002"
@@ -207,8 +207,8 @@
         <div class="form-row">
           <div class="form-group">
             <label for="desa">Desa/Kelurahan <span class="required">*</span></label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               id="desa"
               v-model="formData.desa"
               placeholder="Masukkan nama desa/kelurahan"
@@ -218,8 +218,8 @@
 
           <div class="form-group">
             <label for="kecamatan">Kecamatan <span class="required">*</span></label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               id="kecamatan"
               v-model="formData.kecamatan"
               placeholder="Masukkan nama kecamatan"
@@ -231,8 +231,8 @@
         <div class="form-row">
           <div class="form-group">
             <label for="kabupaten">Kabupaten/Kota <span class="required">*</span></label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               id="kabupaten"
               v-model="formData.kabupaten"
               placeholder="Masukkan nama kabupaten/kota"
@@ -242,8 +242,8 @@
 
           <div class="form-group">
             <label for="provinsi">Provinsi <span class="required">*</span></label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               id="provinsi"
               v-model="formData.provinsi"
               placeholder="Masukkan nama provinsi"
@@ -255,8 +255,8 @@
         <div class="form-row">
           <div class="form-group">
             <label for="kodePos">Kode Pos</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               id="kodePos"
               v-model="formData.kodePos"
               placeholder="Contoh: 35131"
@@ -266,8 +266,8 @@
 
           <div class="form-group">
             <label for="lamaTinggal">Lama Tinggal <span class="required">*</span></label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               id="lamaTinggal"
               v-model="formData.lamaTinggal"
               placeholder="Contoh: 5 Tahun, 6 Bulan"
@@ -279,7 +279,7 @@
         <div class="form-row">
           <div class="form-group">
             <label for="statusTempatTinggal">Status Tempat Tinggal <span class="required">*</span></label>
-            <select 
+            <select
               id="statusTempatTinggal"
               v-model="formData.statusTempatTinggal"
               required
@@ -295,8 +295,8 @@
 
           <div class="form-group">
             <label for="tujuanPembuatan">Tujuan Pembuatan Surat <span class="required">*</span></label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               id="tujuanPembuatan"
               v-model="formData.tujuanPembuatan"
               placeholder="Contoh: Pendaftaran Sekolah, BPJS, dll"
@@ -309,12 +309,12 @@
       <!-- Section C: Lampiran Persyaratan -->
       <div class="form-section">
         <h2 class="section-title">C. Lampiran Persyaratan</h2>
-        
+
         <div class="form-group">
           <label>Unggah KTP <span class="required">*</span></label>
           <div class="file-upload-wrapper">
-            <input 
-              type="file" 
+            <input
+              type="file"
               id="uploadKTP"
               @change="handleFileUpload($event, 'ktp')"
               accept=".pdf,.jpg,.jpeg,.png"
@@ -325,10 +325,10 @@
               <span class="material-icons">upload_file</span>
               <span>{{ formData.files.ktp ? formData.files.ktp.name : 'Pilih berkas KTP' }}</span>
             </label>
-            <button 
-              v-if="formData.files.ktp" 
-              type="button" 
-              @click="removeFile('ktp')" 
+            <button
+              v-if="formData.files.ktp"
+              type="button"
+              @click="removeFile('ktp')"
               class="remove-file-btn"
             >
               <span class="material-icons">close</span>
@@ -340,8 +340,8 @@
         <div class="form-group">
           <label>Unggah Kartu Keluarga <span class="required">*</span></label>
           <div class="file-upload-wrapper">
-            <input 
-              type="file" 
+            <input
+              type="file"
               id="uploadKK"
               @change="handleFileUpload($event, 'kk')"
               accept=".pdf,.jpg,.jpeg,.png"
@@ -352,10 +352,10 @@
               <span class="material-icons">upload_file</span>
               <span>{{ formData.files.kk ? formData.files.kk.name : 'Pilih berkas KK' }}</span>
             </label>
-            <button 
-              v-if="formData.files.kk" 
-              type="button" 
-              @click="removeFile('kk')" 
+            <button
+              v-if="formData.files.kk"
+              type="button"
+              @click="removeFile('kk')"
               class="remove-file-btn"
             >
               <span class="material-icons">close</span>
@@ -367,8 +367,8 @@
         <div class="form-group">
           <label>Unggah Bukti Kepemilikan/Sewa Rumah <span class="required">*</span></label>
           <div class="file-upload-wrapper">
-            <input 
-              type="file" 
+            <input
+              type="file"
               id="uploadBuktiRumah"
               @change="handleFileUpload($event, 'buktiRumah')"
               accept=".pdf,.jpg,.jpeg,.png"
@@ -379,10 +379,10 @@
               <span class="material-icons">upload_file</span>
               <span>{{ formData.files.buktiRumah ? formData.files.buktiRumah.name : 'Pilih berkas bukti kepemilikan/sewa' }}</span>
             </label>
-            <button 
-              v-if="formData.files.buktiRumah" 
-              type="button" 
-              @click="removeFile('buktiRumah')" 
+            <button
+              v-if="formData.files.buktiRumah"
+              type="button"
+              @click="removeFile('buktiRumah')"
               class="remove-file-btn"
             >
               <span class="material-icons">close</span>
@@ -394,8 +394,8 @@
         <div class="form-group">
           <label>Unggah Surat Pengantar RT/RW</label>
           <div class="file-upload-wrapper">
-            <input 
-              type="file" 
+            <input
+              type="file"
               id="uploadPengantarRT"
               @change="handleFileUpload($event, 'pengantarRT')"
               accept=".pdf,.jpg,.jpeg,.png"
@@ -405,10 +405,10 @@
               <span class="material-icons">upload_file</span>
               <span>{{ formData.files.pengantarRT ? formData.files.pengantarRT.name : 'Pilih berkas pengantar RT/RW (opsional)' }}</span>
             </label>
-            <button 
-              v-if="formData.files.pengantarRT" 
-              type="button" 
-              @click="removeFile('pengantarRT')" 
+            <button
+              v-if="formData.files.pengantarRT"
+              type="button"
+              @click="removeFile('pengantarRT')"
               class="remove-file-btn"
             >
               <span class="material-icons">close</span>
@@ -421,14 +421,14 @@
       <!-- Section D: Metode Pengambilan -->
       <div class="form-section">
         <h2 class="section-title">D. Metode Pengambilan Surat</h2>
-        
+
         <div class="form-group">
           <label>Pilih Metode Pengambilan <span class="required">*</span></label>
           <div class="radio-group">
             <label class="radio-option">
-              <input 
-                type="radio" 
-                name="metodePengambilan" 
+              <input
+                type="radio"
+                name="metodePengambilan"
                 value="offline"
                 v-model="formData.metodePengambilan"
                 required
@@ -443,9 +443,9 @@
             </label>
 
             <label class="radio-option">
-              <input 
-                type="radio" 
-                name="metodePengambilan" 
+              <input
+                type="radio"
+                name="metodePengambilan"
                 value="online"
                 v-model="formData.metodePengambilan"
                 required
@@ -463,8 +463,8 @@
 
         <div v-if="formData.metodePengambilan === 'offline'" class="form-group">
           <label for="jadwalPengambilan">Jadwal Pengambilan</label>
-          <input 
-            type="date" 
+          <input
+            type="date"
             id="jadwalPengambilan"
             v-model="formData.jadwalPengambilan"
             :min="minDate"
@@ -490,7 +490,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue'; // ✅ Tambahkan onMounted
 import { useRouter } from 'vue-router';
 import api from '@/api';
 
@@ -509,7 +509,7 @@ const formData = ref({
   pekerjaan: '',
   kewarganegaraan: 'Indonesia',
   nomorPonsel: '',
-  
+
   // Data Alamat Domisili
   alamatDomisili: '',
   rt: '',
@@ -522,7 +522,7 @@ const formData = ref({
   lamaTinggal: '',
   statusTempatTinggal: '',
   tujuanPembuatan: '',
-  
+
   // Files
   files: {
     ktp: null,
@@ -530,10 +530,34 @@ const formData = ref({
     buktiRumah: null,
     pengantarRT: null
   },
-  
+
   // Metode Pengambilan
   metodePengambilan: '',
   jadwalPengambilan: ''
+});
+
+// ✅ Tambahkan ini: Isi otomatis dari profil saat halaman dimuat
+onMounted(async () => {
+  try {
+    const response = await api.get('/auth/profile');
+    const user = response.data.user;
+
+    // Isi data diri dari profil — otomatis, tapi bisa diubah
+    formData.value.namaLengkap = `${user.firstName} ${user.lastName}`;
+    formData.value.nik = user.nik;
+    formData.value.tempatLahir = user.tempatLahir || '';
+    formData.value.tanggalLahir = user.tanggalLahir ? new Date(user.tanggalLahir).toISOString().split('T')[0] : '';
+    formData.value.jenisKelamin = user.jenisKelamin || '';
+    formData.value.agama = user.agama || '';
+    formData.value.statusPerkawinan = user.statusPerkawinan || '';
+    formData.value.pekerjaan = user.pekerjaan || '';
+    formData.value.kewarganegaraan = user.kewarganegaraan || 'Indonesia';
+    formData.value.nomorPonsel = user.phoneNumber.replace('+62', '').replace(/^0/, '');
+
+  } catch (err) {
+    console.error('Gagal muat profil:', err);
+    // Biarkan user isi manual — tidak menghentikan proses
+  }
 });
 
 // Min date for jadwal pengambilan (3 hari dari sekarang)
@@ -545,7 +569,7 @@ const minDate = computed(() => {
 
 const handleFileUpload = (event, fileType) => {
   const file = event.target.files[0];
-  
+
   if (!file) return;
 
   // Validasi ukuran file (max 2MB)

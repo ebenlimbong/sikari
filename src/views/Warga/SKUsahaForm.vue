@@ -16,7 +16,7 @@
     <div class="alert-info">
       <span class="material-icons">info</span>
       <div>
-        <strong>Perhatian:</strong> Pastikan data usaha yang Anda masukkan sudah benar dan lengkap. 
+        <strong>Perhatian:</strong> Pastikan data usaha yang Anda masukkan sudah benar dan lengkap.
         Dokumen pendukung seperti foto tempat usaha dan bukti kepemilikan/sewa tempat usaha wajib diunggah.
       </div>
     </div>
@@ -26,12 +26,12 @@
       <!-- Section A: Data Pemohon -->
       <div class="form-section">
         <h2 class="section-title">A. Data Pemohon</h2>
-        
+
         <div class="form-row">
           <div class="form-group">
             <label for="namaLengkap">Nama Lengkap <span class="required">*</span></label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               id="namaLengkap"
               v-model="formData.namaLengkap"
               placeholder="Masukkan nama lengkap"
@@ -41,8 +41,8 @@
 
           <div class="form-group">
             <label for="nik">NIK <span class="required">*</span></label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               id="nik"
               v-model="formData.nik"
               placeholder="16 digit NIK"
@@ -55,8 +55,8 @@
         <div class="form-row">
           <div class="form-group">
             <label for="tempatLahir">Tempat Lahir <span class="required">*</span></label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               id="tempatLahir"
               v-model="formData.tempatLahir"
               placeholder="Masukkan tempat lahir"
@@ -66,8 +66,8 @@
 
           <div class="form-group">
             <label for="tanggalLahir">Tanggal Lahir <span class="required">*</span></label>
-            <input 
-              type="date" 
+            <input
+              type="date"
               id="tanggalLahir"
               v-model="formData.tanggalLahir"
               required
@@ -78,7 +78,7 @@
         <div class="form-row">
           <div class="form-group">
             <label for="jenisKelamin">Jenis Kelamin <span class="required">*</span></label>
-            <select 
+            <select
               id="jenisKelamin"
               v-model="formData.jenisKelamin"
               required
@@ -91,7 +91,7 @@
 
           <div class="form-group">
             <label for="agama">Agama <span class="required">*</span></label>
-            <select 
+            <select
               id="agama"
               v-model="formData.agama"
               required
@@ -110,7 +110,7 @@
         <div class="form-row">
           <div class="form-group">
             <label for="pendidikan">Pendidikan Terakhir <span class="required">*</span></label>
-            <select 
+            <select
               id="pendidikan"
               v-model="formData.pendidikan"
               required
@@ -130,8 +130,8 @@
             <label for="nomorPonsel">Nomor Ponsel <span class="required">*</span></label>
             <div class="phone-input">
               <span class="phone-prefix">+62</span>
-              <input 
-                type="tel" 
+              <input
+                type="tel"
                 id="nomorPonsel"
                 v-model="formData.nomorPonsel"
                 placeholder="8123456789"
@@ -143,7 +143,7 @@
 
         <div class="form-group full-width">
           <label for="alamatPemohon">Alamat Pemohon <span class="required">*</span></label>
-          <textarea 
+          <textarea
             id="alamatPemohon"
             v-model="formData.alamatPemohon"
             rows="3"
@@ -156,12 +156,12 @@
       <!-- Section B: Data Usaha -->
       <div class="form-section">
         <h2 class="section-title">B. Data Usaha</h2>
-        
+
         <div class="form-row">
           <div class="form-group">
             <label for="namaUsaha">Nama Usaha <span class="required">*</span></label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               id="namaUsaha"
               v-model="formData.namaUsaha"
               placeholder="Masukkan nama usaha"
@@ -171,7 +171,7 @@
 
           <div class="form-group">
             <label for="jenisUsaha">Jenis Usaha <span class="required">*</span></label>
-            <select 
+            <select
               id="jenisUsaha"
               v-model="formData.jenisUsaha"
               required
@@ -195,8 +195,8 @@
 
         <div class="form-group full-width">
           <label for="bidangUsaha">Bidang Usaha <span class="required">*</span></label>
-          <input 
-            type="text" 
+          <input
+            type="text"
             id="bidangUsaha"
             v-model="formData.bidangUsaha"
             placeholder="Contoh: Penjualan Sembako, Warung Makan, Salon, dll"
@@ -209,8 +209,8 @@
             <label for="modalUsaha">Modal Usaha <span class="required">*</span></label>
             <div class="currency-input">
               <span class="currency-prefix">Rp</span>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 id="modalUsaha"
                 v-model="formData.modalUsaha"
                 @input="formatCurrency"
@@ -222,8 +222,8 @@
 
           <div class="form-group">
             <label for="jumlahKaryawan">Jumlah Karyawan <span class="required">*</span></label>
-            <input 
-              type="number" 
+            <input
+              type="number"
               id="jumlahKaryawan"
               v-model="formData.jumlahKaryawan"
               placeholder="Contoh: 3"
@@ -236,8 +236,8 @@
         <div class="form-row">
           <div class="form-group">
             <label for="tanggalMulaiUsaha">Tanggal Mulai Usaha <span class="required">*</span></label>
-            <input 
-              type="date" 
+            <input
+              type="date"
               id="tanggalMulaiUsaha"
               v-model="formData.tanggalMulaiUsaha"
               required
@@ -246,7 +246,7 @@
 
           <div class="form-group">
             <label for="statusTempat">Status Tempat Usaha <span class="required">*</span></label>
-            <select 
+            <select
               id="statusTempat"
               v-model="formData.statusTempat"
               required
@@ -262,7 +262,7 @@
 
         <div class="form-group full-width">
           <label for="alamatUsaha">Alamat Lokasi Usaha <span class="required">*</span></label>
-          <textarea 
+          <textarea
             id="alamatUsaha"
             v-model="formData.alamatUsaha"
             rows="3"
@@ -273,7 +273,7 @@
 
         <div class="form-group full-width">
           <label for="deskripsiUsaha">Deskripsi Usaha <span class="required">*</span></label>
-          <textarea 
+          <textarea
             id="deskripsiUsaha"
             v-model="formData.deskripsiUsaha"
             rows="4"
@@ -284,8 +284,8 @@
 
         <div class="form-group full-width">
           <label for="tujuanPembuatan">Tujuan Pembuatan Surat <span class="required">*</span></label>
-          <input 
-            type="text" 
+          <input
+            type="text"
             id="tujuanPembuatan"
             v-model="formData.tujuanPembuatan"
             placeholder="Contoh: Pengajuan KUR, Perizinan Usaha, dll"
@@ -297,12 +297,12 @@
       <!-- Section C: Lampiran Persyaratan -->
       <div class="form-section">
         <h2 class="section-title">C. Lampiran Persyaratan</h2>
-        
+
         <div class="form-group">
           <label>Unggah KTP <span class="required">*</span></label>
           <div class="file-upload-wrapper">
-            <input 
-              type="file" 
+            <input
+              type="file"
               id="uploadKTP"
               @change="handleFileUpload($event, 'ktp')"
               accept=".pdf,.jpg,.jpeg,.png"
@@ -313,10 +313,10 @@
               <span class="material-icons">upload_file</span>
               <span>{{ formData.files.ktp ? formData.files.ktp.name : 'Pilih berkas KTP' }}</span>
             </label>
-            <button 
-              v-if="formData.files.ktp" 
-              type="button" 
-              @click="removeFile('ktp')" 
+            <button
+              v-if="formData.files.ktp"
+              type="button"
+              @click="removeFile('ktp')"
               class="remove-file-btn"
             >
               <span class="material-icons">close</span>
@@ -328,8 +328,8 @@
         <div class="form-group">
           <label>Unggah Kartu Keluarga <span class="required">*</span></label>
           <div class="file-upload-wrapper">
-            <input 
-              type="file" 
+            <input
+              type="file"
               id="uploadKK"
               @change="handleFileUpload($event, 'kk')"
               accept=".pdf,.jpg,.jpeg,.png"
@@ -340,10 +340,10 @@
               <span class="material-icons">upload_file</span>
               <span>{{ formData.files.kk ? formData.files.kk.name : 'Pilih berkas KK' }}</span>
             </label>
-            <button 
-              v-if="formData.files.kk" 
-              type="button" 
-              @click="removeFile('kk')" 
+            <button
+              v-if="formData.files.kk"
+              type="button"
+              @click="removeFile('kk')"
               class="remove-file-btn"
             >
               <span class="material-icons">close</span>
@@ -355,8 +355,8 @@
         <div class="form-group">
           <label>Unggah Foto Tempat Usaha <span class="required">*</span></label>
           <div class="file-upload-wrapper">
-            <input 
-              type="file" 
+            <input
+              type="file"
               id="uploadFotoUsaha"
               @change="handleFileUpload($event, 'fotoUsaha')"
               accept=".jpg,.jpeg,.png"
@@ -367,10 +367,10 @@
               <span class="material-icons">upload_file</span>
               <span>{{ formData.files.fotoUsaha ? formData.files.fotoUsaha.name : 'Pilih foto tempat usaha' }}</span>
             </label>
-            <button 
-              v-if="formData.files.fotoUsaha" 
-              type="button" 
-              @click="removeFile('fotoUsaha')" 
+            <button
+              v-if="formData.files.fotoUsaha"
+              type="button"
+              @click="removeFile('fotoUsaha')"
               class="remove-file-btn"
             >
               <span class="material-icons">close</span>
@@ -382,8 +382,8 @@
         <div class="form-group">
           <label>Unggah Bukti Kepemilikan/Sewa Tempat Usaha <span class="required">*</span></label>
           <div class="file-upload-wrapper">
-            <input 
-              type="file" 
+            <input
+              type="file"
               id="uploadBuktiTempat"
               @change="handleFileUpload($event, 'buktiTempat')"
               accept=".pdf,.jpg,.jpeg,.png"
@@ -394,10 +394,10 @@
               <span class="material-icons">upload_file</span>
               <span>{{ formData.files.buktiTempat ? formData.files.buktiTempat.name : 'Pilih berkas bukti tempat' }}</span>
             </label>
-            <button 
-              v-if="formData.files.buktiTempat" 
-              type="button" 
-              @click="removeFile('buktiTempat')" 
+            <button
+              v-if="formData.files.buktiTempat"
+              type="button"
+              @click="removeFile('buktiTempat')"
               class="remove-file-btn"
             >
               <span class="material-icons">close</span>
@@ -409,8 +409,8 @@
         <div class="form-group">
           <label>Unggah Surat Pengantar RT/RW</label>
           <div class="file-upload-wrapper">
-            <input 
-              type="file" 
+            <input
+              type="file"
               id="uploadPengantarRT"
               @change="handleFileUpload($event, 'pengantarRT')"
               accept=".pdf,.jpg,.jpeg,.png"
@@ -420,10 +420,10 @@
               <span class="material-icons">upload_file</span>
               <span>{{ formData.files.pengantarRT ? formData.files.pengantarRT.name : 'Pilih berkas pengantar RT/RW (opsional)' }}</span>
             </label>
-            <button 
-              v-if="formData.files.pengantarRT" 
-              type="button" 
-              @click="removeFile('pengantarRT')" 
+            <button
+              v-if="formData.files.pengantarRT"
+              type="button"
+              @click="removeFile('pengantarRT')"
               class="remove-file-btn"
             >
               <span class="material-icons">close</span>
@@ -436,14 +436,14 @@
       <!-- Section D: Metode Pengambilan -->
       <div class="form-section">
         <h2 class="section-title">D. Metode Pengambilan Surat</h2>
-        
+
         <div class="form-group">
           <label>Pilih Metode Pengambilan <span class="required">*</span></label>
           <div class="radio-group">
             <label class="radio-option">
-              <input 
-                type="radio" 
-                name="metodePengambilan" 
+              <input
+                type="radio"
+                name="metodePengambilan"
                 value="offline"
                 v-model="formData.metodePengambilan"
                 required
@@ -458,9 +458,9 @@
             </label>
 
             <label class="radio-option">
-              <input 
-                type="radio" 
-                name="metodePengambilan" 
+              <input
+                type="radio"
+                name="metodePengambilan"
                 value="online"
                 v-model="formData.metodePengambilan"
                 required
@@ -478,8 +478,8 @@
 
         <div v-if="formData.metodePengambilan === 'offline'" class="form-group">
           <label for="jadwalPengambilan">Jadwal Pengambilan</label>
-          <input 
-            type="date" 
+          <input
+            type="date"
             id="jadwalPengambilan"
             v-model="formData.jadwalPengambilan"
             :min="minDate"
@@ -507,6 +507,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
+import api from '@/api'; // ← pastikan sama seperti file lain yang sudah jalan
 
 const router = useRouter();
 const isSubmitting = ref(false);
@@ -522,7 +523,7 @@ const formData = ref({
   pendidikan: '',
   nomorPonsel: '',
   alamatPemohon: '',
-  
+
   // Data Usaha
   namaUsaha: '',
   jenisUsaha: '',
@@ -534,8 +535,8 @@ const formData = ref({
   alamatUsaha: '',
   deskripsiUsaha: '',
   tujuanPembuatan: '',
-  
-  // Files
+
+  // Files (disimpan sebagai File object, nanti diubah jadi metadata saat kirim)
   files: {
     ktp: null,
     kk: null,
@@ -543,12 +544,13 @@ const formData = ref({
     buktiTempat: null,
     pengantarRT: null
   },
-  
+
   // Metode Pengambilan
   metodePengambilan: '',
   jadwalPengambilan: ''
 });
 
+// Minimal 3 hari dari sekarang
 const minDate = computed(() => {
   const date = new Date();
   date.setDate(date.getDate() + 3);
@@ -562,22 +564,25 @@ const formatCurrency = (event) => {
 
 const handleFileUpload = (event, fileType) => {
   const file = event.target.files[0];
-  
   if (!file) return;
 
+  // Validasi ukuran
   if (file.size > 2 * 1024 * 1024) {
     alert('Ukuran file terlalu besar! Maksimal 2MB');
     event.target.value = '';
     return;
   }
 
+  // Validasi tipe
   const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
+  // khusus fotoUsaha cuma boleh image, tapi ini masih aman (PDF nggak dikasih user)
   if (!allowedTypes.includes(file.type)) {
     alert('Format file tidak didukung! Gunakan PDF, JPG, atau PNG');
     event.target.value = '';
     return;
   }
 
+  // Simpan File object (bukan metadata dulu)
   formData.value.files[fileType] = file;
 };
 
@@ -592,39 +597,25 @@ const removeFile = (fileType) => {
   };
   const inputId = inputMap[fileType];
   if (inputId) {
-    document.getElementById(inputId).value = '';
-  }
-};
-
-const generateTicketNumber = () => {
-  const date = new Date();
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
-  return `TIC-${year}${month}${day}-${random}`;
-};
-
-const savePengajuan = (pengajuanData) => {
-  try {
-    const existingData = localStorage.getItem('pengajuanSurat');
-    const pengajuanList = existingData ? JSON.parse(existingData) : [];
-    pengajuanList.unshift(pengajuanData);
-    localStorage.setItem('pengajuanSurat', JSON.stringify(pengajuanList));
-    return true;
-  } catch (error) {
-    console.error('Error saving to localStorage:', error);
-    return false;
+    const el = document.getElementById(inputId);
+    if (el) el.value = '';
   }
 };
 
 const handleSubmit = async () => {
+  // Validasi NIK
   if (formData.value.nik.length !== 16) {
     alert('NIK harus 16 digit!');
     return;
   }
 
-  if (!formData.value.files.ktp || !formData.value.files.kk || !formData.value.files.fotoUsaha || !formData.value.files.buktiTempat) {
+  // Validasi lampiran wajib
+  if (
+    !formData.value.files.ktp ||
+    !formData.value.files.kk ||
+    !formData.value.files.fotoUsaha ||
+    !formData.value.files.buktiTempat
+  ) {
     alert('Dokumen KTP, KK, Foto Usaha, dan Bukti Tempat wajib diunggah!');
     return;
   }
@@ -632,39 +623,52 @@ const handleSubmit = async () => {
   isSubmitting.value = true;
 
   try {
-    const pengajuanData = {
-      noTiket: generateTicketNumber(),
+    // Payload sesuai kontrak backend: { jenisSurat, data }
+    const payload = {
       jenisSurat: 'Surat Keterangan Usaha',
-      tanggalPengajuan: new Date().toISOString(),
-      status: 'Belum Dikerjakan',
-      catatanAdmin: null,
-      waktuSelesai: null,
       data: {
         ...formData.value,
+        // Ubah File → metadata sederhana (name & size) sebelum dikirim
         files: {
-          ktp: formData.value.files.ktp ? { name: formData.value.files.ktp.name, size: formData.value.files.ktp.size } : null,
-          kk: formData.value.files.kk ? { name: formData.value.files.kk.name, size: formData.value.files.kk.size } : null,
-          fotoUsaha: formData.value.files.fotoUsaha ? { name: formData.value.files.fotoUsaha.name, size: formData.value.files.fotoUsaha.size } : null,
-          buktiTempat: formData.value.files.buktiTempat ? { name: formData.value.files.buktiTempat.name, size: formData.value.files.buktiTempat.size } : null,
-          pengantarRT: formData.value.files.pengantarRT ? { name: formData.value.files.pengantarRT.name, size: formData.value.files.pengantarRT.size } : null
+          ktp: formData.value.files.ktp
+            ? { name: formData.value.files.ktp.name, size: formData.value.files.ktp.size }
+            : null,
+          kk: formData.value.files.kk
+            ? { name: formData.value.files.kk.name, size: formData.value.files.kk.size }
+            : null,
+          fotoUsaha: formData.value.files.fotoUsaha
+            ? { name: formData.value.files.fotoUsaha.name, size: formData.value.files.fotoUsaha.size }
+            : null,
+          buktiTempat: formData.value.files.buktiTempat
+            ? { name: formData.value.files.buktiTempat.name, size: formData.value.files.buktiTempat.size }
+            : null,
+          pengantarRT: formData.value.files.pengantarRT
+            ? { name: formData.value.files.pengantarRT.name, size: formData.value.files.pengantarRT.size }
+            : null
         }
       }
     };
 
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    console.log('📤 Payload SK Usaha:', payload);
 
-    const saved = savePengajuan(pengajuanData);
+    const response = await api.post('/surat', payload);
+    console.log('✅ Response SK Usaha:', response.data);
 
-    if (saved) {
-      alert(`✅ Permohonan Surat Keterangan Usaha berhasil diajukan!\n\nNo. Tiket: ${pengajuanData.noTiket}\n\nSilakan tunggu konfirmasi dari admin.`);
-      router.push('/surat-saya');
-    } else {
-      throw new Error('Gagal menyimpan data');
-    }
+    // Backend kamu kirim: { success, message, surat: { noTiket, jenisSurat, tanggalPengajuan } }
+    alert(
+      `✅ Permohonan Surat Keterangan Usaha berhasil diajukan!\n\n` +
+      `No. Tiket: ${response.data.surat.noTiket}\n\n` +
+      `Silakan cek riwayat di menu "Surat Saya".`
+    );
 
+    router.push('/surat-saya');
   } catch (error) {
-    console.error('❌ Error:', error);
-    alert('Terjadi kesalahan. Silakan coba lagi.');
+    console.error('❌ Error submit SK Usaha:', error);
+    const msg =
+      error.response?.data?.error ||
+      error.response?.data?.message ||
+      'Gagal mengajukan surat. Silakan coba lagi.';
+    alert(`❌ ${msg}`);
   } finally {
     isSubmitting.value = false;
   }

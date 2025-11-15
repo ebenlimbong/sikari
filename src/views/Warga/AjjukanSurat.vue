@@ -8,8 +8,8 @@
 
     <!-- Surat Cards Grid -->
     <div class="surat-grid">
-      <SuratCard 
-        v-for="(surat, index) in jenisSurat" 
+      <SuratCard
+        v-for="(surat, index) in jenisSurat"
         :key="index"
         :title="surat.title"
         :description="surat.description"
@@ -36,15 +36,13 @@ const handleCardClick = (surat) => {
     'Surat Keterangan Domisili': '/ajukan-surat/domisili',
     'Surat Keterangan Penghasilan': '/ajukan-surat/penghasilan',
     'Surat Keterangan Usaha': '/ajukan-surat/usaha',
-    'Surat Keterangan Meninggal Dunia': '/ajukan-surat/meninggal',
     'Surat Keterangan Kelahiran': '/ajukan-surat/kelahiran',
-    'Surat Pengantar Pindah': '/ajukan-surat/pindah',
     'Surat Pengantar KK, KTP, dan Akta Lahir': '/ajukan-surat/pengantar-dokumen'
 
   };
 
   const route = suratRoutes[surat.title];
-  
+
   if (route) {
     router.push(route);
   } else {
@@ -54,67 +52,51 @@ const handleCardClick = (surat) => {
 
 const jenisSurat = ref([
   // 1. Surat Keterangan Tidak Mampu
-  { 
-    title: 'Surat Keterangan Tidak Mampu', 
-    description: 'Surat untuk mengajukan bantuan sosial, beasiswa, dan program kesejahteraan.', 
-    dokumen: 'Kartu Keluarga, KTP, Surat Pernyataan Tidak Mampu', 
+  {
+    title: 'Surat Keterangan Tidak Mampu',
+    description: 'Surat untuk mengajukan bantuan sosial, beasiswa, dan program kesejahteraan.',
+    dokumen: 'Kartu Keluarga, KTP, Surat Pernyataan Tidak Mampu',
     icon: 'sentiment_dissatisfied',
     iconColor: '#e74c3c'
   },
   // 2. Surat Keterangan Domisili
-  { 
-    title: 'Surat Keterangan Domisili', 
-    description: 'Surat resmi sebagai bukti tempat tinggal seseorang atau badan hukum di wilayah desa.', 
-    dokumen: 'KTP, Kartu Keluarga, Bukti Kepemilikan/Sewa Rumah', 
-    icon: 'location_on', 
+  {
+    title: 'Surat Keterangan Domisili',
+    description: 'Surat resmi sebagai bukti tempat tinggal seseorang atau badan hukum di wilayah desa.',
+    dokumen: 'KTP, Kartu Keluarga, Bukti Kepemilikan/Sewa Rumah',
+    icon: 'location_on',
     iconColor: '#3498db'
   },
   // 3. Surat Keterangan Penghasilan
-  { 
-    title: 'Surat Keterangan Penghasilan', 
-    description: 'Surat untuk keperluan administrasi pinjaman, kredit, dan verifikasi penghasilan.', 
-    dokumen: 'KTP, Kartu Keluarga, Bukti Usaha/Pekerjaan', 
-    icon: 'attach_money', 
+  {
+    title: 'Surat Keterangan Penghasilan',
+    description: 'Surat untuk keperluan administrasi pinjaman, kredit, dan verifikasi penghasilan.',
+    dokumen: 'KTP, Kartu Keluarga, Bukti Usaha/Pekerjaan',
+    icon: 'attach_money',
     iconColor: '#f39c12'
   },
-  // 4. Surat Pengantar Pindah
-  { 
-    title: 'Surat Pengantar Pindah', 
-    description: 'Surat untuk keperluan perubahan alamat dan perpindahan tempat tinggal ke desa lain.', 
-    dokumen: 'Kartu Keluarga, KTP, Bukti Kepemilikan Rumah', 
-    icon: 'home', 
-    iconColor: '#9b59b6'
-  },
   // 5. Surat Pengantar KK, KTP, dan Akta Lahir
-  { 
-    title: 'Surat Pengantar KK, KTP, dan Akta Lahir', 
-    description: 'Surat pengantar untuk pengurusan dokumen identitas dan akta kelahiran di instansi terkait.', 
-    dokumen: 'Kartu Keluarga, KTP, Surat Permohonan', 
-    icon: 'badge', 
+  {
+    title: 'Surat Pengantar KK, KTP, dan Akta Lahir',
+    description: 'Surat pengantar untuk pengurusan dokumen identitas dan akta kelahiran di instansi terkait.',
+    dokumen: 'Kartu Keluarga, KTP, Surat Permohonan',
+    icon: 'badge',
     iconColor: '#2c3e50'
   },
   // 6. Surat Keterangan Usaha
-  { 
-    title: 'Surat Keterangan Usaha', 
-    description: 'Surat untuk mendirikan usaha kecil, izin usaha, dan keperluan administrasi bisnis.', 
-    dokumen: 'KTP, Kartu Keluarga, Bukti Lokasi Usaha', 
-    icon: 'store', 
+  {
+    title: 'Surat Keterangan Usaha',
+    description: 'Surat untuk mendirikan usaha kecil, izin usaha, dan keperluan administrasi bisnis.',
+    dokumen: 'KTP, Kartu Keluarga, Bukti Lokasi Usaha',
+    icon: 'store',
     iconColor: '#34495e'
   },
-  // 7. Surat Keterangan Meninggal Dunia
-  { 
-    title: 'Surat Keterangan Meninggal Dunia', 
-    description: 'Surat resmi untuk keperluan administrasi kematian, asuransi, dan pengurusan warisan.', 
-    dokumen: 'Kartu Keluarga, KTP, Surat Kematian dari Rumah Sakit', 
-    icon: 'description', 
-    iconColor: '#27ae60'
-  },
   // 8. Surat Keterangan Kelahiran
-  { 
-    title: 'Surat Keterangan Kelahiran', 
-    description: 'Surat untuk keperluan administrasi kelahiran dan pencatatan akta kelahiran.', 
-    dokumen: 'KTP Orang Tua, Kartu Keluarga, Surat Keterangan Bidan', 
-    icon: 'child_care', 
+  {
+    title: 'Surat Keterangan Kelahiran',
+    description: 'Surat untuk keperluan administrasi kelahiran dan pencatatan akta kelahiran.',
+    dokumen: 'KTP Orang Tua, Kartu Keluarga, Surat Keterangan Bidan',
+    icon: 'child_care',
     iconColor: '#ff6b6b'
   },
 ]);
@@ -141,7 +123,7 @@ const jenisSurat = ref([
 }
 
 /* Page Header */
-.page-header {  
+.page-header {
   background: linear-gradient(135deg, #006400, #228B22);
   padding: 2rem 2.5rem;
   border-radius: 12px;

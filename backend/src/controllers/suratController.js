@@ -2,12 +2,10 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-// ✅ CREATE SURAT
 exports.createSurat = async (req, res) => {
   try {
     const { jenisSurat, data } = req.body;
 
-    // ✅ Validasi input
     if (!jenisSurat || !data) {
       return res.status(400).json({
         success: false,
@@ -15,7 +13,6 @@ exports.createSurat = async (req, res) => {
       });
     }
 
-    // Generate nomor tiket
     const now = new Date();
     const y = now.getFullYear();
     const m = String(now.getMonth() + 1).padStart(2, '0');
@@ -23,18 +20,16 @@ exports.createSurat = async (req, res) => {
     const r = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
     const noTiket = `TIC-${y}${m}${d}-${r}`;
 
-    // Buat surat di database
     const surat = await prisma.surat.create({
-      data: {
-        userId: parseInt(req.user.id),
-        jenisSurat,
-        noTiket,
-        data, // Prisma auto-handle JSON → langsung objek
-        status: 'Belum Dikerjakan'
-      }
-    });
+    data: {
+      userId: parseInt(req.user.id),
+      jenisSurat,
+      noTiket,
+      data,
+      status: 'Belum Dikerjakan'
+    }
+  });
 
-    // ✅ Response sesuai ekspektasi frontend Anda
     res.status(201).json({
       success: true,
       message: 'Surat berhasil diajukan',
@@ -54,7 +49,6 @@ exports.createSurat = async (req, res) => {
   }
 };
 
-// ✅ GET MY SURAT
 exports.getMySurat = async (req, res) => {
   try {
     const suratList = await prisma.surat.findMany({
@@ -64,30 +58,18 @@ exports.getMySurat = async (req, res) => {
         id: true,
         noTiket: true,
         jenisSurat: true,
-        data: true,
         status: true,
         catatanAdmin: true,
         waktuSelesai: true,
         createdAt: true,
+        updatedAt: true
       }
     });
 
-    // ✅ Format data sesuai frontend Anda (tanggalPengajuan = createdAt)
-    const formattedList = suratList.map(surat => ({
-      id: surat.id,
-      noTiket: surat.noTiket,
-      jenisSurat: surat.jenisSurat,
-      data: surat.data, // Sudah objek, tidak perlu JSON.parse
-      status: surat.status,
-      catatanAdmin: surat.catatanAdmin,
-      waktuSelesai: surat.waktuSelesai,
-      tanggalPengajuan: surat.createdAt, // ✅ Kompatibel dengan DetailSuratModal.vue
-    }));
-
-    // ✅ Struktur response sesuai frontend Anda
     res.json({
       success: true,
-      suratList: formattedList
+      suratList,
+      total: suratList.length
     });
 
   } catch (error) {
@@ -96,5 +78,47 @@ exports.getMySurat = async (req, res) => {
       success: false,
       error: 'Gagal mengambil data surat'
     });
+  }
+};
+
+
+exports.getSuratById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Query paling cepat: findUnique berdasarkan PRIMARY KEY
+    const surat = await prisma.surat.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        noTiket: true,
+        jenisSurat: true,
+        data: true,
+        status: true,
+        catatanAdmin: true,
+        waktuSelesai: true,
+        createdAt: true,
+        updatedAt: true,
+        userId: true
+      }
+    });
+
+    if (!surat) {
+      return res.status(404).json({ success: false, error: 'Surat tidak ditemukan' });
+    }
+
+    // Cek apakah surat milik user login
+    if (surat.userId !== parseInt(req.user.id)) {
+      return res.status(403).json({ success: false, error: 'Akses ditolak' });
+    }
+
+    // Hapus userId agar tidak tampil di frontend
+    delete surat.userId;
+
+    res.json({ success: true, surat });
+
+  } catch (error) {
+    console.error('❌ Error fetching surat by ID:', error);
+    res.status(500).json({ success: false, error: 'Gagal memuat detail surat' });
   }
 };
