@@ -16,36 +16,54 @@
         </div>
       </div>
     </div>
-    
+
     <nav class="sidebar-nav">
-      <p class="nav-label" v-show="!isCollapsed">MENU UTAMA</p>
-      
-      <router-link to="/dashboard" class="nav-item" active-class="is-active">
-        <span class="material-icons">dashboard</span>
-        <span class="nav-text" v-show="!isCollapsed">Dashboard</span>
-      </router-link>
-      
-      <router-link to="/ajukan-surat" class="nav-item" active-class="is-active">
-        <span class="material-icons">note_add</span>
-        <span class="nav-text" v-show="!isCollapsed">Ajukan Surat</span>
-      </router-link>
-      
-      <router-link to="/surat-saya" class="nav-item" active-class="is-active">
-        <span class="material-icons">email</span>
-        <span class="nav-text" v-show="!isCollapsed">Surat Saya</span>
-      </router-link>
-      
-      <router-link to="/profil" class="nav-item" active-class="is-active">
-        <span class="material-icons">account_circle</span>
-        <span class="nav-text" v-show="!isCollapsed">Profil</span>
-      </router-link>
-      
-      <p class="nav-label" v-show="!isCollapsed" style="margin-top: 2rem;">LAINNYA</p>
-      
-      <router-link to="/bantuan" class="nav-item" active-class="is-active">
-        <span class="material-icons">help_outline</span>
-        <span class="nav-text" v-show="!isCollapsed">Bantuan</span>
-      </router-link>
+      <!-- 🟢 Untuk ADMIN: hanya Ticket & Profil -->
+      <template v-if="isAdmin">
+        <p class="nav-label" v-show="!isCollapsed">MENU ADMIN</p>
+
+        <router-link to="/admin" class="nav-item" active-class="is-active">
+          <span class="material-icons">assignment</span>
+          <span class="nav-text" v-show="!isCollapsed">Ticket</span>
+        </router-link>
+
+        <router-link to="/profil" class="nav-item" active-class="is-active">
+          <span class="material-icons">account_circle</span>
+          <span class="nav-text" v-show="!isCollapsed">Profil</span>
+        </router-link>
+      </template>
+
+      <!-- 🔵 Untuk USER BIASA: menu lengkap -->
+      <template v-else>
+        <p class="nav-label" v-show="!isCollapsed">MENU UTAMA</p>
+
+        <router-link to="/dashboard" class="nav-item" active-class="is-active">
+          <span class="material-icons">dashboard</span>
+          <span class="nav-text" v-show="!isCollapsed">Dashboard</span>
+        </router-link>
+
+        <router-link to="/ajukan-surat" class="nav-item" active-class="is-active">
+          <span class="material-icons">note_add</span>
+          <span class="nav-text" v-show="!isCollapsed">Ajukan Surat</span>
+        </router-link>
+
+        <router-link to="/surat-saya" class="nav-item" active-class="is-active">
+          <span class="material-icons">email</span>
+          <span class="nav-text" v-show="!isCollapsed">Surat Saya</span>
+        </router-link>
+
+        <router-link to="/profil" class="nav-item" active-class="is-active">
+          <span class="material-icons">account_circle</span>
+          <span class="nav-text" v-show="!isCollapsed">Profil</span>
+        </router-link>
+
+        <p class="nav-label" v-show="!isCollapsed" style="margin-top: 2rem;">LAINNYA</p>
+
+        <router-link to="/bantuan" class="nav-item" active-class="is-active">
+          <span class="material-icons">help_outline</span>
+          <span class="nav-text" v-show="!isCollapsed">Bantuan</span>
+        </router-link>
+      </template>
     </nav>
 
     <div class="sidebar-footer">
@@ -58,7 +76,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue'; // ✅ Tambahkan computed
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -70,8 +88,15 @@ const toggleSidebar = () => {
 
 const handleLogout = () => {
   localStorage.removeItem('token');
+  localStorage.removeItem('user'); // ✅ hapus juga data user
   router.push('/login');
 };
+
+// ✅ Computed property untuk cek role admin
+const isAdmin = computed(() => {
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  return user.role === 'ADMIN';
+});
 </script>
 
 <style scoped>
@@ -299,22 +324,22 @@ const handleLogout = () => {
   .sidebar-container {
     width: 70px;
   }
-  
+
   .sidebar-toggle {
     display: none;
   }
-  
+
   .nav-text,
   .logo-text,
   .nav-label {
     display: none !important;
   }
-  
+
   .nav-item {
     justify-content: center;
     padding: 0.85rem 0.5rem;
   }
-  
+
   .nav-item .material-icons {
     margin-right: 0;
   }

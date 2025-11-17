@@ -15,10 +15,15 @@ app.get('/', (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
+const adminRoutes = require('./routes/admin/adminRoutes');
+
 
 app.use('/api/auth', require('./routes/auth/authRoutes'));
 
 app.use('/api/surat', require('./routes/suratRoutes'));
+
+app.use('/api/admin', adminRoutes); // ✅ Tambahkan ini
+
 
 app.listen(PORT, () => {
   console.log(`🟢 Backend jalan di http://localhost:${PORT}`);

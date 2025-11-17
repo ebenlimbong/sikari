@@ -52,12 +52,6 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
-      path: '/profil',
-      name: 'profil',
-      component: ProfilView,
-      meta: { requiresAuth: true }
-    },
-    {
       path: '/bantuan',
       name: 'bantuan',
       component: BantuanView,
@@ -110,7 +104,20 @@ const router = createRouter({
       name: 'profil-edit',
       component: () => import('@/views/Warga/ProfilEditView.vue'),
       meta: { requiresAuth: true }
-}
+    },
+    // ✅ Benar — nested di dalam AppLayout
+    {
+      path: '/admin',
+      component: () => import('@/components/layouts/AppLayout.vue'), // ✅ Parent layout
+      meta: { requiresAuth: true, requiresAdmin: true },
+      children: [
+        {
+          path: '',
+          name: 'admin-dashboard',
+          component: () => import('@/views/Admin/AdminDashboard.vue') // ✅ Hanya konten
+        }
+      ]
+    }
   ]
 })
 
@@ -123,17 +130,41 @@ const authGuard = (to, from, next) => {
   }
 };
 
+// Di atas router.beforeEach
+const adminGuard = (to, from, next) => {
+  const token = localStorage.getItem('token');
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+  if (to.meta.requiresAdmin) {
+    if (token && user.role === 'ADMIN') {
+      next();
+    } else {
+      console.log('⚠️ Akses admin ditolak');
+      next('/dashboard'); // atau next('/') jika ingin redirect ke halaman umum
+    }
+  } else {
+    next();
+  }
+};
+
 // --- LOGIKA NAVIGATION GUARD YANG BENAR ---
 router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem('token'); // ← SESUAI DENGAN LoginView.vue
+  const token = localStorage.getItem('token');
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
 
-  // Rute yang butuh login (dashboard, surat-saya, dll)
+  // Rute yang butuh login
   if (to.meta.requiresAuth) {
     if (token) {
-      next(); // izinkan
+      // Cek role admin
+      if (to.meta.requiresAdmin && user.role !== 'ADMIN') {
+        console.log('❌ User bukan admin');
+        next('/dashboard'); // redirect ke dashboard biasa
+      } else {
+        next();
+      }
     } else {
       console.log('⚠️ Akses ditolak: redirect ke /');
-      next('/'); // atau next({ name: 'login' }) jika ingin ke login
+      next('/');
     }
   }
   // Rute tamu (login/register): arahkan ke dashboard jika sudah login

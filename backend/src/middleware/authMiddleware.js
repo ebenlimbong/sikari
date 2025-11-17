@@ -1,7 +1,9 @@
-// src/middleware/authMiddleware.js
+// /backend/src/middleware/authMiddleware.js
 const jwt = require('jsonwebtoken');
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 
-exports.protect = (req, res, next) => {
+exports.protect = async (req, res, next) => {
   let token;
 
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
@@ -17,7 +19,24 @@ exports.protect = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // { id, role, iat, exp }
+
+    // Ambil data user lengkap
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.id },
+      select: {
+        id: true,
+        role: true
+      }
+    });
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        error: 'User tidak ditemukan.'
+      });
+    }
+
+    req.user = user; // <-- Hanya simpan id & role
     next();
   } catch (err) {
     if (err.name === 'TokenExpiredError') {
