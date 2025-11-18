@@ -425,63 +425,57 @@ const handleSubmit = async () => {
 
   // Validasi file upload
   if (!formData.value.files.ktp || !formData.value.files.kk || !formData.value.files.pengantarRT) {
-    alert('Semua dokumen harus diunggah!');
+    alert('Semua dokumen (KTP, KK, Surat RT) wajib diunggah!');
     return;
   }
 
   isSubmitting.value = true;
 
   try {
-    // ✅ Siapkan payload untuk backend
-    const payload = {
-      jenisSurat: 'Surat Keterangan Tidak Mampu', // ← Nama jenis surat
-      data: { // ← KEY UTAMA: 'data'
-        ...formData.value,
-        // Simpan metadata file (name & size), bukan objek File
-        files: {
-          ktp: formData.value.files.ktp ? {
-            name: formData.value.files.ktp.name,
-            size: formData.value.files.ktp.size
-          } : null,
-          kk: formData.value.files.kk ? {
-            name: formData.value.files.kk.name,
-            size: formData.value.files.kk.size
-          } : null,
-          pengantarRT: formData.value.files.pengantarRT ? {
-            name: formData.value.files.pengantarRT.name,
-            size: formData.value.files.pengantarRT.size
-          } : null
-        }
-      }
+    // ✅ Buat FormData untuk upload file
+    const formDataToSend = new FormData();
+
+    // Tambahkan data non-file
+    formDataToSend.append('jenisSurat', 'Surat Keterangan Tidak Mampu');
+
+    // Tambahkan data JSON sebagai string (Prisma Json)
+    const jsonData = {
+      namaLengkap: formData.value.namaLengkap,
+      tempatLahir: formData.value.tempatLahir,
+      tanggalLahir: formData.value.tanggalLahir,
+      jenisKelamin: formData.value.jenisKelamin,
+      agama: formData.value.agama,
+      kewarganegaraan: formData.value.kewarganegaraan,
+      pekerjaan: formData.value.pekerjaan,
+      nik: formData.value.nik,
+      nomorPonsel: formData.value.nomorPonsel,
+      digunakan: formData.value.digunakan,
+      alamatKTP: formData.value.alamatKTP,
+      metodePengambilan: formData.value.metodePengambilan,
+      jadwalPengambilan: formData.value.jadwalPengambilan,
+      // Nanti `files` akan diisi oleh backend berdasarkan file yang diupload
     };
+    formDataToSend.append('data', JSON.stringify(jsonData));
 
-    console.log('📤 Sending SKTM data:', payload);
+    // ✅ Tambahkan file satu per satu
+    formDataToSend.append('files[ktp]', formData.value.files.ktp);
+    formDataToSend.append('files[kk]', formData.value.files.kk);
+    formDataToSend.append('files[pengantarRT]', formData.value.files.pengantarRT);
 
-    // ✅ Kirim ke backend menggunakan API
-    const response = await api.post('/surat', payload);
+    // Kirim ke backend (tanpa headers Content-Type — biar axios set otomatis)
+    const response = await api.post('/surat', formDataToSend, {
+      headers: {
+        'Content-Type': 'multipart/form-data' // ✅ Wajib
+      }
+    });
 
-    console.log('✅ Response:', response.data);
-
-    // ✅ Tampilkan pesan sukses dengan nomor tiket
-    alert(
-      `Permohonan SKTM berhasil diajukan!\n\n` +
-      `No. Tiket: ${response.data.surat.noTiket}\n\n` +
-      `Silakan cek riwayat di menu "Surat Saya".`
-    );
-
-    // ✅ Redirect ke Surat Saya
+    alert(`✅ Pengajuan SKTM berhasil!\nNo. Tiket: ${response.data.surat.noTiket}`);
     router.push('/surat-saya');
 
   } catch (error) {
     console.error('❌ Error submitting SKTM:', error);
-
-    // ✅ Error handling yang informatif
-    const errorMessage = error.response?.data?.error
-      || error.response?.data?.message
-      || 'Gagal mengajukan surat. Silakan coba lagi.';
-
-    alert(`❌ ${errorMessage}`);
-
+    const msg = error.response?.data?.error || 'Gagal mengajukan surat. Silakan coba lagi.';
+    alert(`❌ ${msg}`);
   } finally {
     isSubmitting.value = false;
   }

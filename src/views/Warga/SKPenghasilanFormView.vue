@@ -475,7 +475,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'; // ✅ Tambahkan onMounted
+import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import api from '@/api';
 
@@ -519,13 +519,12 @@ const formData = ref({
   jadwalPengambilan: ''
 });
 
-// ✅ Tambahkan ini: Isi otomatis dari profil saat halaman dimuat
+// ✅ Isi otomatis dari profil saat halaman dimuat
 onMounted(async () => {
   try {
     const response = await api.get('/auth/profile');
     const user = response.data.user;
 
-    // Isi data diri dari profil — otomatis, tapi bisa diubah
     formData.value.namaLengkap = `${user.firstName} ${user.lastName}`;
     formData.value.nik = user.nik;
     formData.value.tempatLahir = user.tempatLahir || '';
@@ -540,7 +539,6 @@ onMounted(async () => {
 
   } catch (err) {
     console.error('Gagal muat profil:', err);
-    // Biarkan user isi manual — tidak menghentikan proses
   }
 });
 
@@ -586,19 +584,20 @@ const removeFile = (fileType) => {
   };
   const inputId = inputMap[fileType];
   if (inputId) {
-    document.getElementById(inputId).value = '';
+    const inputElement = document.getElementById(inputId);
+    if (inputElement) inputElement.value = '';
   }
 };
 
-// ------------------------------
-//      SUBMIT KE BACKEND
-// ------------------------------
+// ✅ INTEGRASI BACKEND - Upload file dengan FormData
 const handleSubmit = async () => {
+  // Validasi NIK
   if (formData.value.nik.length !== 16) {
     alert('NIK harus 16 digit!');
     return;
   }
 
+  // File wajib
   if (!formData.value.files.ktp || !formData.value.files.kk || !formData.value.files.buktiPenghasilan) {
     alert('Dokumen KTP, KK, dan Bukti Penghasilan wajib diunggah!');
     return;
@@ -607,32 +606,64 @@ const handleSubmit = async () => {
   isSubmitting.value = true;
 
   try {
-    const payload = {
-      jenisSurat: 'Surat Keterangan Penghasilan',
-      data: {
-        ...formData.value,
-        files: {
-          ktp: formData.value.files.ktp ? { name: formData.value.files.ktp.name, size: formData.value.files.ktp.size } : null,
-          kk: formData.value.files.kk ? { name: formData.value.files.kk.name, size: formData.value.files.kk.size } : null,
-          buktiPenghasilan: formData.value.files.buktiPenghasilan ? { name: formData.value.files.buktiPenghasilan.name, size: formData.value.files.buktiPenghasilan.size } : null,
-          pengantarRT: formData.value.files.pengantarRT ? { name: formData.value.files.pengantarRT.name, size: formData.value.files.pengantarRT.size } : null
-        }
-      }
-    };
+    // ✅ Buat FormData
+    const formDataToSend = new FormData();
 
-    const response = await api.post('/surat', payload);
+    formDataToSend.append('jenisSurat', 'Surat Keterangan Penghasilan');
+
+    // ✅ Data JSON tanpa files
+    const jsonData = {
+      namaLengkap: formData.value.namaLengkap,
+      nik: formData.value.nik,
+      tempatLahir: formData.value.tempatLahir,
+      tanggalLahir: formData.value.tanggalLahir,
+      jenisKelamin: formData.value.jenisKelamin,
+      agama: formData.value.agama,
+      statusPerkawinan: formData.value.statusPerkawinan,
+      pendidikan: formData.value.pendidikan,
+      nomorPonsel: formData.value.nomorPonsel,
+      kewarganegaraan: formData.value.kewarganegaraan,
+      alamatLengkap: formData.value.alamatLengkap,
+      pekerjaan: formData.value.pekerjaan,
+      bidangPekerjaan: formData.value.bidangPekerjaan,
+      namaPerusahaan: formData.value.namaPerusahaan,
+      alamatPerusahaan: formData.value.alamatPerusahaan,
+      penghasilanPerBulan: formData.value.penghasilanPerBulan,
+      lamaBekerja: formData.value.lamaBekerja,
+      sumberPenghasilan: formData.value.sumberPenghasilan,
+      tujuanPembuatan: formData.value.tujuanPembuatan,
+      metodePengambilan: formData.value.metodePengambilan,
+      jadwalPengambilan: formData.value.jadwalPengambilan
+    };
+    formDataToSend.append('data', JSON.stringify(jsonData));
+
+    // ✅ Append files
+    formDataToSend.append('files[ktp]', formData.value.files.ktp);
+    formDataToSend.append('files[kk]', formData.value.files.kk);
+    formDataToSend.append('files[buktiPenghasilan]', formData.value.files.buktiPenghasilan);
+
+    // Surat Pengantar RT opsional
+    if (formData.value.files.pengantarRT) {
+      formDataToSend.append('files[pengantarRT]', formData.value.files.pengantarRT);
+    }
+
+    // Kirim
+    const response = await api.post('/surat', formDataToSend, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
 
     alert(
       `✅ Permohonan Surat Keterangan Penghasilan berhasil diajukan!\n\n` +
       `No. Tiket: ${response.data.surat.noTiket}\n\n` +
-      `Silakan tunggu konfirmasi dari admin.`
+      `Silakan cek halaman "Surat Saya".`
     );
 
     router.push('/surat-saya');
 
   } catch (error) {
     console.error('❌ Error submit:', error);
-    alert('Gagal mengajukan surat. Silakan coba lagi.');
+    const msg = error.response?.data?.error || 'Gagal mengajukan surat. Silakan coba lagi.';
+    alert(`❌ ${msg}`);
   } finally {
     isSubmitting.value = false;
   }

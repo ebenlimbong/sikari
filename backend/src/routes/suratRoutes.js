@@ -4,13 +4,12 @@ const { protect } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-// Ajukan surat
-router.post('/', protect, createSurat);
+// ✅ Routes untuk surat
+router.post('/', protect, createSurat);        // POST /api/surat
+router.get('/me', protect, getMySurat);        // GET /api/surat/me
+router.get('/:id', protect, getSuratById);     // GET /api/surat/:id
 
-// Ambil semua surat milik user
-router.get('/me', protect, getMySurat);
-
-// Detail surat berdasarkan ID
-router.get('/:id', protect, getSuratById);
+// ❌ HAPUS BARIS INI (duplikat dan salah):
+// router.post('/surat', protect, upload.any(), createSurat);
 
 module.exports = router;

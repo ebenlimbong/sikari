@@ -464,17 +464,15 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import api from '@/api';
-import { onMounted } from 'vue';
-
 
 const router = useRouter();
 const isSubmitting = ref(false);
 
 const formData = ref({
-
+  // Data Pemohon (dari profil)
   namaLengkap: '',
   nik: '',
   tempatLahir: '',
@@ -487,13 +485,12 @@ const formData = ref({
   kewarganegaraan: 'Indonesia',
   alamatLengkap: '',
 
-
   // Data Anak
   namaAnak: '',
   jenisKelaminAnak: '',
-  tanggalLahir: '',
+  tanggalLahirAnak: '',  // ✅ Ubah nama field ini
   jamLahir: '',
-  tempatLahir: '',
+  tempatLahirAnak: '',   // ✅ Ubah nama field ini
   beratBadan: '',
   tinggiBadan: '',
   alamatLahir: '',
@@ -526,12 +523,12 @@ const formData = ref({
   jadwalPengambilan: ''
 });
 
+// ✅ Isi otomatis dari profil
 onMounted(async () => {
   try {
     const response = await api.get('/auth/profile');
     const user = response.data.user;
 
-    // Isi data pemohon dari profil user
     formData.value.namaLengkap = `${user.firstName} ${user.lastName}`;
     formData.value.nik = user.nik;
     formData.value.tempatLahir = user.tempatLahir || '';
@@ -540,7 +537,7 @@ onMounted(async () => {
     formData.value.agama = user.agama || '';
     formData.value.statusPerkawinan = user.statusPerkawinan || '';
     formData.value.pendidikan = user.pendidikan || '';
-    formData.value.nomorPonsel = user.phoneNumber.replace('+62', '').replace(/^0/, ''); // +62812...
+    formData.value.nomorPonsel = user.phoneNumber.replace('+62', '').replace(/^0/, '');
     formData.value.kewarganegaraan = user.kewarganegaraan || 'Indonesia';
     formData.value.alamatLengkap = user.alamatLengkap || '';
   } catch (err) {
@@ -548,7 +545,6 @@ onMounted(async () => {
   }
 });
 
-// DATE
 const today = computed(() => new Date().toISOString().split('T')[0]);
 
 const minDate = computed(() => {
@@ -557,7 +553,6 @@ const minDate = computed(() => {
   return d.toISOString().split('T')[0];
 });
 
-// HANDLE FILE
 const handleFileUpload = (event, fileType) => {
   const file = event.target.files[0];
   if (!file) return;
@@ -580,7 +575,6 @@ const handleFileUpload = (event, fileType) => {
 
 const removeFile = (fileType) => {
   formData.value.files[fileType] = null;
-
   const inputMap = {
     ktpAyah: "uploadKTPAyah",
     ktpIbu: "uploadKTPIbu",
@@ -588,14 +582,16 @@ const removeFile = (fileType) => {
     suratKelahiran: "uploadSuratKelahiran",
     bukuNikah: "uploadBukuNikah"
   };
-
   const id = inputMap[fileType];
-  if (id) document.getElementById(id).value = "";
+  if (id) {
+    const inputElement = document.getElementById(id);
+    if (inputElement) inputElement.value = "";
+  }
 };
 
-// SUBMIT
+// ✅ INTEGRASI BACKEND - Upload file dengan FormData
 const handleSubmit = async () => {
-  // VALIDASI NIK
+  // Validasi NIK
   if (formData.value.nikAyah.length !== 16) {
     alert("NIK Ayah harus 16 digit");
     return;
@@ -605,7 +601,7 @@ const handleSubmit = async () => {
     return;
   }
 
-  // FILE WAJIB
+  // File wajib
   const requiredFiles = ["ktpAyah", "ktpIbu", "kk", "suratKelahiran"];
   for (const k of requiredFiles) {
     if (!formData.value.files[k]) {
@@ -623,42 +619,79 @@ const handleSubmit = async () => {
   isSubmitting.value = true;
 
   try {
-    const payload = {
-      jenisSurat: "Surat Keterangan Kelahiran",
-      data: {
-        ...formData.value,
-        files: {
-          ktpAyah: formData.value.files.ktpAyah
-            ? { name: formData.value.files.ktpAyah.name, size: formData.value.files.ktpAyah.size }
-            : null,
-          ktpIbu: formData.value.files.ktpIbu
-            ? { name: formData.value.files.ktpIbu.name, size: formData.value.files.ktpIbu.size }
-            : null,
-          kk: formData.value.files.kk
-            ? { name: formData.value.files.kk.name, size: formData.value.files.kk.size }
-            : null,
-          suratKelahiran: formData.value.files.suratKelahiran
-            ? { name: formData.value.files.suratKelahiran.name, size: formData.value.files.suratKelahiran.size }
-            : null,
-          bukuNikah: formData.value.files.bukuNikah
-            ? { name: formData.value.files.bukuNikah.name, size: formData.value.files.bukuNikah.size }
-            : null
-        }
-      }
+    // ✅ Buat FormData
+    const formDataToSend = new FormData();
+
+    formDataToSend.append('jenisSurat', 'Surat Keterangan Kelahiran');
+
+    // ✅ Data JSON tanpa files
+    const jsonData = {
+      // Data Pemohon
+      namaLengkap: formData.value.namaLengkap,
+      nik: formData.value.nik,
+      tempatLahir: formData.value.tempatLahir,
+      tanggalLahir: formData.value.tanggalLahir,
+      jenisKelamin: formData.value.jenisKelamin,
+      agama: formData.value.agama,
+      statusPerkawinan: formData.value.statusPerkawinan,
+      pendidikan: formData.value.pendidikan,
+      nomorPonsel: formData.value.nomorPonsel,
+      kewarganegaraan: formData.value.kewarganegaraan,
+      alamatLengkap: formData.value.alamatLengkap,
+
+      // Data Anak
+      namaAnak: formData.value.namaAnak,
+      jenisKelaminAnak: formData.value.jenisKelaminAnak,
+      tanggalLahirAnak: formData.value.tanggalLahirAnak,
+      jamLahir: formData.value.jamLahir,
+      tempatLahirAnak: formData.value.tempatLahirAnak,
+      beratBadan: formData.value.beratBadan,
+      tinggiBadan: formData.value.tinggiBadan,
+      alamatLahir: formData.value.alamatLahir,
+
+      // Data Orang Tua
+      namaAyah: formData.value.namaAyah,
+      nikAyah: formData.value.nikAyah,
+      umurAyah: formData.value.umurAyah,
+      pekerjaanAyah: formData.value.pekerjaanAyah,
+      alamatAyah: formData.value.alamatAyah,
+      namaIbu: formData.value.namaIbu,
+      nikIbu: formData.value.nikIbu,
+      umurIbu: formData.value.umurIbu,
+      pekerjaanIbu: formData.value.pekerjaanIbu,
+      alamatIbu: formData.value.alamatIbu,
+      statusPernikahan: formData.value.statusPernikahan,
+      tanggalPernikahan: formData.value.tanggalPernikahan,
+
+      // Pengambilan
+      metodePengambilan: formData.value.metodePengambilan,
+      jadwalPengambilan: formData.value.jadwalPengambilan
     };
+    formDataToSend.append('data', JSON.stringify(jsonData));
 
-    console.log("📤 Payload SK Kelahiran:", payload);
+    // ✅ Append files
+    formDataToSend.append('files[ktpAyah]', formData.value.files.ktpAyah);
+    formDataToSend.append('files[ktpIbu]', formData.value.files.ktpIbu);
+    formDataToSend.append('files[kk]', formData.value.files.kk);
+    formDataToSend.append('files[suratKelahiran]', formData.value.files.suratKelahiran);
 
-    const response = await api.post("/surat", payload);
+    // Buku nikah opsional
+    if (formData.value.files.bukuNikah) {
+      formDataToSend.append('files[bukuNikah]', formData.value.files.bukuNikah);
+    }
 
-    alert(
-      `✅ Pengajuan berhasil!\nNo. Tiket: ${response.data.surat.noTiket}`
-    );
+    // Kirim
+    const response = await api.post("/surat", formDataToSend, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
 
+    alert(`✅ Pengajuan Surat Keterangan Kelahiran berhasil!\nNo. Tiket: ${response.data.surat.noTiket}\n\nSilakan cek halaman "Surat Saya".`);
     router.push("/surat-saya");
+
   } catch (err) {
     console.error("❌ Error submit:", err);
-    alert("Gagal mengajukan surat, silakan coba lagi.");
+    const msg = err.response?.data?.error || 'Gagal mengajukan surat, silakan coba lagi.';
+    alert(`❌ ${msg}`);
   } finally {
     isSubmitting.value = false;
   }
@@ -670,6 +703,7 @@ const handleCancel = () => {
   }
 };
 </script>
+
 
 <style scoped>
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');

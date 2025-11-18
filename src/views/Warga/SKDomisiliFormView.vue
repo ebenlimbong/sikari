@@ -490,7 +490,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'; // ✅ Tambahkan onMounted
+import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import api from '@/api';
 
@@ -536,13 +536,12 @@ const formData = ref({
   jadwalPengambilan: ''
 });
 
-// ✅ Tambahkan ini: Isi otomatis dari profil saat halaman dimuat
+// ✅ Isi otomatis dari profil saat halaman dimuat
 onMounted(async () => {
   try {
     const response = await api.get('/auth/profile');
     const user = response.data.user;
 
-    // Isi data diri dari profil — otomatis, tapi bisa diubah
     formData.value.namaLengkap = `${user.firstName} ${user.lastName}`;
     formData.value.nik = user.nik;
     formData.value.tempatLahir = user.tempatLahir || '';
@@ -556,11 +555,9 @@ onMounted(async () => {
 
   } catch (err) {
     console.error('Gagal muat profil:', err);
-    // Biarkan user isi manual — tidak menghentikan proses
   }
 });
 
-// Min date for jadwal pengambilan (3 hari dari sekarang)
 const minDate = computed(() => {
   const date = new Date();
   date.setDate(date.getDate() + 3);
@@ -592,7 +589,6 @@ const handleFileUpload = (event, fileType) => {
 
 const removeFile = (fileType) => {
   formData.value.files[fileType] = null;
-  // Reset input file
   const inputMap = {
     ktp: 'uploadKTP',
     kk: 'uploadKK',
@@ -605,6 +601,7 @@ const removeFile = (fileType) => {
   }
 };
 
+// ✅ INTEGRASI BACKEND - Upload file dengan FormData
 const handleSubmit = async () => {
   // Validasi NIK
   if (formData.value.nik.length !== 16) {
@@ -621,29 +618,62 @@ const handleSubmit = async () => {
   isSubmitting.value = true;
 
   try {
-    // Siapkan data untuk dikirim ke backend
-    const payload = {
-      jenisSurat: 'Surat Keterangan Domisili',
-      data: { // <-- KEY UTAMA: 'data'
-        ...formData.value,
-        // Simpan metadata file (name & size), bukan objek File
-        files: {
-          ktp: formData.value.files.ktp ? { name: formData.value.files.ktp.name, size: formData.value.files.ktp.size } : null,
-          kk: formData.value.files.kk ? { name: formData.value.files.kk.name, size: formData.value.files.kk.size } : null,
-          buktiRumah: formData.value.files.buktiRumah ? { name: formData.value.files.buktiRumah.name, size: formData.value.files.buktiRumah.size } : null,
-          pengantarRT: formData.value.files.pengantarRT ? { name: formData.value.files.pengantarRT.name, size: formData.value.files.pengantarRT.size } : null
-        }
-      }
+    // ✅ Buat FormData untuk upload file
+    const formDataToSend = new FormData();
+
+    // Tambahkan jenis surat
+    formDataToSend.append('jenisSurat', 'Surat Keterangan Domisili');
+
+    // ✅ Tambahkan data JSON (tanpa files)
+    const jsonData = {
+      namaLengkap: formData.value.namaLengkap,
+      nik: formData.value.nik,
+      tempatLahir: formData.value.tempatLahir,
+      tanggalLahir: formData.value.tanggalLahir,
+      jenisKelamin: formData.value.jenisKelamin,
+      agama: formData.value.agama,
+      statusPerkawinan: formData.value.statusPerkawinan,
+      pekerjaan: formData.value.pekerjaan,
+      kewarganegaraan: formData.value.kewarganegaraan,
+      nomorPonsel: formData.value.nomorPonsel,
+      alamatDomisili: formData.value.alamatDomisili,
+      rt: formData.value.rt,
+      rw: formData.value.rw,
+      desa: formData.value.desa,
+      kecamatan: formData.value.kecamatan,
+      kabupaten: formData.value.kabupaten,
+      provinsi: formData.value.provinsi,
+      kodePos: formData.value.kodePos,
+      lamaTinggal: formData.value.lamaTinggal,
+      statusTempatTinggal: formData.value.statusTempatTinggal,
+      tujuanPembuatan: formData.value.tujuanPembuatan,
+      metodePengambilan: formData.value.metodePengambilan,
+      jadwalPengambilan: formData.value.jadwalPengambilan
     };
+    formDataToSend.append('data', JSON.stringify(jsonData));
+
+    // ✅ Tambahkan file satu per satu
+    formDataToSend.append('files[ktp]', formData.value.files.ktp);
+    formDataToSend.append('files[kk]', formData.value.files.kk);
+    formDataToSend.append('files[buktiRumah]', formData.value.files.buktiRumah);
+
+    // Pengantar RT opsional
+    if (formData.value.files.pengantarRT) {
+      formDataToSend.append('files[pengantarRT]', formData.value.files.pengantarRT);
+    }
 
     // Kirim ke backend
-    const response = await api.post('/surat', payload);
+    const response = await api.post('/surat', formDataToSend, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
 
-    alert(`✅ Permohonan berhasil!\n\nNo. Tiket: ${response.data.surat.noTiket}\n\nSilakan cek riwayat di menu "Surat Saya".`);
+    alert(`✅ Permohonan Surat Keterangan Domisili berhasil!\n\nNo. Tiket: ${response.data.surat.noTiket}\n\nSilakan cek riwayat di menu "Surat Saya".`);
     router.push('/surat-saya');
 
   } catch (error) {
-    console.error('❌ Gagal mengajukan surat:', error.response?.data || error.message);
+    console.error('❌ Gagal mengajukan surat:', error);
     const msg = error.response?.data?.error || 'Gagal mengajukan surat. Silakan coba lagi.';
     alert(`❌ ${msg}`);
   } finally {
@@ -657,6 +687,7 @@ const handleCancel = () => {
   }
 };
 </script>
+
 
 <style scoped>
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');

@@ -505,9 +505,9 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import api from '@/api'; // ← pastikan sama seperti file lain yang sudah jalan
+import api from '@/api';
 
 const router = useRouter();
 const isSubmitting = ref(false);
@@ -536,7 +536,7 @@ const formData = ref({
   deskripsiUsaha: '',
   tujuanPembuatan: '',
 
-  // Files (disimpan sebagai File object, nanti diubah jadi metadata saat kirim)
+  // Files
   files: {
     ktp: null,
     kk: null,
@@ -550,7 +550,27 @@ const formData = ref({
   jadwalPengambilan: ''
 });
 
-// Minimal 3 hari dari sekarang
+// ✅ Isi otomatis dari profil saat halaman dimuat
+onMounted(async () => {
+  try {
+    const response = await api.get('/auth/profile');
+    const user = response.data.user;
+
+    formData.value.namaLengkap = `${user.firstName} ${user.lastName}`;
+    formData.value.nik = user.nik;
+    formData.value.tempatLahir = user.tempatLahir || '';
+    formData.value.tanggalLahir = user.tanggalLahir ? new Date(user.tanggalLahir).toISOString().split('T')[0] : '';
+    formData.value.jenisKelamin = user.jenisKelamin || '';
+    formData.value.agama = user.agama || '';
+    formData.value.pendidikan = user.pendidikan || '';
+    formData.value.nomorPonsel = user.phoneNumber.replace('+62', '').replace(/^0/, '');
+    formData.value.alamatPemohon = user.alamatLengkap || '';
+
+  } catch (err) {
+    console.error('Gagal muat profil:', err);
+  }
+});
+
 const minDate = computed(() => {
   const date = new Date();
   date.setDate(date.getDate() + 3);
@@ -566,23 +586,19 @@ const handleFileUpload = (event, fileType) => {
   const file = event.target.files[0];
   if (!file) return;
 
-  // Validasi ukuran
   if (file.size > 2 * 1024 * 1024) {
     alert('Ukuran file terlalu besar! Maksimal 2MB');
     event.target.value = '';
     return;
   }
 
-  // Validasi tipe
   const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
-  // khusus fotoUsaha cuma boleh image, tapi ini masih aman (PDF nggak dikasih user)
   if (!allowedTypes.includes(file.type)) {
     alert('Format file tidak didukung! Gunakan PDF, JPG, atau PNG');
     event.target.value = '';
     return;
   }
 
-  // Simpan File object (bukan metadata dulu)
   formData.value.files[fileType] = file;
 };
 
@@ -602,6 +618,7 @@ const removeFile = (fileType) => {
   }
 };
 
+// ✅ INTEGRASI BACKEND - Upload file dengan FormData
 const handleSubmit = async () => {
   // Validasi NIK
   if (formData.value.nik.length !== 16) {
@@ -623,51 +640,64 @@ const handleSubmit = async () => {
   isSubmitting.value = true;
 
   try {
-    // Payload sesuai kontrak backend: { jenisSurat, data }
-    const payload = {
-      jenisSurat: 'Surat Keterangan Usaha',
-      data: {
-        ...formData.value,
-        // Ubah File → metadata sederhana (name & size) sebelum dikirim
-        files: {
-          ktp: formData.value.files.ktp
-            ? { name: formData.value.files.ktp.name, size: formData.value.files.ktp.size }
-            : null,
-          kk: formData.value.files.kk
-            ? { name: formData.value.files.kk.name, size: formData.value.files.kk.size }
-            : null,
-          fotoUsaha: formData.value.files.fotoUsaha
-            ? { name: formData.value.files.fotoUsaha.name, size: formData.value.files.fotoUsaha.size }
-            : null,
-          buktiTempat: formData.value.files.buktiTempat
-            ? { name: formData.value.files.buktiTempat.name, size: formData.value.files.buktiTempat.size }
-            : null,
-          pengantarRT: formData.value.files.pengantarRT
-            ? { name: formData.value.files.pengantarRT.name, size: formData.value.files.pengantarRT.size }
-            : null
-        }
-      }
+    // ✅ Buat FormData
+    const formDataToSend = new FormData();
+
+    formDataToSend.append('jenisSurat', 'Surat Keterangan Usaha');
+
+    // ✅ Data JSON tanpa files
+    const jsonData = {
+      namaLengkap: formData.value.namaLengkap,
+      nik: formData.value.nik,
+      tempatLahir: formData.value.tempatLahir,
+      tanggalLahir: formData.value.tanggalLahir,
+      jenisKelamin: formData.value.jenisKelamin,
+      agama: formData.value.agama,
+      pendidikan: formData.value.pendidikan,
+      nomorPonsel: formData.value.nomorPonsel,
+      alamatPemohon: formData.value.alamatPemohon,
+      namaUsaha: formData.value.namaUsaha,
+      jenisUsaha: formData.value.jenisUsaha,
+      bidangUsaha: formData.value.bidangUsaha,
+      modalUsaha: formData.value.modalUsaha,
+      jumlahKaryawan: formData.value.jumlahKaryawan,
+      tanggalMulaiUsaha: formData.value.tanggalMulaiUsaha,
+      statusTempat: formData.value.statusTempat,
+      alamatUsaha: formData.value.alamatUsaha,
+      deskripsiUsaha: formData.value.deskripsiUsaha,
+      tujuanPembuatan: formData.value.tujuanPembuatan,
+      metodePengambilan: formData.value.metodePengambilan,
+      jadwalPengambilan: formData.value.jadwalPengambilan
     };
+    formDataToSend.append('data', JSON.stringify(jsonData));
 
-    console.log('📤 Payload SK Usaha:', payload);
+    // ✅ Append files
+    formDataToSend.append('files[ktp]', formData.value.files.ktp);
+    formDataToSend.append('files[kk]', formData.value.files.kk);
+    formDataToSend.append('files[fotoUsaha]', formData.value.files.fotoUsaha);
+    formDataToSend.append('files[buktiTempat]', formData.value.files.buktiTempat);
 
-    const response = await api.post('/surat', payload);
-    console.log('✅ Response SK Usaha:', response.data);
+    // Surat Pengantar RT opsional
+    if (formData.value.files.pengantarRT) {
+      formDataToSend.append('files[pengantarRT]', formData.value.files.pengantarRT);
+    }
 
-    // Backend kamu kirim: { success, message, surat: { noTiket, jenisSurat, tanggalPengajuan } }
+    // Kirim
+    const response = await api.post('/surat', formDataToSend, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+
     alert(
       `✅ Permohonan Surat Keterangan Usaha berhasil diajukan!\n\n` +
       `No. Tiket: ${response.data.surat.noTiket}\n\n` +
-      `Silakan cek riwayat di menu "Surat Saya".`
+      `Silakan cek halaman "Surat Saya".`
     );
 
     router.push('/surat-saya');
+
   } catch (error) {
     console.error('❌ Error submit SK Usaha:', error);
-    const msg =
-      error.response?.data?.error ||
-      error.response?.data?.message ||
-      'Gagal mengajukan surat. Silakan coba lagi.';
+    const msg = error.response?.data?.error || 'Gagal mengajukan surat. Silakan coba lagi.';
     alert(`❌ ${msg}`);
   } finally {
     isSubmitting.value = false;
@@ -680,6 +710,7 @@ const handleCancel = () => {
   }
 };
 </script>
+
 
 <style scoped>
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');

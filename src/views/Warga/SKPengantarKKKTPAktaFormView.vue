@@ -592,7 +592,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'; // ✅ Tambahkan onMounted
+import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import api from '@/api';
 
@@ -658,13 +658,12 @@ const formData = ref({
   jadwalPengambilan: ''
 });
 
-// ✅ Tambahkan ini: Isi otomatis dari profil saat halaman dimuat
+// ✅ Isi otomatis dari profil
 onMounted(async () => {
   try {
     const response = await api.get('/auth/profile');
     const user = response.data.user;
 
-    // Isi data diri dari profil — otomatis, tapi bisa diubah
     formData.value.namaLengkap = `${user.firstName} ${user.lastName}`;
     formData.value.nik = user.nik;
     formData.value.tempatLahir = user.tempatLahir || '';
@@ -674,15 +673,15 @@ onMounted(async () => {
     formData.value.statusPerkawinan = user.statusPerkawinan || '';
     formData.value.pekerjaan = user.pekerjaan || '';
     formData.value.kewarganegaraan = user.kewarganegaraan || 'Indonesia';
+    // ✅ PERBAIKAN: Hapus karakter tambahan
     formData.value.nomorPonsel = user.phoneNumber.replace('+62', '').replace(/^0/, '');
     formData.value.alamatKTP = user.alamatLengkap || '';
   } catch (err) {
     console.error('Gagal muat profil:', err);
-    // Biarkan user isi manual — tidak menghentikan proses
   }
 });
 
-// COMPUTED
+// ✅ PERBAIKAN: Syntax new Date()
 const today = computed(() => new Date().toISOString().split('T')[0]);
 
 const minDate = computed(() => {
@@ -691,7 +690,6 @@ const minDate = computed(() => {
   return date.toISOString().split('T')[0];
 });
 
-// RESET DATA TAMBAHAN
 const resetData = (type) => {
   if (type === 'kk') {
     formData.value.dataTambahan.kk = {
@@ -719,7 +717,6 @@ const resetData = (type) => {
   }
 };
 
-// FILE UPLOAD
 const handleFileUpload = (event, fileType) => {
   const file = event.target.files[0];
   if (!file) return;
@@ -740,10 +737,8 @@ const handleFileUpload = (event, fileType) => {
   formData.value.files[fileType] = file;
 };
 
-// REMOVE FILE
 const removeFile = (fileType) => {
   formData.value.files[fileType] = null;
-
   const inputMap = {
     ktpPemohon: 'uploadKTPPemohon',
     kk: 'uploadKK',
@@ -751,12 +746,14 @@ const removeFile = (fileType) => {
     suratKelahiran: 'uploadSuratKelahiran',
     dokumenTambahan: 'uploadDokumenTambahan'
   };
-
   const inputId = inputMap[fileType];
-  if (inputId) document.getElementById(inputId).value = '';
+  if (inputId) {
+    const inputElement = document.getElementById(inputId);
+    if (inputElement) inputElement.value = '';
+  }
 };
 
-// SUBMIT
+// ✅ INTEGRASI BACKEND - Upload file dengan FormData
 const handleSubmit = async () => {
   // Validasi NIK
   if (formData.value.nik.length !== 16) {
@@ -785,10 +782,7 @@ const handleSubmit = async () => {
   }
 
   // Wajib surat kelahiran jika pilih akta
-  if (
-    formData.value.jenisDokumen.aktaKelahiran &&
-    !formData.value.files.suratKelahiran
-  ) {
+  if (formData.value.jenisDokumen.aktaKelahiran && !formData.value.files.suratKelahiran) {
     alert('Surat Keterangan Kelahiran wajib diunggah untuk pengajuan Akta Kelahiran.');
     return;
   }
@@ -796,54 +790,68 @@ const handleSubmit = async () => {
   isSubmitting.value = true;
 
   try {
-    const payload = {
-      jenisSurat: 'Surat Pengantar KK, KTP, dan Akta Lahir',
-      data: {
-        ...formData.value,
-        files: {
-          ktpPemohon: formData.value.files.ktpPemohon
-            ? { name: formData.value.files.ktpPemohon.name, size: formData.value.files.ktpPemohon.size }
-            : null,
-          kk: formData.value.files.kk
-            ? { name: formData.value.files.kk.name, size: formData.value.files.kk.size }
-            : null,
-          pengantarRT: formData.value.files.pengantarRT
-            ? { name: formData.value.files.pengantarRT.name, size: formData.value.files.pengantarRT.size }
-            : null,
-          suratKelahiran: formData.value.files.suratKelahiran
-            ? { name: formData.value.files.suratKelahiran.name, size: formData.value.files.suratKelahiran.size }
-            : null,
-          dokumenTambahan: formData.value.files.dokumenTambahan
-            ? { name: formData.value.files.dokumenTambahan.name, size: formData.value.files.dokumenTambahan.size }
-            : null
-        }
-      }
+    // ✅ Buat FormData
+    const formDataToSend = new FormData();
+
+    formDataToSend.append('jenisSurat', 'Surat Pengantar KK, KTP, dan Akta Lahir');
+
+    // ✅ Data JSON tanpa files
+    const jsonData = {
+      namaLengkap: formData.value.namaLengkap,
+      nik: formData.value.nik,
+      tempatLahir: formData.value.tempatLahir,
+      tanggalLahir: formData.value.tanggalLahir,
+      jenisKelamin: formData.value.jenisKelamin,
+      agama: formData.value.agama,
+      statusPerkawinan: formData.value.statusPerkawinan,
+      pekerjaan: formData.value.pekerjaan,
+      kewarganegaraan: formData.value.kewarganegaraan,
+      nomorPonsel: formData.value.nomorPonsel,
+      alamatKTP: formData.value.alamatKTP,
+      jenisDokumen: formData.value.jenisDokumen,
+      dataTambahan: formData.value.dataTambahan,
+      metodePengambilan: formData.value.metodePengambilan,
+      jadwalPengambilan: formData.value.jadwalPengambilan
     };
+    formDataToSend.append('data', JSON.stringify(jsonData));
 
-    const response = await api.post('/surat', payload);
+    // ✅ Append files
+    formDataToSend.append('files[ktpPemohon]', formData.value.files.ktpPemohon);
+    formDataToSend.append('files[kk]', formData.value.files.kk);
+    formDataToSend.append('files[pengantarRT]', formData.value.files.pengantarRT);
 
-    alert(
-      `✅ Pengajuan berhasil!\n\n` +
-      `No. Tiket: ${response.data.surat.noTiket}\n\n` +
-      `Silakan cek halaman "Surat Saya".`
-    );
+    if (formData.value.files.suratKelahiran) {
+      formDataToSend.append('files[suratKelahiran]', formData.value.files.suratKelahiran);
+    }
 
+    if (formData.value.files.dokumenTambahan) {
+      formDataToSend.append('files[dokumenTambahan]', formData.value.files.dokumenTambahan);
+    }
+
+    // Kirim
+    const response = await api.post('/surat', formDataToSend, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+
+    alert(`✅ Pengajuan Surat Pengantar berhasil!\nNo. Tiket: ${response.data.surat.noTiket}\n\nSilakan cek halaman "Surat Saya".`);
     router.push('/surat-saya');
+
   } catch (error) {
     console.error('❌ Error submit:', error);
-    alert('Gagal mengajukan surat. Silakan coba lagi.');
+    const msg = error.response?.data?.error || 'Gagal mengajukan surat. Silakan coba lagi.';
+    alert(`❌ ${msg}`);
   } finally {
     isSubmitting.value = false;
   }
 };
 
-// CANCEL
 const handleCancel = () => {
   if (confirm('Batalkan pengajuan?')) {
     router.push('/ajukan-surat');
   }
 };
 </script>
+
 
 <style scoped>
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
