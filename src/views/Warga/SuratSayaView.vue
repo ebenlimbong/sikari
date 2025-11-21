@@ -259,8 +259,6 @@ const getStatusClass = (status) => {
 const openDetail = async (surat) => {
   try {
     const response = await api.get(`/surat/${surat.id}`);
-    console.log('✅ Detail response:', response.data); // ✅ Untuk debug
-
     if (!response.data?.surat) {
       throw new Error('Respons tidak mengandung surat');
     }

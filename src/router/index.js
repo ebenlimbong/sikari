@@ -7,7 +7,6 @@ import RegisterView from '@/views/Auth/RegisterView.vue'
 import WargaDashboard from '@/views/Warga/WargaDashboard.vue'
 import SuratSayaView from '@/views/Warga/SuratSayaView.vue'
 import ProfilView from '@/views/Warga/ProfilView.vue'
-import BantuanView from '@/views/Warga/BantuanView.vue'
 import AjjukanSurat from '@/views/Warga/AjjukanSurat.vue'
 
 
@@ -49,12 +48,6 @@ const router = createRouter({
       path: '/surat-saya',
       name: 'surat-saya',
       component: SuratSayaView,
-      meta: { requiresAuth: true }
-    },
-    {
-      path: '/bantuan',
-      name: 'bantuan',
-      component: BantuanView,
       meta: { requiresAuth: true }
     },
      {

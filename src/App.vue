@@ -4,7 +4,7 @@
     <AppLayout v-if="isAuthenticatedRoute">
       <router-view />
     </AppLayout>
-    
+
     <!-- Tanpa Layout: Untuk halaman publik (Home, Login, Register) -->
     <router-view v-else />
   </div>
@@ -23,12 +23,12 @@ const authenticatedRoutes = [
   '/ajukan-surat',
   '/surat-saya',
   '/profil',
-  '/bantuan'
+  // '/bantuan' removed
 ];
 
 // Cek apakah rute saat ini perlu layout
 const isAuthenticatedRoute = computed(() => {
-  return authenticatedRoutes.some(authRoute => 
+  return authenticatedRoutes.some(authRoute =>
     route.path.startsWith(authRoute)
   );
 });

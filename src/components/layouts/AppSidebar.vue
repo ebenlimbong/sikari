@@ -58,11 +58,6 @@
         </router-link>
 
         <p class="nav-label" v-show="!isCollapsed" style="margin-top: 2rem;">LAINNYA</p>
-
-        <router-link to="/bantuan" class="nav-item" active-class="is-active">
-          <span class="material-icons">help_outline</span>
-          <span class="nav-text" v-show="!isCollapsed">Bantuan</span>
-        </router-link>
       </template>
     </nav>
 
