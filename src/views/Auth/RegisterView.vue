@@ -20,74 +20,78 @@
       <form @submit.prevent="handleRegistration">
         <!-- Nama Depan & Belakang -->
         <div class="form-row">
-          <BaseInput 
-            label="Nama Depan" 
-            type="text" 
-            v-model="formData.firstName" 
+          <BaseInput
+            label="Nama Depan"
+            type="text"
+            v-model="formData.firstName"
             placeholder="Nama depan"
             required
           />
-          <BaseInput 
-            label="Nama Belakang" 
-            type="text" 
-            v-model="formData.lastName" 
+          <BaseInput
+            label="Nama Belakang"
+            type="text"
+            v-model="formData.lastName"
             placeholder="Nama belakang"
             required
           />
         </div>
 
         <!-- Username -->
-        <BaseInput 
-          label="Username" 
-          type="text" 
-          v-model="formData.username" 
+        <BaseInput
+          label="Username"
+          type="text"
+          v-model="formData.username"
           placeholder="Masukkan username Anda"
-          required 
+          required
         />
 
         <!-- Nomor Telepon -->
-        <BaseInput 
-          label="Nomor Telepon" 
-          type="tel" 
-          v-model="formData.phoneNumber" 
+        <BaseInput
+          label="Nomor Telepon"
+          type="tel"
+          v-model="formData.phoneNumber"
           placeholder="Contoh: 08123456789"
-          required 
+          required
         />
 
         <!-- NIK -->
-        <BaseInput 
-          label="NIK (Nomor Induk Kependudukan)" 
-          type="text" 
-          v-model="formData.nik" 
+        <BaseInput
+          label="NIK (Nomor Induk Kependudukan)"
+          type="text"
+          v-model="formData.nik"
+          maxlength="16"
+          :toggle-password="false"
           placeholder="Masukkan NIK Anda"
-          required 
+          required
         />
 
         <!-- Kode Registrasi -->
-        <BaseInput 
-          label="Kode Registrasi" 
-          type="text" 
-          v-model="formData.registrationCode" 
+        <BaseInput
+          label="Kode Registrasi"
+          type="text"
+          v-model="formData.registrationCode"
           placeholder="Masukkan kode registrasi dari desa"
-          required 
+          required
         />
 
         <!-- Password -->
-        <BaseInput 
-          label="Password" 
-          type="password" 
-          v-model="formData.password" 
+        <BaseInput
+          label="Password"
+          type="password"
+          v-model="formData.password"
           placeholder="Buat password yang kuat"
-          required 
+          required
+          :toggle-password="true"
         />
 
         <!-- Konfirmasi Password -->
-        <BaseInput 
-          label="Konfirmasi Password" 
-          type="password" 
-          v-model="formData.password_confirmation" 
+        <BaseInput
+          label="Konfirmasi Password"
+          type="password"
+          v-model="formData.password_confirmation"
           placeholder="Ulangi password Anda"
-          required 
+          required
+          :toggle-password="true"
         />
 
         <!-- Agreement Checkbox -->
@@ -114,24 +118,33 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import BaseInput from '@/components/global/BaseInput.vue'; 
+import BaseInput from '@/components/global/BaseInput.vue';
 import api from '@/api';
 
 const router = useRouter();
 const formData = ref({
-  firstName: '', 
-  lastName: '', 
-  username: '', 
-  phoneNumber: '', 
+  firstName: '',
+  lastName: '',
+  username: '',
+  phoneNumber: '',
   nik: '',
-  registrationCode: '', 
-  password: '', 
-  password_confirmation: '', 
+  registrationCode: '',
+  password: '',
+  password_confirmation: '',
   agreedToTerms: false,
 });
 const isLoading = ref(false);
+
+// sanitize NIK input: hanya angka, maksimal 16 karakter
+watch(() => formData.value.nik, (newVal) => {
+  if (newVal == null) return;
+  const digits = String(newVal).replace(/\D+/g, '').slice(0, 16);
+  if (digits !== String(newVal)) {
+    formData.value.nik = digits;
+  }
+});
 
 const handleRegistration = async () => {
   if (!formData.value.agreedToTerms) {
@@ -141,6 +154,19 @@ const handleRegistration = async () => {
 
   if (formData.value.password !== formData.value.password_confirmation) {
     alert('Password dan konfirmasi password tidak cocok.');
+    return;
+  }
+
+  // Validasi NIK harus 16 karakter (angka)
+  const nikValue = String(formData.value.nik || '');
+  if (nikValue.length !== 16) {
+    alert('NIK harus terdiri dari 16 digit.');
+    return;
+  }
+
+  // Validasi password minimal 6 karakter
+  if (!formData.value.password || formData.value.password.length < 6) {
+    alert('Password minimal 6 karakter.');
     return;
   }
 

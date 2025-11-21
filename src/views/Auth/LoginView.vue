@@ -22,10 +22,10 @@
       <form @submit.prevent="handleLogin">
         <div class="form-group">
           <label for="username">Email atau Username</label>
-          <input 
-            type="text" 
+          <input
+            type="text"
             id="username"
-            v-model="formData.username" 
+            v-model="formData.username"
             placeholder="Masukkan email atau username"
             required
           />
@@ -33,13 +33,18 @@
 
         <div class="form-group">
           <label for="password">Password</label>
-          <input 
-            type="password" 
-            id="password"
-            v-model="formData.password" 
-            placeholder="Masukkan password"
-            required
-          />
+          <div class="input-with-icon">
+            <input
+              :type="showPassword ? 'text' : 'password'"
+              id="password"
+              v-model="formData.password"
+              placeholder="Masukkan password"
+              required
+            />
+            <button type="button" class="pwd-toggle" @click="showPassword = !showPassword" :aria-label="showPassword ? 'Sembunyikan password' : 'Tampilkan password'">
+              <span class="material-icons">{{ showPassword ? 'visibility_off' : 'visibility' }}</span>
+            </button>
+          </div>
         </div>
 
         <div class="form-options">
@@ -78,6 +83,7 @@ const formData = ref({
 const isLoading = ref(false);
 const errorMessage = ref('');
 const successMessage = ref('');
+const showPassword = ref(false);
 
 const handleLogin = async () => {
   errorMessage.value = '';
@@ -238,6 +244,20 @@ h2 {
   font-size: 0.95rem;
   transition: all 0.2s;
 }
+
+.input-with-icon { position: relative; }
+.input-with-icon input { width: 100%; }
+.input-with-icon .pwd-toggle {
+  position: absolute;
+  right: 0.6rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+}
+.input-with-icon .pwd-toggle .material-icons { font-size: 1.15rem; color: #666; }
 
 .form-group input:focus {
   outline: none;

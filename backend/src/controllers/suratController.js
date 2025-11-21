@@ -4,6 +4,7 @@ const prisma = new PrismaClient();
 
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 
 // --------------------------------------------------
 // 1. KONFIGURASI MULTER
@@ -81,7 +82,7 @@ exports.createSurat = async (req, res) => {
         };
       });
 
-      
+
       // --------------------------------------------------
       // Generate No Tiket
       // --------------------------------------------------
@@ -181,7 +182,11 @@ exports.getSuratById = async (req, res) => {
         waktuSelesai: true,
         createdAt: true,
         updatedAt: true,
-        userId: true
+        userId: true,
+        // ✅ Tambahkan ini agar user bisa lihat file surat selesai
+        fileSuratSelesai: true,
+        uploadedBy: true,
+        uploadedAt: true
       }
     });
 
@@ -202,5 +207,107 @@ exports.getSuratById = async (req, res) => {
   } catch (error) {
     console.error('❌ Error fetching surat by ID:', error);
     res.status(500).json({ success: false, error: 'Gagal memuat detail surat' });
+  }
+};
+
+
+// /backend/src/controllers/suratController.js
+exports.downloadSuratSelesai = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const surat = await prisma.surat.findUnique({
+      where: { id }
+    });
+
+    if (!surat || !surat.fileSuratSelesai) {
+      return res.status(404).json({
+        success: false,
+        error: 'Surat atau file tidak ditemukan'
+      });
+    }
+
+    // Build path to uploads/surat-selesai/<filename>
+    const filename = path.basename(surat.fileSuratSelesai);
+    const filePath = path.join(__dirname, '../../uploads/surat-selesai', filename);
+
+    // Cek apakah file ada
+    try {
+      await fs.promises.access(filePath);
+    } catch (err) {
+      return res.status(404).json({
+        success: false,
+        error: 'File tidak ditemukan di server'
+      });
+    }
+
+    // Set header untuk download
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `inline; filename="${surat.noTiket}.pdf"`);
+
+    // Kirim file
+    const fileStream = fs.createReadStream(filePath);
+    fileStream.pipe(res);
+
+  } catch (error) {
+    console.error('❌ Error downloading surat selesai:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Gagal mendownload surat'
+    });
+  }
+};
+
+exports.getDetailSurat = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    const surat = await prisma.surat.findUnique({
+      where: { id },
+      include: {
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            username: true,
+            phoneNumber: true
+          }
+        }
+      }
+    });
+
+    if (!surat) {
+      return res.status(404).json({
+        success: false,
+        error: 'Surat tidak ditemukan'
+      });
+    }
+
+    // Validasi: hanya pemilik surat yang bisa lihat detail
+    if (surat.userId !== userId) {
+      return res.status(403).json({
+        success: false,
+        error: 'Anda tidak memiliki akses ke surat ini'
+      });
+    }
+
+    // Tambahkan info apakah file sudah diupload
+    const suratWithFileInfo = {
+      ...surat,
+      hasFile: !!surat.fileSuratSelesai,
+      canDownload: surat.status === 'Selesai' && !!surat.fileSuratSelesai
+    };
+
+    res.json({
+      success: true,
+      surat: suratWithFileInfo
+    });
+
+  } catch (error) {
+    console.error('❌ Error getting surat detail:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Gagal mengambil detail surat'
+    });
   }
 };

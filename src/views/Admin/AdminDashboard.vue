@@ -146,9 +146,34 @@
               <label>Catatan Admin (Opsional)</label>
               <textarea v-model="editData.catatanAdmin" rows="3"></textarea>
             </div>
+
+            <!-- ✅ SECTION BARU: Upload Surat Jadi (Hanya muncul jika status = Selesai) -->
+            <!-- ✅ Hanya tampilkan input file, tanpa tombol upload terpisah -->
+<div class="form-group" v-if="editData.status === 'Selesai'">
+  <label>Upload Surat Jadi (PDF)</label>
+  <div class="file-upload-wrapper">
+    <input
+      type="file"
+      id="uploadSuratJadi"
+      @change="handleSuratJadiUpload"
+      accept=".pdf"
+      ref="fileInputSurat"
+      hidden
+    />
+    <label for="uploadSuratJadi" class="file-upload-label">
+      <span class="material-icons">upload_file</span>
+      <span>{{ suratJadiFile ? suratJadiFile.name : 'Pilih file PDF (opsional)' }}</span>
+    </label>
+    <button v-if="suratJadiFile" @click="suratJadiFile = null" class="remove-file-btn">
+      <span class="material-icons">close</span>
+    </button>
+  </div>
+  <small class="file-hint">Format: PDF, Maksimal 5MB</small>
+</div>
           </div>
           <div class="modal-footer">
             <button @click="closeEditModal" class="btn-cancel">Batal</button>
+
             <button @click="saveEdit" class="btn-save" :disabled="isSaving">
               <span v-if="!isSaving">Simpan Perubahan</span>
               <span v-else>Sedang menyimpan...</span>
@@ -158,7 +183,7 @@
       </div>
     </Teleport>
 
-    <!-- ✅ Detail Modal (SAMA seperti di user) -->
+    <!-- Detail Modal -->
     <DetailSuratModal
       :isOpen="showDetailModal"
       :surat="selectedSurat"
@@ -170,9 +195,9 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import api from '@/api';
-import DetailSuratModal from '@/components/ui/DetailSuratModal.vue'; // ✅ Import modal
+import DetailSuratModal from '@/components/ui/DetailSuratModal.vue';
 
-// ✅ Inisialisasi sebagai objek, bukan array
+// State utama
 const suratList = ref({
   belumDikerjakan: { count: 0, list: [] },
   sedangDiproses: { count: 0, list: [] },
@@ -187,14 +212,19 @@ const stats = ref({
 
 const activeTab = ref('belum');
 const showEditModal = ref(false);
-const showDetailModal = ref(false); // ✅ baru
+const showDetailModal = ref(false);
 const editData = ref({
   id: '',
   status: '',
   catatanAdmin: ''
 });
-const selectedSurat = ref(null); // ✅ baru
 
+// ✅ State baru untuk upload surat jadi
+const suratJadiFile = ref(null);
+const isUploadingSurat = ref(false);
+const fileInputSurat = ref(null); // untuk reset input
+
+const selectedSurat = ref(null);
 const isLoading = ref(false);
 const isSaving = ref(false);
 
@@ -206,7 +236,6 @@ const loadSuratList = async () => {
   isLoading.value = true;
   try {
     const response = await api.get('/admin/surat');
-
     if (response.data?.success) {
       suratList.value = {
         belumDikerjakan: {
@@ -266,13 +295,10 @@ const getStatusClass = (status) => {
   return map[status] || 'status-pending';
 };
 
-// ✅ Fungsi Detail Baru
 const openDetailModal = (surat) => {
-  // Siapkan struktur data agar kompatibel dengan DetailSuratModal.vue
-  // Masukkan `createdAt` ke `tanggalPengajuan` karena modal user mengharapkan itu
   const suratForModal = {
     ...surat,
-    tanggalPengajuan: surat.createdAt // ✅ Penyesuaian utama!
+    tanggalPengajuan: surat.createdAt
   };
   selectedSurat.value = suratForModal;
   showDetailModal.value = true;
@@ -283,7 +309,6 @@ const closeDetailModal = () => {
   selectedSurat.value = null;
 };
 
-// --- Fungsi Edit & Delete (tidak berubah) ---
 const openEditModal = (surat) => {
   editData.value.id = surat.id;
   editData.value.status = surat.status;
@@ -294,21 +319,94 @@ const openEditModal = (surat) => {
 const closeEditModal = () => {
   showEditModal.value = false;
   editData.value = { id: '', status: '', catatanAdmin: '' };
+  // Reset upload state
+  suratJadiFile.value = null;
+  if (fileInputSurat.value) fileInputSurat.value.value = '';
 };
 
+// ✅ Handler Upload File Surat Jadi
+const handleSuratJadiUpload = (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  if (file.size > 5 * 1024 * 1024) {
+    alert('Ukuran file maksimal 5MB');
+    e.target.value = '';
+    return;
+  }
+
+  if (file.type !== 'application/pdf') {
+    alert('Hanya file PDF yang diizinkan');
+    e.target.value = '';
+    return;
+  }
+
+  suratJadiFile.value = file;
+};
+
+// ✅ Fungsi Upload Surat Jadi (terpisah dari saveEdit)
+const uploadSuratJadi = async () => {
+  if (!suratJadiFile.value || !editData.value.id) return;
+
+  isUploadingSurat.value = true;
+  try {
+    const formData = new FormData();
+    formData.append('fileSuratSelesai', suratJadiFile.value);
+
+    const response = await api.post(
+      `/admin/surat/${editData.value.id}/upload`,
+      formData,
+      { headers: { 'Content-Type': 'multipart/form-data' } }
+    );
+
+    alert('✅ Surat jadi berhasil diupload!');
+    // Reset state
+    suratJadiFile.value = null;
+    if (fileInputSurat.value) fileInputSurat.value.value = '';
+    // Opsional: refresh data agar file muncul di modal detail
+    loadSuratList();
+
+  } catch (error) {
+    console.error('❌ Gagal upload surat:', error);
+    const msg = error.response?.data?.error || 'Gagal mengupload surat. Silakan coba lagi.';
+    alert(`❌ ${msg}`);
+  } finally {
+    isUploadingSurat.value = false;
+  }
+};
+
+// ✅ Fungsi Simpan Status (tidak berubah — upload terpisah)
 const saveEdit = async () => {
   isSaving.value = true;
   try {
+    // 1. Update status & catatan
     await api.put(`/admin/surat/${editData.value.id}`, {
       status: editData.value.status,
       catatanAdmin: editData.value.catatanAdmin
     });
 
+    // 2. ✅ Jika status = Selesai dan ada file, upload otomatis
+    if (editData.value.status === 'Selesai' && suratJadiFile.value) {
+      const formData = new FormData();
+      formData.append('fileSuratSelesai', suratJadiFile.value);
+
+      await api.post(
+        `/admin/surat/${editData.value.id}/upload`,
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
+      );
+
+      // Reset state upload setelah sukses
+      suratJadiFile.value = null;
+      if (fileInputSurat.value) fileInputSurat.value.value = '';
+    }
+
     alert('✅ Status surat berhasil diperbarui!');
     closeEditModal();
     loadSuratList();
+
   } catch (error) {
-    console.error('❌ Gagal memperbarui status:', error);
+    console.error('❌ Gagal memperbarui status atau upload surat:', error);
     alert('Gagal memperbarui status surat. Silakan coba lagi.');
   } finally {
     isSaving.value = false;
@@ -696,5 +794,73 @@ const deleteSurat = async (id) => {
   width: 500px;
   max-width: 95vw;
   box-shadow: 0 0 20px rgba(0,0,0,0.2);
+}
+
+/* ✅ Tambahkan CSS untuk tombol upload */
+.file-upload-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.file-upload-label {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  gap: 0.5rem;
+}
+
+.file-upload-label:hover {
+  background: #e9ecef;
+}
+
+.remove-file-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.remove-file-btn:hover {
+  background: #c82333;
+}
+
+.file-hint {
+  font-size: 0.8rem;
+  color: #6c757d;
+}
+
+.btn-upload {
+  background: #17a2b8;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 0.5rem;
+}
+
+.btn-upload:hover {
+  background: #138496;
+}
+
+.btn-upload:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
 }
 </style>

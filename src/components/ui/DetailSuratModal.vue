@@ -62,6 +62,35 @@
             </div>
           </div>
 
+
+          <div class="info-section" v-if="surat.status === 'Selesai' && surat.fileSuratSelesai">
+            <div class="info-header">
+              <span class="material-icons">task_alt</span>
+              <h3>Surat Resmi</h3>
+            </div>
+            <div class="surat-selesai-box">
+              <div class="file-info">
+                <span class="material-icons file-icon">picture_as_pdf</span>
+                <div>
+                  <p class="file-name">Surat {{ surat.jenisSurat }}</p>
+                  <small>Disetujui pada {{ formatDate(surat.waktuSelesai) }}</small>
+                  <br>
+                  <small v-if="surat.uploadedBy">Diupload oleh: {{ surat.uploadedBy }}</small>
+                </div>
+              </div>
+              <div class="file-actions">
+                <button @click="previewSuratSelesai" class="btn-preview">
+                  <span class="material-icons">visibility</span>
+                  Lihat
+                </button>
+                <button @click="downloadSuratSelesai" class="btn-download">
+                  <span class="material-icons">download</span>
+                  Download
+                </button>
+              </div>
+            </div>
+          </div>
+
           <!-- Data Pemohon -->
           <div class="info-section">
             <div class="info-header">
@@ -320,6 +349,7 @@
             </div>
           </div>
 
+
           <!-- ========== DOKUMEN YANG DIUNGGAH ========== -->
           <div class="info-section" v-if="surat.data?.files && Object.keys(surat.data.files).length">
             <div class="info-header">
@@ -327,6 +357,26 @@
               <h3>Dokumen yang Diunggah</h3>
             </div>
             <div class="file-list">
+
+            <!-- ✅ DOKUMEN SELESAI (dari admin) -->
+              <div v-if="surat.status === 'Selesai' && surat.fileSuratSelesai" class="file-item surat-selesai-item">
+                <span class="material-icons file-icon">task_alt</span>
+                <div class="file-info">
+                  <span class="file-label">Dokumen Selesai</span>
+                  <span class="file-name">Surat {{ surat.jenisSurat }}</span>
+                </div>
+                <div class="file-actions">
+                  <button @click="previewSuratSelesai" class="btn-preview">
+                    <span class="material-icons">visibility</span>
+                    Lihat
+                  </button>
+                  <button @click="downloadSuratSelesai" class="btn-download-file">
+                    <span class="material-icons">download</span>
+                    Download
+                  </button>
+                </div>
+              </div>
+
               <div v-for="(file, key) in surat.data.files" :key="key" class="file-item">
                 <span class="material-icons file-icon">insert_drive_file</span>
                 <div class="file-info">
@@ -469,21 +519,99 @@ const previewFile = (file) => {
 
 const closePreview = () => (showPreview.value = false);
 
+// ✅ URL Surat Selesai (langsung ke file statis) — lebih defensif: selalu gunakan basename/or full URL
+const getSuratSelesaiUrl = () => {
+  const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+  const raw = props.surat?.fileSuratSelesai || '';
+  if (!raw) return '';
+
+  // Jika field sudah berisi URL lengkap, gunakan langsung
+  if (/^https?:\/\//i.test(raw)) return raw;
+
+  // Ambil hanya nama file (basename) — ini mencegah duplikasi segmen path
+  const filename = raw.split('/').pop();
+  return `${baseURL}/uploads/surat-selesai/${filename}`;
+};
+
+// ✅ Preview Surat Selesai (buka di iframe/modal)
+const previewSuratSelesai = () => {
+  const url = getSuratSelesaiUrl();
+  window.open(url, '_blank');
+};
+
+// ✅ Download: buka tab baru + download otomatis (sama seperti user klik "Download")
+const downloadSuratSelesai = () => {
+  const url = getSuratSelesaiUrl();
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `Surat-${props.surat.noTiket}.pdf`;
+  link.target = '_blank'; // ✅ wajib, agar seperti user
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
 const downloadSurat = () => {
   alert('Fitur download surat selesai akan tersedia setelah integrasi backend.');
 };
 </script>
 
-<style scoped>
-/* Keep all existing styles from previous version */
-/* Just add this for ml-2 spacing */
-.ml-2 {
-  margin-left: 0.5rem;
-}
-</style>
+
 
 <style scoped>
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+
+
+.surat-selesai-box {
+  background: #e8f5e8;
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.file-icon {
+  color: #2e7d32;
+  font-size: 1.5rem;
+}
+
+.file-name {
+  font-weight: 600;
+  margin: 0;
+}
+
+.btn-preview,
+.btn-download {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.875rem;
+}
+
+.btn-preview {
+  background: #17a2b8;
+  color: white;
+}
+.btn-preview:hover { background: #138496; }
+
+.btn-download {
+  background: #28a745;
+  color: white;
+}
+.btn-download:hover { background: #218838; }
 
 /* ------------------------------
     PREVIEW OVERLAY
@@ -936,6 +1064,69 @@ const downloadSurat = () => {
 .btn-download .material-icons {
   font-size: 20px;
 }
+
+/* ✅ Styling untuk Dokumen Selesai */
+.surat-selesai-item {
+  background: #e8f5e8;
+  border-left: 4px solid #2e7d32;
+}
+
+.surat-selesai-item .file-icon {
+  color: #2e7d32;
+}
+
+/* Pastikan tidak bentrok dengan file-item biasa */
+.file-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  border-bottom: 1px solid #eee;
+  gap: 1rem;
+}
+
+.file-info {
+  flex: 1;
+}
+
+.file-label {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 0.9rem;
+}
+
+.file-name {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.file-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-preview,
+.btn-download-file {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.btn-preview {
+  background: #17a2b8;
+  color: white;
+  border: none;
+}
+.btn-preview:hover { background: #138496; }
+
+.btn-download-file {
+  background: #28a745;
+  color: white;
+  border: none;
+}
+.btn-download-file:hover { background: #218838; }
 
 /* Responsive */
 @media (max-width: 768px) {
