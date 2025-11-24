@@ -2,33 +2,27 @@
   <div class="login-form-panel">
     <h3>Masuk</h3>
     <p class="form-subtitle">Gunakan akun Anda untuk melanjutkan</p>
-    
+
     <form @submit.prevent="handleLogin">
-      
-      <BaseInput 
-        label="Email atau Username" 
-        type="email" 
-        v-model="formData.email" 
+
+      <BaseInput
+        label="Email atau Username"
+        type="email"
+        v-model="formData.email"
         placeholder="Masukkan email atau username"
         required
       />
 
-      <BaseInput 
-        label="Password" 
-        type="password" 
+      <BaseInput
+        label="Password"
+        type="password"
         v-model="formData.password"
         placeholder="Masukkan password"
         required
       />
 
-      <div class="form-options">
-        <label class="checkbox-container">
-          <input type="checkbox" v-model="formData.rememberMe">
-          <span class="checkmark"></span> Ingat saya
-        </label>
-        <router-link to="/forgot-password" class="forgot-link">Lupa Password?</router-link>
-      </div>
-      
+    
+
       <button type="submit" class="btn-submit">Masuk</button>
     </form>
 
@@ -40,7 +34,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import BaseInput from '@/components/global/BaseInput.vue'; 
+import BaseInput from '@/components/global/BaseInput.vue';
 import { useRouter } from 'vue-router'; // Untuk navigasi setelah login
 
 const formData = ref({
@@ -58,7 +52,7 @@ const handleLogin = () => {
   // - Simpan token autentikasi (misalnya di Pinia store atau Local Storage)
   // - Cek role user (Admin atau Warga)
   // - Arahkan ke dashboard yang sesuai
-  
+
   // Contoh simulasi redirect (ganti dengan logika real)
   // if (formData.value.email === 'admin@desa.id') {
   //   router.push('/admin/dashboard');

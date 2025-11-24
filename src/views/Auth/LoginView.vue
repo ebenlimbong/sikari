@@ -47,14 +47,7 @@
           </div>
         </div>
 
-        <div class="form-options">
-          <label class="checkbox-container">
-            <input type="checkbox" v-model="formData.rememberMe">
-            <span class="checkmark"></span>
-            Ingat saya
-          </label>
-          <router-link to="/forgot-password" class="forgot-link">Lupa Password?</router-link>
-        </div>
+        
 
         <button type="submit" class="btn-submit" :disabled="isLoading">
           <span v-if="!isLoading">Masuk</span>
