@@ -34,3 +34,46 @@ coverage
 
 # Vitest
 __screenshots__/
+
+# -----------------------------
+# Sensitive / environment
+# -----------------------------
+# Environment files (do not commit credentials)
+.env
+.env.*
+backend/.env
+backend/.env.*
+
+# SQLite / database files
+*.db
+*.sqlite
+*.sqlite3
+backend/dev.db
+backend/prisma/dev.db
+
+# SQL dumps and export files
+*.sql
+*.dump
+*.backup
+
+# Prisma migrations SQL (if you keep migration history outside repo or private)
+backend/prisma/migrations/**
+
+# Uploaded files / user data
+uploads/
+backend/uploads/
+surat-selesai/
+backend/surat-selesai/
+
+# Private keys and secrets
+*.pem
+*.key
+*.crt
+*.p12
+*.jks
+*.secret
+.pgpass
+
+# OS / editor
+.env.local
+.DS_Store
