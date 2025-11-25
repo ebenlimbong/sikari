@@ -85,24 +85,24 @@ Template untuk catat value saat deployment:
 📅 Tanggal Deploy: _____________________
 
 🗄️ NEON DATABASE:
-   Connection String: 
+   Connection String:
    postgresql://
    _____________________________________________
-   
-   (Notes: 
+
+   (Notes:
    _________________________________________________
    )
 
 🌐 VERCEL FRONTEND:
    Project Name: _________________________________
    URL: https://_________________________________
-   
+
    (Status: [ ] Deployed [ ] Pending [ ] Error)
 
 🖥️ RENDER BACKEND:
    Service Name: _________________________________
    URL: https://_________________________________.onrender.com
-   
+
    (Status: [ ] Deployed [ ] Pending [ ] Error)
    (First deployment may take 10-15 minutes)
 
@@ -116,7 +116,7 @@ Template untuk catat value saat deployment:
    [ ] Registration works: YES / NO
    [ ] Login works: YES / NO
    [ ] File upload works: YES / NO
-   
+
 ═══════════════════════════════════════════════════════════
 ```
 

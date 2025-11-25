@@ -14,7 +14,7 @@
 ✅ You have: Vercel account, Render account, Cloudinary credentials
 
 ❌ NOT YET: Database deployed
-❌ NOT YET: Backend deployed  
+❌ NOT YET: Backend deployed
 ❌ NOT YET: Frontend deployed
 ```
 
@@ -90,28 +90,28 @@ STEP 1: NEON (5 min)
 │ in Neon Console             │
 └─────────────────────────────┘
             ↓
-            
+
 STEP 2: VERCEL (10 min)
 ┌─────────────────────────────┐
 │ Deploy Frontend from GitHub │ ─→ Get: https://sikari-xxx.vercel.app
 │ (VITE_API_URL = empty/skip) │
 └─────────────────────────────┘
             ↓
-            
+
 STEP 3: RENDER (20 min)
 ┌─────────────────────────────────────────────┐
 │ Deploy Backend Web Service                  │
 │ Add 9 env vars (use DATABASE_URL + URL)     │ ─→ Get: https://sikari-backend-xxx.onrender.com
 └─────────────────────────────────────────────┘
             ↓
-            
+
 STEP 4: VERCEL UPDATE (5 min)
 ┌─────────────────────────────┐
 │ Update VITE_API_URL env var │ ─→ Use Backend URL from STEP 3
 │ Redeploy Frontend           │
 └─────────────────────────────┘
             ↓
-            
+
 STEP 5: TESTING (10 min)
 ┌─────────────────────────────────────┐
 │ Test Registration → Login → Upload  │ ─→ Verify: E2E working
