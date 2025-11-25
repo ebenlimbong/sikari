@@ -136,6 +136,7 @@ exports.uploadSuratSelesai = async (req, res) => {
     const { id } = req.params;
 
     console.log(`📤 Uploading surat selesai untuk ID: ${id}`);
+    console.log(`🔧 req.file:`, req.file ? { filename: req.file.filename, path: req.file.path } : 'NOT PROVIDED');
 
     // Validasi: cek apakah surat ada
     const surat = await prisma.surat.findUnique({
@@ -207,9 +208,11 @@ exports.uploadSuratSelesai = async (req, res) => {
 
   } catch (error) {
     console.error('❌ Error uploading surat selesai:', error);
+    console.error('❌ Error stack:', error.stack);
     res.status(500).json({
       success: false,
-      error: error.message || 'Gagal mengupload surat selesai'
+      error: error.message || 'Gagal mengupload surat selesai',
+      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
   }
 };

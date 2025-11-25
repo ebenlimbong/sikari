@@ -13,11 +13,20 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// ✅ Debug: Log Cloudinary config on startup
+// ✅ Debug: Log Cloudinary config on startup with validation
 console.log('🔧 Cloudinary Configuration:');
 console.log(`   ├─ Cloud Name: ${process.env.CLOUDINARY_CLOUD_NAME || '❌ NOT SET'}`);
 console.log(`   ├─ API Key: ${process.env.CLOUDINARY_API_KEY ? '✅ SET' : '❌ NOT SET'}`);
 console.log(`   └─ API Secret: ${process.env.CLOUDINARY_API_SECRET ? '✅ SET' : '❌ NOT SET'}`);
+
+// ✅ Validasi: Cloudinary config harus lengkap
+if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+  console.error('❌ CRITICAL: Cloudinary environment variables tidak lengkap!');
+  console.error('   Pastikan env var berikut sudah di-set di Railway/deployment:');
+  console.error('   - CLOUDINARY_CLOUD_NAME');
+  console.error('   - CLOUDINARY_API_KEY');
+  console.error('   - CLOUDINARY_API_SECRET');
+}
 
 // ✅ Setup Cloudinary storage
 const storage = new CloudinaryStorage({

@@ -375,39 +375,53 @@ const uploadSuratJadi = async () => {
   }
 };
 
-// ✅ Fungsi Simpan Status (tidak berubah — upload terpisah)
+// ✅ Fungsi Simpan Status (dengan error handling yang lebih baik)
 const saveEdit = async () => {
   isSaving.value = true;
   try {
     // 1. Update status & catatan
+    console.log('📝 Updating surat status...');
     await api.put(`/admin/surat/${editData.value.id}`, {
       status: editData.value.status,
       catatanAdmin: editData.value.catatanAdmin
     });
+    console.log('✅ Status updated successfully');
 
     // 2. ✅ Jika status = Selesai dan ada file, upload otomatis
     if (editData.value.status === 'Selesai' && suratJadiFile.value) {
+      console.log('📤 Uploading file to Cloudinary...');
       const formData = new FormData();
       formData.append('fileSuratSelesai', suratJadiFile.value);
 
-      await api.post(
-        `/admin/surat/${editData.value.id}/upload`,
-        formData,
-        { headers: { 'Content-Type': 'multipart/form-data' } }
-      );
+      try {
+        const uploadResponse = await api.post(
+          `/admin/surat/${editData.value.id}/upload`,
+          formData,
+          { headers: { 'Content-Type': 'multipart/form-data' } }
+        );
+        console.log('✅ File uploaded successfully:', uploadResponse.data);
 
-      // Reset state upload setelah sukses
-      suratJadiFile.value = null;
-      if (fileInputSurat.value) fileInputSurat.value.value = '';
+        // Reset state upload setelah sukses
+        suratJadiFile.value = null;
+        if (fileInputSurat.value) fileInputSurat.value.value = '';
+        alert('✅ Status surat dan file berhasil diperbarui!');
+      } catch (uploadError) {
+        console.error('❌ Upload error:', uploadError);
+        const uploadErrorMsg = uploadError.response?.data?.error || uploadError.message;
+        console.error('❌ Upload error message:', uploadErrorMsg);
+        alert(`⚠️ Status berhasil diperbarui, tetapi upload file gagal:\n${uploadErrorMsg}\n\nSilakan coba upload file lagi.`);
+      }
+    } else {
+      alert('✅ Status surat berhasil diperbarui!');
     }
 
-    alert('✅ Status surat berhasil diperbarui!');
     closeEditModal();
     loadSuratList();
 
   } catch (error) {
-    console.error('❌ Gagal memperbarui status atau upload surat:', error);
-    alert('Gagal memperbarui status surat. Silakan coba lagi.');
+    console.error('❌ Gagal memperbarui status surat:', error);
+    const errorMsg = error.response?.data?.error || error.message || 'Gagal memperbarui status surat';
+    alert(`❌ Gagal: ${errorMsg}\n\nSilakan coba lagi.`);
   } finally {
     isSaving.value = false;
   }
