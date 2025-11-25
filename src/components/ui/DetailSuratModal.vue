@@ -491,9 +491,17 @@ const getFileLabel = (key) => {
   return labels[key] || key;
 };
 
+import api, { backendOrigin } from '../../api';
+
 const getFileUrl = (filepath) => {
-  const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-  return `${baseURL}/uploads/${filepath}`;
+  if (!filepath) return '';
+  // Jika sudah berupa URL lengkap (mis. Cloudinary), gunakan langsung
+  if (/^https?:\/\//i.test(filepath)) return filepath;
+
+  // Hapus leading slash jika ada
+  const cleanPath = filepath.replace(/^\/+/, '');
+  // Gunakan backendOrigin (tidak mengandung /api) untuk file static
+  return `${backendOrigin}/uploads/${cleanPath}`;
 };
 
 const showPreview = ref(false);
@@ -521,16 +529,15 @@ const closePreview = () => (showPreview.value = false);
 
 // ✅ URL Surat Selesai (langsung ke file statis) — lebih defensif: selalu gunakan basename/or full URL
 const getSuratSelesaiUrl = () => {
-  const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
   const raw = props.surat?.fileSuratSelesai || '';
   if (!raw) return '';
 
-  // Jika field sudah berisi URL lengkap, gunakan langsung
+  // Jika field sudah berisi URL lengkap, gunakan langsung (Cloudinary etc.)
   if (/^https?:\/\//i.test(raw)) return raw;
 
   // Ambil hanya nama file (basename) — ini mencegah duplikasi segmen path
   const filename = raw.split('/').pop();
-  return `${baseURL}/uploads/surat-selesai/${filename}`;
+  return `${backendOrigin}/uploads/surat-selesai/${filename}`;
 };
 
 // ✅ Preview Surat Selesai (buka di iframe/modal)
