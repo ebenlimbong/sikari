@@ -9,7 +9,7 @@ const {
 } = require('../../controllers/admin/suratAdminController');
 const adminOnly = require('../../middleware/adminMiddleware');
 const { protect } = require('../../middleware/authMiddleware');
-const uploadSuratSelesaiMiddleware = require('../../middleware/multerSuratSelesai'); // ✅ IMPORT MULTER
+const uploadSuratSelesaiMiddleware = require('../../middleware/multerCloudinary'); // ✅ USE CLOUDINARY
 
 const router = express.Router();
 
@@ -21,15 +21,15 @@ router.put('/surat/:id', protect, adminOnly, updateSuratStatus);
 router.delete('/surat/:id', protect, adminOnly, deleteSurat);
 
 // ========================================
-// ✅ ROUTES BARU: UPLOAD & DELETE SURAT SELESAI
+// ✅ ROUTES BARU: UPLOAD & DELETE SURAT SELESAI (DENGAN CLOUDINARY)
 // ========================================
 
-// Upload surat selesai (PDF)
+// Upload surat selesai (PDF) - langsung ke Cloudinary
 router.post(
   '/surat/:id/upload',
   protect,
   adminOnly,
-  uploadSuratSelesaiMiddleware,
+  uploadSuratSelesaiMiddleware,  // ✅ CLOUDINARY MIDDLEWARE
   uploadSuratSelesai
 );
 

@@ -10,6 +10,7 @@ Status: ✅ PUSHED & UP TO DATE
 ```
 
 ### Files yang di-commit:
+
 - ✅ DEPLOYMENT_GUIDE.md (detailed explanation)
 - ✅ DEPLOYMENT_CHECKLIST.md (step-by-step)
 - ✅ DEPLOYMENT_SUMMARY.md (quick reference)
@@ -29,14 +30,17 @@ Status: ✅ PUSHED & UP TO DATE
 ### Sebelum deploy, pastikan Anda sudah punya akun di:
 
 1. **Vercel** (Frontend) - https://vercel.com
+
    - [ ] Buat akun
    - [ ] Authorize GitHub
 
 2. **Render.com** (Backend) - https://render.com
+
    - [ ] Buat akun
    - [ ] Authorize GitHub
 
 3. **Neon.tech** (Database) - https://neon.tech
+
    - [ ] Buat akun
    - [ ] Create PostgreSQL project → copy DATABASE_URL
 
@@ -51,6 +55,7 @@ Status: ✅ PUSHED & UP TO DATE
 Lihat file: **`DEPLOYMENT_CHECKLIST.md`** di root project Anda
 
 Isi checklist tersebut step-by-step:
+
 1. ✅ Frontend ke Vercel
 2. ✅ Setup Cloudinary (opsional tapi recommended)
 3. ✅ Setup backend CORS
@@ -76,11 +81,11 @@ GitHub Repository (main branch)
           - Auto-deploy from push
           - URL: https://api-xxx.onrender.com
           - Cost: $7/month
-          
+
      Database: Neon PostgreSQL
      - URL: postgresql://...
      - Cost: $0 (free tier)
-     
+
      Storage: Cloudinary
      - 25GB free/month
      - Cost: $0
@@ -91,27 +96,32 @@ GitHub Repository (main branch)
 ## 💡 TIPS UNTUK DEPLOYMENT SUKSES
 
 ### 1. Frontend ke Vercel
+
 - Vercel auto-detects Vite + Vue
 - Tinggal connect repository & deploy
 - PALING MUDAH!
 
 ### 2. Backend ke Render
+
 - PENTING: Set semua Environment Variables di Render dashboard
 - Build Command: `cd backend && npm install && npx prisma generate && npx prisma migrate deploy`
 - Start Command: `cd backend && npm start`
 - Tunggu 10-15 menit untuk build pertama kali
 
 ### 3. Database
+
 - Neon lebih mudah dari Railway
 - Gratis tier sudah cukup untuk MVP
 - Jangan lupa: DATABASE_URL format harus benar!
 
 ### 4. File Uploads (Cloudinary)
+
 - Wajib jika deploy ke Render (ephemeral filesystem)
 - Setup credentials di Render env vars
 - TIDAK bisa pakai local disk storage
 
 ### 5. CORS Configuration
+
 - Sudah saya fix di backend (`app.js`)
 - Vercel URL harus ditambahkan ke CORS_ORIGIN
 - Format: `https://your-app.vercel.app` (EXACT!)
@@ -121,12 +131,14 @@ GitHub Repository (main branch)
 ## ⚠️ COMMON MISTAKES
 
 ❌ **JANGAN**:
+
 1. Hardcode DATABASE_URL di code → simpan di env vars saja
 2. Lupa set CORS_ORIGIN → backend akan reject frontend
 3. Pakai local disk storage di Render → file hilang saat redeploy
 4. Lupa prefix `/api` di VITE_API_URL → akan 404
 
 ✅ **LAKUKAN**:
+
 1. Set semua credentials di dashboard, bukan di code
 2. Test CORS sebelum push
 3. Gunakan Cloudinary untuk file uploads
@@ -152,13 +164,16 @@ Sebelum declare "LIVE":
 ## 📞 JIKA ADA ERROR SAAT DEPLOY
 
 1. **Check Render logs**:
+
    - Dashboard → Service → Logs tab
    - Cari error message
 
 2. **Check Vercel logs**:
+
    - Vercel → Project → Deployments → click latest → Details
 
 3. **Check error di console browser**:
+
    - F12 → Console tab
    - Cari CORS error atau network error
 
@@ -177,19 +192,20 @@ Sebelum declare "LIVE":
 
 ## 📈 BIAYA MONTHLY
 
-| Service | Cost | Notes |
-|---------|------|-------|
-| Vercel | $0 | Unlimited traffic |
-| Render | $7 | Starter tier recommended |
-| Neon | $0 | Free tier generous |
-| Cloudinary | $0 | 25GB free/month |
-| **TOTAL** | **$7/month** | Very affordable! |
+| Service    | Cost         | Notes                    |
+| ---------- | ------------ | ------------------------ |
+| Vercel     | $0           | Unlimited traffic        |
+| Render     | $7           | Starter tier recommended |
+| Neon       | $0           | Free tier generous       |
+| Cloudinary | $0           | 25GB free/month          |
+| **TOTAL**  | **$7/month** | Very affordable!         |
 
 ---
 
 ## 🚀 NEXT ACTIONS
 
 ### Opsi 1: Follow Checklist (Recommended)
+
 ```
 1. Open: DEPLOYMENT_CHECKLIST.md
 2. Follow setiap step dari awal sampai akhir
@@ -198,6 +214,7 @@ Sebelum declare "LIVE":
 ```
 
 ### Opsi 2: Cepat-cepatan
+
 ```
 1. Buka DEPLOYMENT_SUMMARY.md
 2. Ikuti section "FASTEST PATH TO LIVE"
@@ -205,6 +222,7 @@ Sebelum declare "LIVE":
 ```
 
 ### Opsi 3: Pahami dulu
+
 ```
 1. Baca: DEPLOYMENT_GUIDE.md
 2. Baca: ARCHITECTURE.md
@@ -233,7 +251,7 @@ Sebelum declare "LIVE":
 
 **Next Step: Buka DEPLOYMENT_CHECKLIST.md dan mulai deploy!** 🚀
 
-*Good luck! You got this!* 💪✨
+_Good luck! You got this!_ 💪✨
 
 ---
 
