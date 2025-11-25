@@ -10,17 +10,20 @@ const app = express();
 
 // ✅ CORS Configuration - Dynamic and permissive for local dev
 // Allow multiple origins via env (comma separated), and always permit localhost:5173 (Vite)
-const rawOrigins = process.env.CORS_ORIGIN || 'http://localhost:3000,http://localhost:5173';
+const rawOrigins = process.env.CORS_ORIGIN || 'http://localhost:3000,http://localhost:5173,http://localhost:5174';
 const allowedOrigins = rawOrigins.split(',').map(s => s.trim()).filter(Boolean);
+
+console.log('📝 CORS Allowed Origins:', allowedOrigins);
 
 const corsOptions = {
   origin: function (origin, callback) {
     // allow non-browser requests (like curl, Postman) which have no origin
     if (!origin) return callback(null, true);
     if (allowedOrigins.indexOf(origin) !== -1) {
+      console.log('✅ CORS allowed for origin:', origin);
       return callback(null, true);
     }
-    console.warn('Blocked CORS request from origin:', origin);
+    console.warn('❌ Blocked CORS request from origin:', origin);
     return callback(new Error('Not allowed by CORS'), false);
   },
   credentials: true,
