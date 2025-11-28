@@ -2,50 +2,18 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-const multer = require('multer');
+const uploadUserFile = require('../middleware/multerSuratSelesai');  // 💥 gunakan Cloudinary
 const path = require('path');
-const fs = require('fs');
 
 // --------------------------------------------------
-// 1. KONFIGURASI MULTER
-// --------------------------------------------------
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/');
-  },
-  filename: function (req, file, cb) {
-    // ✅ Ekstrak nama field yang bersih (tanpa "files[...]")
-    const cleanFieldname = file.fieldname.replace(/files\[|\]/g, '');
-    const unique = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname);
-
-    // ✅ Format: ktp-1234567890-123456.png
-    cb(null, cleanFieldname + '-' + unique + ext);
-  }
-});
-
-const upload = multer({
-  storage: storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // limit 5MB
-  fileFilter: (req, file, cb) => {
-    const allowed = /pdf|png|jpg|jpeg/i;
-    if (!allowed.test(path.extname(file.originalname))) {
-      return cb(new Error("Format file harus PDF/JPG/PNG"));
-    }
-    cb(null, true);
-  }
-}).any();
-
-// --------------------------------------------------
-// 2. CREATE SURAT
+// 1. CREATE SURAT (WARGA UPLOAD FILE KE CLOUDINARY)
 // --------------------------------------------------
 
 exports.createSurat = async (req, res) => {
   try {
-    upload(req, res, async (err) => {
+    uploadUserFile(req, res, async (err) => {
       if (err) {
-        console.error("Upload error:", err);
+        console.error("❌ Upload error (user):", err);
         return res.status(400).json({ success: false, error: err.message });
       }
 
@@ -58,34 +26,29 @@ exports.createSurat = async (req, res) => {
         });
       }
 
-      // Parse data JSON dari frontend
       let parsedData = {};
       try {
         parsedData = JSON.parse(data);
       } catch (e) {
-        console.error("JSON parse error:", e);
+        console.error("❌ JSON parse error:", e);
       }
 
-      // --------------------------------------------------
-      // 🔥 AMBIL SEMUA FILE YANG DIUPLOAD SECARA DINAMIS
-      // --------------------------------------------------
+      // ------------------------------
+      // 💥 AMBIL FILE DARI CLOUDINARY
+      // ------------------------------
       const fileMetadata = {};
 
-      req.files.forEach(file => {
-        // file.fieldname = "files[ktpAyah]" → kita potong jadi "ktpAyah"
-        const key = file.fieldname.replace("files[", "").replace("]", "");
-
-        fileMetadata[key] = {
-          name: file.originalname,
-          size: file.size,
-          path: file.filename  // ✅ Sudah bersih: ktp-123456.png
+      if (req.file) {
+        fileMetadata["dokumenWarga"] = {
+          name: req.file.originalname,
+          size: req.file.size,
+          url: req.file.path  // 💥 CLOUDINARY URL
         };
-      });
+      }
 
-
-      // --------------------------------------------------
+      // ------------------------------
       // Generate No Tiket
-      // --------------------------------------------------
+      // ------------------------------
       const now = new Date();
       const y = now.getFullYear();
       const m = String(now.getMonth() + 1).padStart(2, '0');
@@ -93,9 +56,9 @@ exports.createSurat = async (req, res) => {
       const r = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
       const noTiket = `TIC-${y}${m}${d}-${r}`;
 
-      // --------------------------------------------------
-      // SIMPAN SEMUANYA KE DB
-      // --------------------------------------------------
+      // ------------------------------
+      // SIMPAN KE DB
+      // ------------------------------
       const surat = await prisma.surat.create({
         data: {
           userId: parseInt(req.user.id),
@@ -103,7 +66,7 @@ exports.createSurat = async (req, res) => {
           noTiket,
           data: {
             ...parsedData,
-            files: fileMetadata
+            files: fileMetadata  // 💥 Simpan URL Cloudinary
           },
           status: "Belum Dikerjakan"
         }
@@ -127,7 +90,7 @@ exports.createSurat = async (req, res) => {
 };
 
 // --------------------------------------------------
-// 3. GET MY SURAT
+// 2. GET MY SURAT
 // --------------------------------------------------
 
 exports.getMySurat = async (req, res) => {
@@ -163,7 +126,7 @@ exports.getMySurat = async (req, res) => {
 };
 
 // --------------------------------------------------
-// 4. GET SURAT BY ID
+// 3. GET SURAT BY ID
 // --------------------------------------------------
 
 exports.getSuratById = async (req, res) => {
@@ -183,7 +146,6 @@ exports.getSuratById = async (req, res) => {
         createdAt: true,
         updatedAt: true,
         userId: true,
-        // ✅ Tambahkan ini agar user bisa lihat file surat selesai
         fileSuratSelesai: true,
         uploadedBy: true,
         uploadedAt: true
@@ -194,12 +156,10 @@ exports.getSuratById = async (req, res) => {
       return res.status(404).json({ success: false, error: 'Surat tidak ditemukan' });
     }
 
-    // Cek apakah surat milik user login
     if (surat.userId !== parseInt(req.user.id)) {
       return res.status(403).json({ success: false, error: 'Akses ditolak' });
     }
 
-    // Hapus userId agar tidak tampil di frontend
     delete surat.userId;
 
     res.json({ success: true, surat });
@@ -210,11 +170,14 @@ exports.getSuratById = async (req, res) => {
   }
 };
 
+// --------------------------------------------------
+// 4. DOWNLOAD SURAT SELESAI (NOW USE CLOUDINARY)
+// --------------------------------------------------
 
-// /backend/src/controllers/suratController.js
 exports.downloadSuratSelesai = async (req, res) => {
   try {
     const { id } = req.params;
+
     const surat = await prisma.surat.findUnique({
       where: { id }
     });
@@ -226,27 +189,8 @@ exports.downloadSuratSelesai = async (req, res) => {
       });
     }
 
-    // Build path to uploads/surat-selesai/<filename>
-    const filename = path.basename(surat.fileSuratSelesai);
-    const filePath = path.join(__dirname, '../../uploads/surat-selesai', filename);
-
-    // Cek apakah file ada
-    try {
-      await fs.promises.access(filePath);
-    } catch (err) {
-      return res.status(404).json({
-        success: false,
-        error: 'File tidak ditemukan di server'
-      });
-    }
-
-    // Set header untuk download
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `inline; filename="${surat.noTiket}.pdf"`);
-
-    // Kirim file
-    const fileStream = fs.createReadStream(filePath);
-    fileStream.pipe(res);
+    // 💥 Direct redirect ke Cloudinary
+    return res.redirect(surat.fileSuratSelesai);
 
   } catch (error) {
     console.error('❌ Error downloading surat selesai:', error);
@@ -283,7 +227,6 @@ exports.getDetailSurat = async (req, res) => {
       });
     }
 
-    // Validasi: hanya pemilik surat yang bisa lihat detail
     if (surat.userId !== userId) {
       return res.status(403).json({
         success: false,
@@ -291,7 +234,6 @@ exports.getDetailSurat = async (req, res) => {
       });
     }
 
-    // Tambahkan info apakah file sudah diupload
     const suratWithFileInfo = {
       ...surat,
       hasFile: !!surat.fileSuratSelesai,
