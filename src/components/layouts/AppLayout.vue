@@ -16,7 +16,7 @@ import AppSidebar from '@/components/layouts/AppSidebar.vue';
 
 const sidebarCollapsed = ref(false);
 
-// Cek state sidebar (berbasis class, supaya sinkron sama komponen sidebar)
+// Melakukan sebuah pengecekan state sidebar (berbasis class, supaya sinkron sama komponen sidebar)
 const checkSidebarState = () => { 
   const sidebar = document.querySelector('.sidebar-container');
   if (sidebar) {

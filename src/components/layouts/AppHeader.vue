@@ -19,7 +19,7 @@
         <router-link to="/register" class="btn btn-daftar">Daftar</router-link>
       </template>
 
-      <!-- Jika sudah login -->
+      <!-- Jika sudah login ke sistem -->
       <template v-else>
         <div class="user-menu">
           <span class="user-name">
