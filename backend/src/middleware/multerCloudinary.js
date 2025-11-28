@@ -28,6 +28,30 @@ if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !pr
   console.error('   - CLOUDINARY_API_SECRET');
 }
 
+// If CLOUDINARY_URL exists and its parsed cloud name looks wrong (eg. 'Root'),
+// prefer explicit env vars and reconfigure cloudinary accordingly.
+if (process.env.CLOUDINARY_URL) {
+  try {
+    // CLOUDINARY_URL format: cloudinary://<api_key>:<api_secret>@<cloud_name>
+    const match = process.env.CLOUDINARY_URL.match(/@([^/\s]+)$/);
+    const urlCloudName = match ? match[1] : null;
+    if (urlCloudName) {
+      console.log(`🔍 Detected CLOUDINARY_URL cloud_name: ${urlCloudName}`);
+      if (urlCloudName.toLowerCase() === 'root' && process.env.CLOUDINARY_CLOUD_NAME) {
+        console.warn('⚠️ CLOUDINARY_URL contains cloud_name "Root" (likely API key name). Overriding with CLOUDINARY_CLOUD_NAME env var.');
+        cloudinary.config({
+          cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+          api_key: process.env.CLOUDINARY_API_KEY,
+          api_secret: process.env.CLOUDINARY_API_SECRET,
+        });
+        console.log(`✅ cloudinary reconfigured to cloud_name: ${process.env.CLOUDINARY_CLOUD_NAME}`);
+      }
+    }
+  } catch (err) {
+    console.error('❌ Error while parsing CLOUDINARY_URL:', err.message);
+  }
+}
+
 // ✅ Setup Cloudinary storage
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
