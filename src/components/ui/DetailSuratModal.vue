@@ -383,12 +383,12 @@
                   <span class="file-label">{{ getFileLabel(key) }}</span>
                   <span class="file-name">{{ file?.name || 'File tidak tersedia' }}</span>
                 </div>
-                <div class="file-actions" v-if="file?.path">
+                <div class="file-actions" v-if="file?.path || file?.url">
                   <button @click="previewFile(file)" class="btn-preview">
                     <span class="material-icons">visibility</span>
                     Lihat
                   </button>
-                  <a :href="getFileUrl(file.path)" target="_blank" download class="btn-download-file">
+                  <a :href="getFileUrl(file.path || file.url)" target="_blank" download class="btn-download-file">
                     <span class="material-icons">download</span>
                     Download
                   </a>
@@ -478,6 +478,7 @@ const getStatusClass = (status) => {
 const getFileLabel = (key) => {
   const labels = {
     ktp: 'KTP',
+      dokumenWarga: 'Dokumen Warga',
     ktpAyah: 'KTP Ayah',
     ktpIbu: 'KTP Ibu',
     ktpPemohon: 'KTP Pemohon',
@@ -493,13 +494,13 @@ const getFileLabel = (key) => {
 
 import api, { backendOrigin } from '../../api';
 
-const getFileUrl = (filepath) => {
-  if (!filepath) return '';
+const getFileUrl = (filepathOrUrl) => {
+  if (!filepathOrUrl) return '';
   // Jika sudah berupa URL lengkap (mis. Cloudinary), gunakan langsung
-  if (/^https?:\/\//i.test(filepath)) return filepath;
+  if (/^https?:\/\//i.test(filepathOrUrl)) return filepathOrUrl;
 
   // Hapus leading slash jika ada
-  const cleanPath = filepath.replace(/^\/+/, '');
+  const cleanPath = filepathOrUrl.replace(/^\/+/, '');
   // Gunakan backendOrigin (tidak mengandung /api) untuk file static
   return `${backendOrigin}/uploads/${cleanPath}`;
 };
@@ -513,13 +514,16 @@ const isImage = (name) => /\.(jpg|jpeg|png)$/i.test(name);
 const isPDF = (name) => /\.pdf$/i.test(name);
 
 const previewFile = (file) => {
-  if (!file?.path || !file?.name) return;
+  // Accept both `path` (legacy/local) and `url` (Cloudinary) shapes
+  const filePath = file?.path || file?.url;
+  const fileName = file?.name || (filePath ? filePath.split('/').pop() : 'File');
+  if (!filePath) return;
 
-  previewUrl.value = getFileUrl(file.path);
-  previewFileName.value = file.name;
+  previewUrl.value = getFileUrl(filePath);
+  previewFileName.value = fileName;
 
-  if (isPDF(file.name)) previewType.value = 'pdf';
-  else if (isImage(file.name)) previewType.value = 'image';
+  if (isPDF(fileName)) previewType.value = 'pdf';
+  else if (isImage(fileName)) previewType.value = 'image';
   else previewType.value = 'unknown';
 
   showPreview.value = true;

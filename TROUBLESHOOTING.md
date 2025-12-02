@@ -22,7 +22,7 @@ Middleware Cloudinary hanya accept file dengan MIME type `application/pdf`.
 
 ### ✅ Solution
 
-1. **Check file type** yang diupload dari frontend:
+1. **Check file type** yang diupload dari frontend
 
    ```javascript
    // Di browser console:

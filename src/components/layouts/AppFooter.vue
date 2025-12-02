@@ -1,7 +1,7 @@
 <template>
   <footer class="app-footer">
     <div class="footer-content">
-      
+
       <div class="footer-column about">
         <h3>Tentang Kami</h3>
         <p>Sistem Administrasi Surat Menyurat Desa Karang Sari adalah solusi digital untuk mempermudah pengelolaan surat menyurat di tingkat desa.</p>
@@ -21,9 +21,8 @@
 
       <div class="footer-column contact">
         <h3>Kontak</h3>
-        <p>📧 Email: admin@karangsari.desa.id</p>
-        <p>📞 Telepon: 0821-1234-5678</p>
-        <p>📍 Alamat: Desa Karang Sari, Yogyakarta</p>
+        <p>📞 Telepon: +62 895-3384-03789</p>
+        <p>📍 Alamat: Desa Karang Sari, Lampung Selatan</p>
       </div>
 
     </div>
@@ -36,7 +35,7 @@
 
 <style scoped>
 .app-footer {
-  background-color: #006400; 
+  background-color: #006400;
   color: white;
   padding: 3rem 10%;
 }
