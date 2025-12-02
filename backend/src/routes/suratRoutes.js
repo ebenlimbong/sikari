@@ -6,6 +6,9 @@ const uploadUserFileMiddleware = require('../middleware/multerSuratSelesai'); //
 
 const router = express.Router();
 
+// Log to help diagnose if this routes file was loaded in production
+console.log('🔌 suratRoutes loaded');
+
 // ✅ Routes untuk surat
 router.post('/', protect, uploadUserFileMiddleware, createSurat);        // POST /api/surat dengan upload file ke Cloudinary
 router.get('/me', protect, getMySurat);        // GET /api/surat/me

@@ -2,94 +2,89 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-const uploadUserFile = require('../middleware/multerSuratSelesai');  // 💥 gunakan Cloudinary
 const path = require('path');
 
 // --------------------------------------------------
 // 1. CREATE SURAT (WARGA UPLOAD DOKUMEN KE CLOUDINARY)
 // --------------------------------------------------
 
+// Note: the multer/cloudinary middleware is applied at the route level
+// (`routes/suratRoutes.js`) as `uploadUserFileMiddleware`. Therefore the
+// controller should NOT invoke the middleware again. It should simply
+// read `req.file` (if present) and proceed — same pattern as admin upload.
+
 exports.createSurat = async (req, res) => {
   try {
-    uploadUserFile(req, res, async (err) => {
-      if (err) {
-        console.error("❌ Upload error (user):", err);
-        return res.status(400).json({ success: false, error: err.message });
-      }
+    const { jenisSurat, data } = req.body;
 
-      const { jenisSurat, data } = req.body;
+    console.log(`📤 Creating surat untuk user: ${req.user && req.user.id}`);
+    console.log(`🔧 req.file:`, req.file ? { originalname: req.file.originalname, path: req.file.path } : 'NOT PROVIDED');
 
-      console.log(`📤 Creating surat untuk user: ${req.user.id}`);
-      console.log(`🔧 req.file:`, req.file ? { filename: req.file.filename, path: req.file.path } : 'NOT PROVIDED');
+    if (!jenisSurat) {
+      return res.status(400).json({
+        success: false,
+        error: 'Jenis surat tidak diberikan'
+      });
+    }
 
-      if (!jenisSurat) {
-        return res.status(400).json({
-          success: false,
-          error: "Jenis surat tidak diberikan"
-        });
-      }
+    let parsedData = {};
+    try {
+      parsedData = data ? JSON.parse(data) : {};
+    } catch (e) {
+      console.warn('⚠ JSON parse error for data field, continuing with empty object', e.message);
+      parsedData = {};
+    }
 
-      let parsedData = {};
-      try {
-        parsedData = JSON.parse(data);
-      } catch (e) {
-        console.error("❌ JSON parse error:", e);
-      }
+    // Collect file metadata if middleware uploaded a file to Cloudinary
+    const fileMetadata = {};
+    if (req.file) {
+      fileMetadata['dokumenWarga'] = {
+        name: req.file.originalname,
+        size: req.file.size,
+        url: req.file.path // Cloudinary full URL provided by multer-storage-cloudinary
+      };
+      console.log(`✅ File uploaded ke Cloudinary: ${req.file.path}`);
+    }
 
-      // ✅ AMBIL FILE DARI CLOUDINARY (jika ada)
-      const fileMetadata = {};
+    // Generate ticket number
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, '0');
+    const d = String(now.getDate()).padStart(2, '0');
+    const r = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+    const noTiket = `TIC-${y}${m}${d}-${r}`;
 
-      if (req.file) {
-        // ✅ req.file.path adalah URL penuh dari Cloudinary (mirip admin)
-        fileMetadata["dokumenWarga"] = {
-          name: req.file.originalname,
-          size: req.file.size,
-          url: req.file.path  // ✅ CLOUDINARY URL
-        };
-        console.log(`✅ File uploaded ke Cloudinary: ${req.file.path}`);
-      }
-
-      // ✅ Generate No Tiket
-      const now = new Date();
-      const y = now.getFullYear();
-      const m = String(now.getMonth() + 1).padStart(2, '0');
-      const d = String(now.getDate()).padStart(2, '0');
-      const r = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
-      const noTiket = `TIC-${y}${m}${d}-${r}`;
-
-      // ✅ SIMPAN KE DB
-      const surat = await prisma.surat.create({
+    const surat = await prisma.surat.create({
+      data: {
+        userId: parseInt(req.user.id),
+        jenisSurat,
+        noTiket,
         data: {
-          userId: parseInt(req.user.id),
-          jenisSurat,
-          noTiket,
-          data: {
-            ...parsedData,
-            files: fileMetadata  // ✅ Simpan URL Cloudinary untuk dokumen warga
-          },
-          status: "Belum Dikerjakan"
-        }
-      });
+          ...parsedData,
+          files: fileMetadata
+        },
+        status: 'Belum Dikerjakan'
+      }
+    });
 
-      console.log(`✅ Surat berhasil dibuat: ${surat.id} dengan noTiket: ${noTiket}`);
+    console.log(`✅ Surat berhasil dibuat: ${surat.id} dengan noTiket: ${noTiket}`);
 
-      return res.status(201).json({
-        success: true,
-        surat: {
-          id: surat.id,
-          jenisSurat: surat.jenisSurat,
-          noTiket: surat.noTiket,
-          tanggalPengajuan: surat.createdAt
-        }
-      });
+    return res.status(201).json({
+      success: true,
+      surat: {
+        id: surat.id,
+        jenisSurat: surat.jenisSurat,
+        noTiket: surat.noTiket,
+        tanggalPengajuan: surat.createdAt
+      }
     });
 
   } catch (err) {
-    console.error("❌ Error createSurat:", err);
-    console.error("❌ Error stack:", err.stack);
+    console.error('❌ Error createSurat:', err);
+    console.error('❌ Error stack:', err.stack);
     res.status(500).json({
       success: false,
-      error: err.message || "Gagal mengajukan surat",
+      error: err.message || 'Gagal mengajukan surat',
       details: process.env.NODE_ENV === 'development' ? err.stack : undefined
     });
   }
