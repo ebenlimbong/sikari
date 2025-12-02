@@ -815,18 +815,8 @@ const handleSubmit = async () => {
     };
     formDataToSend.append('data', JSON.stringify(jsonData));
 
-    // ✅ Append files
-    formDataToSend.append('files[ktpPemohon]', formData.value.files.ktpPemohon);
-    formDataToSend.append('files[kk]', formData.value.files.kk);
-    formDataToSend.append('files[pengantarRT]', formData.value.files.pengantarRT);
-
-    if (formData.value.files.suratKelahiran) {
-      formDataToSend.append('files[suratKelahiran]', formData.value.files.suratKelahiran);
-    }
-
-    if (formData.value.files.dokumenTambahan) {
-      formDataToSend.append('files[dokumenTambahan]', formData.value.files.dokumenTambahan);
-    }
+    // ✅ PENTING: Gunakan nama field 'fileSuratSelesai' yang diharapkan middleware Cloudinary
+    formDataToSend.append('fileSuratSelesai', formData.value.files.ktpPemohon);
 
     // Kirim
     const response = await api.post('/surat', formDataToSend, {

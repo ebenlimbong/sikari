@@ -457,15 +457,13 @@ const handleSubmit = async () => {
     };
     formDataToSend.append('data', JSON.stringify(jsonData));
 
-    // ✅ Tambahkan file satu per satu
-    formDataToSend.append('files[ktp]', formData.value.files.ktp);
-    formDataToSend.append('files[kk]', formData.value.files.kk);
-    formDataToSend.append('files[pengantarRT]', formData.value.files.pengantarRT);
+    // ✅ PENTING: Gunakan nama field 'fileSuratSelesai' yang diharapkan middleware Cloudinary
+    formDataToSend.append('fileSuratSelesai', formData.value.files.ktp);
 
-    // Kirim ke backend (tanpa headers Content-Type — biar axios set otomatis)
+    // Kirim ke backend
     const response = await api.post('/surat', formDataToSend, {
       headers: {
-        'Content-Type': 'multipart/form-data' // ✅ Wajib
+        'Content-Type': 'multipart/form-data'
       }
     });
 

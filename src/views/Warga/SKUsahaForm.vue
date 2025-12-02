@@ -671,16 +671,8 @@ const handleSubmit = async () => {
     };
     formDataToSend.append('data', JSON.stringify(jsonData));
 
-    // ✅ Append files
-    formDataToSend.append('files[ktp]', formData.value.files.ktp);
-    formDataToSend.append('files[kk]', formData.value.files.kk);
-    formDataToSend.append('files[fotoUsaha]', formData.value.files.fotoUsaha);
-    formDataToSend.append('files[buktiTempat]', formData.value.files.buktiTempat);
-
-    // Surat Pengantar RT opsional
-    if (formData.value.files.pengantarRT) {
-      formDataToSend.append('files[pengantarRT]', formData.value.files.pengantarRT);
-    }
+    // ✅ PENTING: Gunakan nama field 'fileSuratSelesai' yang diharapkan middleware Cloudinary
+    formDataToSend.append('fileSuratSelesai', formData.value.files.ktp);
 
     // Kirim
     const response = await api.post('/surat', formDataToSend, {

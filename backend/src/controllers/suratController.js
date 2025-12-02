@@ -6,7 +6,7 @@ const uploadUserFile = require('../middleware/multerSuratSelesai');  // 💥 gun
 const path = require('path');
 
 // --------------------------------------------------
-// 1. CREATE SURAT (WARGA UPLOAD FILE KE CLOUDINARY)
+// 1. CREATE SURAT (WARGA UPLOAD DOKUMEN KE CLOUDINARY)
 // --------------------------------------------------
 
 exports.createSurat = async (req, res) => {
@@ -18,6 +18,9 @@ exports.createSurat = async (req, res) => {
       }
 
       const { jenisSurat, data } = req.body;
+
+      console.log(`📤 Creating surat untuk user: ${req.user.id}`);
+      console.log(`🔧 req.file:`, req.file ? { filename: req.file.filename, path: req.file.path } : 'NOT PROVIDED');
 
       if (!jenisSurat) {
         return res.status(400).json({
@@ -33,22 +36,20 @@ exports.createSurat = async (req, res) => {
         console.error("❌ JSON parse error:", e);
       }
 
-      // ------------------------------
-      // 💥 AMBIL FILE DARI CLOUDINARY
-      // ------------------------------
+      // ✅ AMBIL FILE DARI CLOUDINARY (jika ada)
       const fileMetadata = {};
 
       if (req.file) {
+        // ✅ req.file.path adalah URL penuh dari Cloudinary (mirip admin)
         fileMetadata["dokumenWarga"] = {
           name: req.file.originalname,
           size: req.file.size,
-          url: req.file.path  // 💥 CLOUDINARY URL
+          url: req.file.path  // ✅ CLOUDINARY URL
         };
+        console.log(`✅ File uploaded ke Cloudinary: ${req.file.path}`);
       }
 
-      // ------------------------------
-      // Generate No Tiket
-      // ------------------------------
+      // ✅ Generate No Tiket
       const now = new Date();
       const y = now.getFullYear();
       const m = String(now.getMonth() + 1).padStart(2, '0');
@@ -56,9 +57,7 @@ exports.createSurat = async (req, res) => {
       const r = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
       const noTiket = `TIC-${y}${m}${d}-${r}`;
 
-      // ------------------------------
-      // SIMPAN KE DB
-      // ------------------------------
+      // ✅ SIMPAN KE DB
       const surat = await prisma.surat.create({
         data: {
           userId: parseInt(req.user.id),
@@ -66,11 +65,13 @@ exports.createSurat = async (req, res) => {
           noTiket,
           data: {
             ...parsedData,
-            files: fileMetadata  // 💥 Simpan URL Cloudinary
+            files: fileMetadata  // ✅ Simpan URL Cloudinary untuk dokumen warga
           },
           status: "Belum Dikerjakan"
         }
       });
+
+      console.log(`✅ Surat berhasil dibuat: ${surat.id} dengan noTiket: ${noTiket}`);
 
       return res.status(201).json({
         success: true,
@@ -85,7 +86,12 @@ exports.createSurat = async (req, res) => {
 
   } catch (err) {
     console.error("❌ Error createSurat:", err);
-    res.status(500).json({ success: false, error: "Gagal mengajukan surat" });
+    console.error("❌ Error stack:", err.stack);
+    res.status(500).json({
+      success: false,
+      error: err.message || "Gagal mengajukan surat",
+      details: process.env.NODE_ENV === 'development' ? err.stack : undefined
+    });
   }
 };
 

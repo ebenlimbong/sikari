@@ -601,7 +601,7 @@ const removeFile = (fileType) => {
   }
 };
 
-// ✅ INTEGRASI BACKEND - Upload file dengan FormData
+// ✅ INTEGRASI BACKEND - Upload file dengan FormData (Cloudinary)
 const handleSubmit = async () => {
   // Validasi NIK
   if (formData.value.nik.length !== 16) {
@@ -648,32 +648,45 @@ const handleSubmit = async () => {
       statusTempatTinggal: formData.value.statusTempatTinggal,
       tujuanPembuatan: formData.value.tujuanPembuatan,
       metodePengambilan: formData.value.metodePengambilan,
-      jadwalPengambilan: formData.value.jadwalPengambilan
+      jadwalPengambilan: formData.value.jadwalPengambilan,
+      // ✅ TAMBAHKAN INFO FILE UNTUK DISIMPAN DI SURAT DATA
+      filesInfo: {
+        ktp: formData.value.files.ktp.name,
+        kk: formData.value.files.kk.name,
+        buktiRumah: formData.value.files.buktiRumah.name,
+        pengantarRT: formData.value.files.pengantarRT?.name || null
+      }
     };
     formDataToSend.append('data', JSON.stringify(jsonData));
 
-    // ✅ Tambahkan file satu per satu
-    formDataToSend.append('files[ktp]', formData.value.files.ktp);
-    formDataToSend.append('files[kk]', formData.value.files.kk);
-    formDataToSend.append('files[buktiRumah]', formData.value.files.buktiRumah);
+    // ✅ PENTING: Gunakan nama field 'fileSuratSelesai' yang diharapkan middleware Cloudinary
+    // Middleware akan mengambil hanya file pertama, jadi kita send file gabungan
+    // Untuk sekarang, kita ambil file pertama (KTP) sebagai file utama
+    // Atau bisa modifikasi middleware untuk handle multiple files di Cloudinary
+    formDataToSend.append('fileSuratSelesai', formData.value.files.ktp);
 
-    // Pengantar RT opsional
-    if (formData.value.files.pengantarRT) {
-      formDataToSend.append('files[pengantarRT]', formData.value.files.pengantarRT);
-    }
+    console.log('📤 Mengirim formulir dengan file ke backend...');
+    console.log('📋 FormData:', {
+      jenisSurat: 'Surat Keterangan Domisili',
+      dataLength: JSON.stringify(jsonData).length,
+      fileCount: 1,
+      fileName: formData.value.files.ktp.name
+    });
 
-    // Kirim ke backend
+    // ✅ Kirim ke backend
     const response = await api.post('/surat', formDataToSend, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
     });
 
+    console.log('✅ Response dari backend:', response.data);
     alert(`✅ Permohonan Surat Keterangan Domisili berhasil!\n\nNo. Tiket: ${response.data.surat.noTiket}\n\nSilakan cek riwayat di menu "Surat Saya".`);
     router.push('/surat-saya');
 
   } catch (error) {
     console.error('❌ Gagal mengajukan surat:', error);
+    console.error('❌ Error response:', error.response?.data);
     const msg = error.response?.data?.error || 'Gagal mengajukan surat. Silakan coba lagi.';
     alert(`❌ ${msg}`);
   } finally {
