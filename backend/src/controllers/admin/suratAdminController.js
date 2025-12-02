@@ -151,7 +151,7 @@ exports.uploadSuratSelesai = async (req, res) => {
       });
     }
 
-    // Validasi: hanya surat dengan status "Selesai" yang bisa diupload
+    // Validasi: hanya surat dengan status "Selesai" upload
     if (surat.status !== 'Selesai') {
       console.log(`❌ Surat belum selesai (status: ${surat.status})`);
       return res.status(400).json({
