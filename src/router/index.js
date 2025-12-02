@@ -9,6 +9,17 @@ import SuratSayaView from '@/views/Warga/SuratSayaView.vue'
 import ProfilView from '@/views/Warga/ProfilView.vue'
 import AjjukanSurat from '@/views/Warga/AjjukanSurat.vue'
 
+// Statically import form views to avoid runtime chunk 404s on deployments
+import SKTMFormView from '@/views/Warga/SKTMFormView.vue'
+import SKDomisiliFormView from '@/views/Warga/SKDomisiliFormView.vue'
+import SKPenghasilanFormView from '@/views/Warga/SKPenghasilanFormView.vue'
+import SKUsahaForm from '@/views/Warga/SKUsahaForm.vue'
+import SKKelahiranForm from '@/views/Warga/SKKelahiranForm.vue'
+import SKPengantarKKKTPAktaFormView from '@/views/Warga/SKPengantarKKKTPAktaFormView.vue'
+import ProfilEditView from '@/views/Warga/ProfilEditView.vue'
+import AppLayout from '@/components/layouts/AppLayout.vue'
+import AdminDashboard from '@/views/Admin/AdminDashboard.vue'
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -50,64 +61,64 @@ const router = createRouter({
       component: SuratSayaView,
       meta: { requiresAuth: true }
     },
-     {
+    {
       path: '/ajukan-surat/sktm',
       name: 'sktm-form',
-      component: () => import('@/views/Warga/SKTMFormView.vue'),
+      component: SKTMFormView,
       meta: { requiresAuth: true }
     },
     {
       path: '/ajukan-surat/domisili',
       name: 'domisili-form',
-      component: () => import('@/views/Warga/SKDomisiliFormView.vue'),
+      component: SKDomisiliFormView,
       meta: { requiresAuth: true }
     },
     {
       path: '/ajukan-surat/penghasilan',
       name: 'penghasilan-form',
-      component: () => import('@/views/Warga/SKPenghasilanFormView.vue'),
+      component: SKPenghasilanFormView,
       meta: {requiresAuth: true}
     },
     {
       path: '/ajukan-surat/usaha',
       name: 'usaha-form',
-      component: () => import('@/views/Warga/SKUsahaForm.vue'),
+      component: SKUsahaForm,
       meta: {requiresAuth: true}
     },
     {
       path: '/ajukan-surat/kelahiran',
       name: 'SKKelahiran',
-      component: () => import('@/views/Warga/SKKelahiranForm.vue'),
+      component: SKKelahiranForm,
       meta: { requiresAuth: true }
     },
     {
       path: '/ajukan-surat/pengantar-dokumen',
       name: 'SKPengantarKKKTPAkta',
-      component: () => import('@/views/Warga/SKPengantarKKKTPAktaFormView.vue'),
+      component: SKPengantarKKKTPAktaFormView,
       meta: { requiresAuth: true }
     },
     {
       path: '/profil',
       name: 'Profil',
-      component: () => import('@/views/Warga/ProfilView.vue'),
+      component: ProfilView,
       meta: { requiresAuth: true }
     },
     {
       path: '/profil/edit',
       name: 'profil-edit',
-      component: () => import('@/views/Warga/ProfilEditView.vue'),
+      component: ProfilEditView,
       meta: { requiresAuth: true }
     },
     // ✅ Benar — nested di dalam AppLayout
     {
       path: '/admin',
-      component: () => import('@/components/layouts/AppLayout.vue'), // ✅ Parent layout
+      component: AppLayout, // Parent layout
       meta: { requiresAuth: true, requiresAdmin: true },
       children: [
         {
           path: '',
           name: 'admin-dashboard',
-          component: () => import('@/views/Admin/AdminDashboard.vue') // ✅ Hanya konten
+          component: AdminDashboard
         }
       ]
     }

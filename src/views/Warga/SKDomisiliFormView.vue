@@ -659,18 +659,22 @@ const handleSubmit = async () => {
     };
     formDataToSend.append('data', JSON.stringify(jsonData));
 
-    // ✅ PENTING: Gunakan nama field 'fileSuratSelesai' yang diharapkan middleware Cloudinary
-    // Middleware akan mengambil hanya file pertama, jadi kita send file gabungan
-    // Untuk sekarang, kita ambil file pertama (KTP) sebagai file utama
-    // Atau bisa modifikasi middleware untuk handle multiple files di Cloudinary
-    formDataToSend.append('fileSuratSelesai', formData.value.files.ktp);
+    // Kirim semua file yang di-attach oleh user (field name => file)
+    // Backend menerima multiple file fields via multer.any()
+    let fileCount = 0;
+    for (const key in formData.value.files) {
+      const f = formData.value.files[key];
+      if (f) {
+        formDataToSend.append(key, f);
+        fileCount++;
+      }
+    }
 
     console.log('📤 Mengirim formulir dengan file ke backend...');
     console.log('📋 FormData:', {
       jenisSurat: 'Surat Keterangan Domisili',
       dataLength: JSON.stringify(jsonData).length,
-      fileCount: 1,
-      fileName: formData.value.files.ktp.name
+      fileCount
     });
 
     // ✅ Kirim ke backend

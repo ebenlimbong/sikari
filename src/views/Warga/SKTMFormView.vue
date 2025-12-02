@@ -457,8 +457,15 @@ const handleSubmit = async () => {
     };
     formDataToSend.append('data', JSON.stringify(jsonData));
 
-    // ✅ PENTING: Gunakan nama field 'fileSuratSelesai' yang diharapkan middleware Cloudinary
-    formDataToSend.append('fileSuratSelesai', formData.value.files.ktp);
+    // Kirim semua file yang di-attach oleh user (field name => file)
+    let fileCount = 0;
+    for (const key in formData.value.files) {
+      const f = formData.value.files[key];
+      if (f) {
+        formDataToSend.append(key, f);
+        fileCount++;
+      }
+    }
 
     // Kirim ke backend
     const response = await api.post('/surat', formDataToSend, {

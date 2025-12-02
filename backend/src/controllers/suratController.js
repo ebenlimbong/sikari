@@ -35,15 +35,29 @@ exports.createSurat = async (req, res) => {
       parsedData = {};
     }
 
-    // Collect file metadata if middleware uploaded a file to Cloudinary
+    // Collect file metadata if middleware uploaded files to Cloudinary
+    // Middleware now uses `.any()` so we may receive req.files (array)
     const fileMetadata = {};
-    if (req.file) {
+    if (Array.isArray(req.files) && req.files.length) {
+      req.files.forEach((f) => {
+        const field = f.fieldname || 'dokumenWarga';
+        // Cloudinary multer-storage-cloudinary exposes the full URL in `path`
+        const url = f.path || f.url || f.secure_url || '';
+        fileMetadata[field] = {
+          name: f.originalname,
+          size: f.size,
+          url: url
+        };
+        console.log(`✅ File uploaded [${field}] => ${url}`);
+      });
+    } else if (req.file) {
+      // backward compatibility (single file)
       fileMetadata['dokumenWarga'] = {
         name: req.file.originalname,
         size: req.file.size,
-        url: req.file.path // Cloudinary full URL provided by multer-storage-cloudinary
+        url: req.file.path
       };
-      console.log(`✅ File uploaded ke Cloudinary: ${req.file.path}`);
+      console.log(`✅ File uploaded ke Cloudinary (single): ${req.file.path}`);
     }
 
     // Generate ticket number
@@ -54,15 +68,21 @@ exports.createSurat = async (req, res) => {
     const r = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
     const noTiket = `TIC-${y}${m}${d}-${r}`;
 
+    // Merge parsedData.files (if frontend sent filesInfo) with actual uploaded file URLs
+    const combinedData = {
+      ...parsedData,
+      files: {
+        ...(parsedData.files || {}),
+        ...fileMetadata
+      }
+    };
+
     const surat = await prisma.surat.create({
       data: {
         userId: parseInt(req.user.id),
         jenisSurat,
         noTiket,
-        data: {
-          ...parsedData,
-          files: fileMetadata
-        },
+        data: combinedData,
         status: 'Belum Dikerjakan'
       }
     });

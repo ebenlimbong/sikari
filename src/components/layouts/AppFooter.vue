@@ -12,8 +12,6 @@
         <h3>Menu Cepat</h3>
         <ul>
           <li><router-link to="/">Beranda</router-link></li>
-          <li><router-link to="/">Fitur</router-link></li>
-          <li><router-link to="/">Cara Kerja</router-link></li>
           <li><router-link to="/login">Masuk</router-link></li>
           <li><router-link to="/register">Daftar</router-link></li>
         </ul>
@@ -48,7 +46,7 @@
 }
 .footer-column h3 {
   font-size: 1.2rem;
-  margin-bottom: 1rem;
+margin-bottom: 1rem;
   font-weight: bold;
 }
 .footer-column p, .footer-column li {

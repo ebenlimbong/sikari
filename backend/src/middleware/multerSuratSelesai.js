@@ -27,16 +27,17 @@ const storage = new CloudinaryStorage({
   },
 });
 
-// ✅ File filter - only accept PDF
+// ✅ File filter - accept PDF and common image types (forms allow PDFs and images)
 const fileFilter = (req, file, cb) => {
   console.log(`📄 File upload attempt (warga): ${file.originalname} (${file.mimetype})`);
 
-  if (file.mimetype === 'application/pdf') {
-    console.log('✅ File format accepted (PDF)');
+  const allowed = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
+  if (allowed.includes(file.mimetype)) {
+    console.log('✅ File format accepted');
     cb(null, true);
   } else {
-    console.log('❌ File format rejected (not PDF)');
-    cb(new Error('❌ Hanya file PDF yang diizinkan untuk dokumen'), false);
+    console.log('❌ File format rejected (unsupported)');
+    cb(new Error('❌ Hanya file PDF/JPG/PNG yang diizinkan untuk dokumen'), false);
   }
 };
 
@@ -47,4 +48,4 @@ module.exports = multer({
   limits: {
     fileSize: 5 * 1024 * 1024 // 5MB limit
   },
-}).single('fileSuratSelesai');
+}).any(); // accept multiple named file fields (ktp, kk, buktiRumah, etc.)

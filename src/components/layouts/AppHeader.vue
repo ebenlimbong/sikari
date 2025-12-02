@@ -6,12 +6,6 @@
       </router-link>
     </div>
 
-    <nav class="main-nav">
-      <router-link to="/" class="nav-item">Fitur</router-link>
-      <router-link to="/" class="nav-item">Cara Kerja</router-link>
-      <router-link to="/" class="nav-item">Kontak</router-link>
-    </nav>
-
     <div class="auth-buttons">
       <!-- Jika belum login -->
       <template v-if="!isLoggedIn">
